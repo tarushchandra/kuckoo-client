@@ -4,15 +4,15 @@ import { signIn, signOut } from "./authThunks";
 import { User } from "@/gql/graphql";
 import { RootState } from "@/redux/store";
 
-export type AuthStateValue =
-  | IinitialAuthState
-  | IinitialAuthState["user"]
-  | IinitialAuthState["isUserAuthenticated"]
-  | IinitialAuthState["isUserLoading"]
-  | IinitialAuthState["error"]
-  | IinitialAuthState["isGoogleButtonLoaded"];
+export type AuthStateValues =
+  | IAuthState
+  | IAuthState["user"]
+  | IAuthState["isUserAuthenticated"]
+  | IAuthState["isUserLoading"]
+  | IAuthState["error"]
+  | IAuthState["isGoogleButtonLoaded"];
 
-export interface IinitialAuthState {
+export interface IAuthState {
   user: User | null;
   isUserAuthenticated: boolean;
   isUserLoading: boolean;
@@ -20,7 +20,7 @@ export interface IinitialAuthState {
   isGoogleButtonLoaded: boolean;
 }
 
-const initialState: IinitialAuthState = {
+const initialState: IAuthState = {
   user: null,
   isUserAuthenticated: false,
   isUserLoading: false,

@@ -8,9 +8,9 @@ const Header: React.FC = () => {
   const totalTabs = ["For You", "Following"];
 
   return (
-    <div className="flex flex-col pt-2 gap-2 font-semibold border-y border-t-0 border-zinc-700 sticky top-0 backdrop-blur-md">
-      <h1 className="text-2xl px-4">Home</h1>
-      <div className="flex text-sm">
+    <div className=" flex flex-col pt-2 gap-2 font-semibold border-y border-t-0 border-zinc-700 sticky top-0 bg-gradient-to-b from-black to-transparent backdrop-blur-md">
+      <h1 className="text-xl px-4 py-2">Home</h1>
+      {/* <div className="flex text-sm">
         {totalTabs.map((tab, index) => {
           return (
             <div
@@ -26,7 +26,7 @@ const Header: React.FC = () => {
             </div>
           );
         })}
-      </div>
+      </div> */}
     </div>
   );
 };

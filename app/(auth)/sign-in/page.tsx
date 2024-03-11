@@ -9,6 +9,7 @@ import { selectGoogleButton } from "@/redux/features/auth/authSlice";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import InputField from "@/components/input-field";
 
 const signInFormSchema = z.object({
   email: z.string().email(),
@@ -18,9 +19,9 @@ const signInFormSchema = z.object({
 export type signInFormType = z.infer<typeof signInFormSchema>;
 
 const SignInPage: React.FC = () => {
-  const { useAuthDispatcher, useAuthStore } = useAuth();
-  const { signInAction } = useAuthDispatcher();
-  const isGoogleButtonLoaded = useAuthStore(selectGoogleButton);
+  const { data: isGoogleButtonLoaded, signInAction } =
+    useAuth(selectGoogleButton);
+
   const {
     handleSubmit,
     register,
@@ -38,7 +39,6 @@ const SignInPage: React.FC = () => {
   // Sign In with Email and Password
   const onSubmit = async (data: signInFormType) => {
     signInAction({ user: data });
-    // await new Promise((res) => setTimeout(() => res("ok"), 1000));
   };
 
   return (
@@ -46,40 +46,18 @@ const SignInPage: React.FC = () => {
       <h1 className="text-3xl font-semibold">Sign In to Twitter</h1>
       <div className="flex flex-col gap-6 p-10 w-1/4 rounded-md bg-zinc-950 border border-zinc-800">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="email" className="text-sm">
-              Email Address
-            </label>
-            <input
-              {...register("email")}
-              type="email"
-              name="email"
-              id="email"
-              className="rounded-md bg-zinc-950 border-[0.01rem] border-zinc-800 px-4 py-2 focus:outline-none focus:border-[#1D9BF0] focus:ring-1"
-            />
-            {errors.email && (
-              <h3 className="text-xs text-red-500 italic">
-                * {errors.email.message as string}
-              </h3>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="password" className="text-sm">
-              Password
-            </label>
-            <input
-              {...register("password")}
-              type="password"
-              name="password"
-              id="password"
-              className="rounded-md bg-zinc-950 border-[0.01rem] border-zinc-800 px-4 py-2 focus:outline-none focus:border-[#1D9BF0] focus:ring-1"
-            />
-            {errors.password && (
-              <h3 className="text-xs text-red-500 italic">
-                * {errors.password.message as string}
-              </h3>
-            )}
-          </div>
+          <InputField
+            error={errors.email?.message}
+            label="Email"
+            type="email"
+            {...register("email")}
+          />
+          <InputField
+            error={errors.password?.message}
+            label="Password"
+            type="password"
+            {...register("password")}
+          />
           <button
             disabled={isSubmitting}
             className="bg-[#1D9BF0] text-sm text-white rounded-md py-2 border border-zinc-700 disabled:cursor-wait transition-all active:scale-[0.95]"
@@ -88,9 +66,9 @@ const SignInPage: React.FC = () => {
           </button>
         </form>
         <div className="flex gap-2 items-center w-full">
-          <span className="flex-1 bg-zinc-800 h-[0.01rem]"></span>
+          <span className="flex-1 bg-zinc-800 h-[0.01rem]" />
           <h1 className="text-zinc-600 text-md">or</h1>
-          <span className="flex-1 bg-zinc-800 h-[0.01rem]"></span>
+          <span className="flex-1 bg-zinc-800 h-[0.01rem]" />
         </div>
         <div className="flex justify-center">
           {isGoogleButtonLoaded ? (

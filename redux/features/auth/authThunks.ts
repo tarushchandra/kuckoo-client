@@ -1,4 +1,3 @@
-import { signInFormType } from "@/app/(auth)/sign-in/page";
 import { graphqlClient } from "@/clients/graphql";
 import { queryClient } from "@/clients/query";
 import { User } from "@/gql/graphql";
@@ -26,13 +25,12 @@ const getCustomUserToken = async (payload: IsignInAction) => {
 
 export const signIn = createAsyncThunk(
   "auth/signIn",
-  async (payload: IsignInAction) => {
+  async (payload?: IsignInAction) => {
     const access_token = localStorage.getItem("__access__token");
 
     try {
       if (!access_token) {
-        if (payload.googleToken && payload.user)
-          throw new Error("Payload not found");
+        if (!payload) throw new Error("Payload not found");
 
         toast.loading("Please wait...", { id: "signin-loading" });
 

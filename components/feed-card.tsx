@@ -1,3 +1,4 @@
+import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { AiOutlineComment, AiOutlineHeart } from "react-icons/ai";
@@ -7,23 +8,18 @@ import { BsUpload } from "react-icons/bs";
 const postButtons = [
   {
     id: 1,
-    Icon: AiOutlineComment,
-    color: "[#1D9BF0]",
+    Icon: Heart,
+    title: "Like",
   },
   {
     id: 2,
-    Icon: BiRepost,
-    color: "[#1D9BF0]",
+    Icon: MessageCircle,
+    title: "Comment",
   },
   {
     id: 3,
-    Icon: AiOutlineHeart,
-    color: "red-600",
-  },
-  {
-    id: 4,
-    Icon: BiStats,
-    color: "#1D9BF0",
+    Icon: Send,
+    title: "Share",
   },
 ];
 
@@ -42,7 +38,7 @@ const FeedCard: React.FC = () => {
       <div className="flex flex-col gap-1">
         <div className="flex gap-2 items-center">
           <h1 className="font-semibold">Tarush Chandra</h1>
-          <div className="flex items-center gap-2 text-gray-500 text-sm">
+          <div className="flex items-center gap-2 text-zinc-500 text-sm">
             <span>@chandra_tarush</span>
             <div className="bg-gray-500 w-1 h-1 rounded-full" />
             <span>14h</span>
@@ -54,19 +50,23 @@ const FeedCard: React.FC = () => {
           come to life is unbeatable. 💡👏 Join the coding journey and discover
           the joy of endless creativity! 🤩👩‍💻👨‍💻
         </p>
-        <div className="text-lg text-gray-500 flex justify-between pt-3">
+        {/* <div className="flex gap-2 text-gray-300">
+          <h1 className="text-sm font-bold">130 Likes</h1>
+          <h1 className="text-sm font-bold">227 Comments</h1>
+        </div> */}
+        <div className="text-zinc-500 flex justify-between px-10 pt-1">
           {postButtons.map((btn) => {
             return (
               <div
                 key={btn.id}
-                className={`flex gap-2 items-center  hover:text-${btn.color}`}
+                className={`flex gap-1 justify-center items-center`}
               >
-                {<btn.Icon />}
-                <h1 className="text-xs">13.3K</h1>
+                <span>{<btn.Icon size={17} />}</span>
+                <h1 className="text-xs">126</h1>
               </div>
             );
           })}
-          <BsUpload />
+          <Bookmark size={17} />
         </div>
       </div>
     </div>

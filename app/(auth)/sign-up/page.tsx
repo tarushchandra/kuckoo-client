@@ -4,9 +4,12 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import React from "react";
 import { useAuth } from "@/hooks/auth/auth";
 import Link from "next/link";
-import { selectGoogleButton } from "@/redux/features/auth/authSlice";
+import {
+  selectAuth,
+  selectGoogleButton,
+} from "@/redux/features/auth/authSlice";
 import Skeleton from "@/components/ui/skeleton";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { signUpFormRegEx } from "@/utils/regex";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +22,7 @@ import {
   isUsernameExistQuery,
 } from "@/graphql/queries/user";
 import InputField from "@/components/input-field";
+import { useAppSelector } from "@/hooks/redux/redux";
 
 const signUpFormSchema = z.object({
   name: z
@@ -48,10 +52,9 @@ const signUpFormSchema = z.object({
 type signUpFormType = z.infer<typeof signUpFormSchema>;
 
 const SignUpPage: React.FC = () => {
-  const { useAuthDispatcher, useAuthStore } = useAuth();
-  const { signInAction } = useAuthDispatcher();
+  const { data: isGoogleButtonLoaded, signInAction } = useAuth();
   const router = useRouter();
-  const isGoogleButtonLoaded = useAuthStore(selectGoogleButton);
+
   const {
     handleSubmit,
     register,
@@ -120,6 +123,7 @@ const SignUpPage: React.FC = () => {
             <Skeleton className="w-60 h-10" />
           )}
         </div>
+
         <div className="flex gap-2 items-center w-full">
           <span className="flex-1 bg-zinc-800 h-[0.01rem]"></span>
           <h1 className="text-zinc-600 text-md">or</h1>
@@ -127,7 +131,7 @@ const SignUpPage: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          {/* <InputField
+          <InputField
             error={errors.name?.message}
             label="Name"
             type="text"
@@ -136,91 +140,21 @@ const SignUpPage: React.FC = () => {
           <InputField
             error={errors.username?.message}
             label="Username"
-            // type="text"
-            // {...register("username")}
+            type="text"
+            {...register("username")}
           />
           <InputField
             error={errors.email?.message}
             label="Email Address"
-            // type="email"
-            // {...register("email")}
+            type="email"
+            {...register("email")}
           />
           <InputField
             error={errors.password?.message}
             label="Password"
-            // type="password"
-            // {...register("password")}
-          /> */}
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="name" className="text-sm">
-              Name
-            </label>
-            <input
-              {...register("name")}
-              type="text"
-              name="name"
-              id="name"
-              className="rounded-md w-full bg-zinc-950 border-[0.01rem] border-zinc-800 px-4 py-2 focus:outline-none focus:border-[#1D9BF0] focus:ring-1"
-            />
-            {errors.name && (
-              <h3 className="text-xs text-red-500 italic">
-                * {errors.name.message as string}
-              </h3>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="username" className="text-sm">
-              Username
-            </label>
-            <input
-              {...register("username")}
-              type="text"
-              name="username"
-              id="username"
-              className="rounded-md bg-zinc-950 border-[0.01rem] border-zinc-800 px-4 py-2 focus:outline-none focus:border-[#1D9BF0] focus:ring-1"
-            />
-            {errors.username && (
-              <h3 className="text-xs text-red-500 italic">
-                * {errors.username.message as string}
-              </h3>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="email" className="text-sm">
-              Email Address
-            </label>
-            <input
-              {...register("email")}
-              type="email"
-              name="email"
-              id="email"
-              className="rounded-md bg-zinc-950 border-[0.01rem] border-zinc-800 px-4 py-2 focus:outline-none focus:border-[#1D9BF0] focus:ring-1"
-            />
-            {errors.email && (
-              <h3 className="text-xs text-red-500 italic">
-                * {errors.email.message as string}
-              </h3>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="password" className="text-sm">
-              Password
-            </label>
-            <input
-              {...register("password")}
-              type="password"
-              name="password"
-              id="password"
-              className="rounded-md bg-zinc-950 border-[0.01rem] border-zinc-800 px-4 py-2 focus:outline-none focus:border-[#1D9BF0] focus:ring-1"
-            />
-            {errors.password && (
-              <h3 className="text-xs text-red-500 italic">
-                * {errors.password.message as string}
-              </h3>
-            )}
-          </div>
-
+            type="password"
+            {...register("password")}
+          />
           <button
             disabled={isSubmitting}
             className="bg-[#1D9BF0] text-sm text-white rounded-md py-2 border border-zinc-700 disabled:cursor-wait active:scale-[0.95] transition-all"

@@ -53,9 +53,8 @@ export const sidebarMenuItems: SideBarMenuI[] = [
 ];
 
 const SideBar: React.FC = () => {
-  const { useAuthDispatcher, useAuthStore } = useAuth();
-  const { user, isUserLoading } = useAuthStore(selectAuth);
-  const { signOutAction } = useAuthDispatcher();
+  const { data: auth, signOutAction } = useAuth(selectAuth);
+  const { user, isUserLoading } = auth;
 
   return (
     <div className="col-span-3">
@@ -74,7 +73,7 @@ const SideBar: React.FC = () => {
                     key={item.title}
                     className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
                   >
-                    <span className="text-3xl">{item.icon}</span>
+                    <span>{item.icon}</span>
                     <span className="text-xl">{item.title}</span>
                   </li>
                 );

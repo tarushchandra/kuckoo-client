@@ -9,8 +9,7 @@ interface GoogleProviderProps {
 }
 
 export const GoogleProvider: React.FC<GoogleProviderProps> = ({ children }) => {
-  const { useAuthDispatcher } = useAuth();
-  const { updateGoogleButtonAction } = useAuthDispatcher();
+  const { updateGoogleButtonAction } = useAuth();
 
   return (
     <GoogleOAuthProvider
