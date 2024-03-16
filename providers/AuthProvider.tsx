@@ -5,6 +5,26 @@ import { useAuth } from "@/hooks/auth/auth";
 import { selectAuth } from "@/redux/features/auth/authSlice";
 import { useRouter } from "@/hooks/router/router";
 import React, { useEffect } from "react";
+import { usePathname } from "next/navigation";
+
+/* 
+  Handles 2 cases (2nd method works only on refreshing the page, not on route change)
+  - When access token is not present (handled by AuthRoute component)
+  - When access token has been altered (handled by signInAction)
+
+  Successful redirection to /sign-in page
+  - Handled cases:
+    - When access token is deleted
+      - if browser is refreshed
+      - if user tries to change the pathName (authenticated route)
+    - WHen access token is altered
+      - if browser is refreshed
+
+  - Unhandled cases:
+    - When access token is altered
+      - if user tries to change the pathName (authenticated route)
+
+*/
 
 interface AuthProps {
   children: React.ReactNode;
@@ -25,58 +45,15 @@ export const AuthRoute: React.FC<AuthProps> = ({ children }) => {
   const router = useRouter();
   const { data: auth, getAccessToken } = useAuth(selectAuth);
   const { isUserLoading, isUserAuthenticated } = auth;
+  const pathName = usePathname();
 
+  // This useEffect is protecting this route.
   useEffect(() => {
     if (isUserLoading || getAccessToken()) return;
+    if (!getAccessToken() || !isUserAuthenticated) router.replace("/sign-in");
+  }, [pathName]);
 
-    if (isUserAuthenticated) {
-      router.replace("/home");
-    } else {
-      router.replace("/sign-in");
-    }
-  }, []);
-
-  if (isUserLoading) return <>{children}</>;
-  if (!isUserAuthenticated) return <AppLoading />;
+  // if (isUserLoading) return <>{children}</>;
+  if (isUserLoading || !isUserAuthenticated) return <AppLoading />;
   return <>{children}</>;
 };
-
-// interface IAuthProvider {
-//   AccessProvider: (children: React.ReactNode) => React.ReactElement;
-//   AuthRoute: (children: React.ReactNode) => React.ReactElement;
-// }
-
-// export const AuthProvider: React.FC = () => {
-//   const { useAuthStore, useAuthDispatcher, getAccessToken } = useAuth();
-//   const { signInAction } = useAuthDispatcher();
-
-//   return {
-//     AccessProvider: ({ children }: { children: React.ReactNode }) => {
-//       useEffect(() => {
-//         if (!getAccessToken()) return;
-//         signInAction();
-//       }, []);
-
-//       return <>{children}</>;
-//     },
-//     AuthRoute: ({ children }: { children: React.ReactNode }) => {
-//       const { isUserAuthenticated, isLoading } = useAuthStore();
-//       const router = useRouter();
-
-//       useEffect(() => {
-//         if (getAccessToken()) return;
-//         if (isLoading) return;
-
-//         if (isUserAuthenticated) {
-//           router.replace("/home");
-//         } else {
-//           router.replace("/auth");
-//         }
-//       }, []);
-
-//       if (isLoading) return <h1>User is loading...</h1>;
-//       if (!isUserAuthenticated) return <h1>User is not authenticated!!</h1>;
-//       return <>{children}</>;
-//     },
-//   };
-// };

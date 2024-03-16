@@ -41,6 +41,7 @@ export const authSlice = createSlice({
     builder
       .addCase(signIn.pending, (state) => {
         state.isUserLoading = true;
+        state.error = null;
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.isUserLoading = false;
@@ -49,7 +50,7 @@ export const authSlice = createSlice({
       })
       .addCase(signIn.rejected, (state, action) => {
         state.isUserLoading = false;
-        state.error = action.payload;
+        state.error = action.error.message;
       });
 
     // Sign Out Action
@@ -70,6 +71,7 @@ export const authSlice = createSlice({
 });
 
 export const selectAuth = (store: RootState) => store.auth;
+export const selectUser = (store: RootState) => store.auth.user;
 export const selectGoogleButton = (store: RootState) =>
   store.auth.isGoogleButtonLoaded;
 

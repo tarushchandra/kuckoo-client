@@ -1,9 +1,6 @@
 import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import { AiOutlineComment, AiOutlineHeart } from "react-icons/ai";
-import { BiRepost, BiStats } from "react-icons/bi";
-import { BsUpload } from "react-icons/bs";
 
 const postButtons = [
   {
@@ -40,7 +37,7 @@ const FeedCard: React.FC = () => {
           <h1 className="font-semibold">Tarush Chandra</h1>
           <div className="flex items-center gap-2 text-zinc-500 text-sm">
             <span>@chandra_tarush</span>
-            <div className="bg-gray-500 w-1 h-1 rounded-full" />
+            <div className="bg-zinc-500 w-1 h-1 rounded-full" />
             <span>14h</span>
           </div>
         </div>

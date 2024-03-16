@@ -52,7 +52,8 @@ const signUpFormSchema = z.object({
 type signUpFormType = z.infer<typeof signUpFormSchema>;
 
 const SignUpPage: React.FC = () => {
-  const { data: isGoogleButtonLoaded, signInAction } = useAuth();
+  const { data: isGoogleButtonLoaded, signInAction } =
+    useAuth(selectGoogleButton);
   const router = useRouter();
 
   const {

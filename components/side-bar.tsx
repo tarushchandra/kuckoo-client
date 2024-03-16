@@ -21,7 +21,7 @@ import Link from "next/link";
 interface SideBarMenuI {
   icon: React.ReactNode;
   title: string;
-  link?: string;
+  link: string;
 }
 
 export const sidebarMenuItems: SideBarMenuI[] = [
@@ -33,22 +33,27 @@ export const sidebarMenuItems: SideBarMenuI[] = [
   {
     title: "Explore",
     icon: <Search />,
+    link: "/search",
   },
   {
     title: "Messages",
     icon: <Mail />,
+    link: "/messages",
   },
   {
     title: "Notifications",
     icon: <Bell />,
+    link: "/notifications",
   },
   {
     title: "Bookmarks",
     icon: <Bookmark />,
+    link: "/bookmarks",
   },
   {
     title: "Profile",
     icon: <User />,
+    link: "/profile",
   },
 ];
 
@@ -57,7 +62,7 @@ const SideBar: React.FC = () => {
   const { user, isUserLoading } = auth;
 
   return (
-    <div className="col-span-3">
+    <div className="col-span-3 sticky">
       <div className="h-screen flex flex-col justify-between pb-4 sticky top-0">
         <div>
           <div className="text-3xl w-fit p-4 rounded-full cursor-pointer transition-all hover:bg-zinc-900">
@@ -66,19 +71,24 @@ const SideBar: React.FC = () => {
             </Link>
           </div>
           <div className="flex flex-col gap-6 mr-10">
-            <ul className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
               {sidebarMenuItems.map((item) => {
                 return (
-                  <li
+                  <Link
                     key={item.title}
+                    href={
+                      item.link === "/profile"
+                        ? `/profile/${user?.username}`
+                        : item.link
+                    }
                     className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
                   >
                     <span>{item.icon}</span>
                     <span className="text-xl">{item.title}</span>
-                  </li>
+                  </Link>
                 );
               })}
-            </ul>
+            </div>
             <button className="bg-[#1D9BF0] w-full py-4 text-lg font-semibold rounded-full transition-all hover:bg-[#1993e6] active:scale-[0.95]">
               Tweet
             </button>
@@ -101,7 +111,7 @@ const SideBar: React.FC = () => {
                 <span className="font-semibold">
                   {user ? user.firstName + " " + user.lastName : ""}
                 </span>
-                <span className="text-gray-500">{user?.username}</span>
+                <span className="text-zinc-500">@{user?.username}</span>
               </div>
             </div>
             <AiOutlineEllipsis className="text-xl" />

@@ -8,18 +8,27 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
 const getCustomUserToken = async (payload: IsignInAction) => {
-  if (payload.googleToken) {
-    const { getCustomUserToken } = await graphqlClient.request(
-      getCustomUserTokenQuery,
-      { googleToken: payload.googleToken }
-    );
-    return getCustomUserToken;
-  } else {
-    const { getCustomUserToken } = await graphqlClient.request(
-      getCustomUserTokenQuery,
-      { user: payload.user }
-    );
-    return getCustomUserToken;
+  try {
+    let customUserToken;
+    if (payload.googleToken) {
+      const { getCustomUserToken } = await graphqlClient.request(
+        getCustomUserTokenQuery,
+        { googleToken: payload.googleToken }
+      );
+      customUserToken = getCustomUserToken;
+    } else {
+      const { getCustomUserToken } = await graphqlClient.request(
+        getCustomUserTokenQuery,
+        { user: payload.user }
+      );
+      customUserToken = getCustomUserToken;
+    }
+    if (!customUserToken)
+      throw new Error("Custom token not recieved from the server");
+    return customUserToken;
+  } catch (err: any) {
+    const errorMessage = err.response.errors[0].message;
+    throw new Error(errorMessage);
   }
 };
 
@@ -31,35 +40,29 @@ export const signIn = createAsyncThunk(
     try {
       if (!access_token) {
         if (!payload) throw new Error("Payload not found");
-
-        toast.loading("Please wait...", { id: "signin-loading" });
-
         const customUserToken = await getCustomUserToken(payload);
-        if (!customUserToken)
-          throw new Error("Custom token not recieved from the server");
         localStorage.setItem("__access__token", customUserToken);
-
-        const { user } = await useSessionUser();
-        toast.success(`Welcome ${user?.firstName}!`, { id: "signin-loading" });
-        return user;
       }
+      await queryClient.invalidateQueries({ queryKey: ["session-user"] });
 
       const { user } = await useSessionUser();
+      if (!user) {
+        localStorage.removeItem("__access__token");
+        throw new Error("You are not authenticated");
+      }
+
       return user as User;
-    } catch (err) {
-      console.log(err);
-      toast.error("Server Error");
-      return err;
+    } catch (err: any) {
+      toast.error(err.message);
+      throw err;
     }
   }
 );
 
 export const signOut = createAsyncThunk("auth/signOut", async () => {
   try {
-    toast.loading("Please wait...", { id: "signout-loading" });
     localStorage.removeItem("__access__token");
-    await queryClient.invalidateQueries({ queryKey: ["current-user"] });
-    toast.success("Signed Out", { id: "signout-loading" });
+    await queryClient.invalidateQueries({ queryKey: ["session-user"] });
   } catch (err) {
     console.log(err);
     toast.error("Server Error");

@@ -7,8 +7,31 @@ export const getCustomUserTokenQuery = graphql(/* GraphQL */ `
 `);
 
 export const getCurrentUserQuery = graphql(/* GraphQL */ `
-  query GetCurrentUserQuery {
-    getCurrentUser {
+  query GetCurrentUserQuery($username: String) {
+    getCurrentUser(username: $username) {
+      firstName
+      lastName
+      profileImageURL
+    }
+  }
+`);
+
+export const getSessionUserQuery = graphql(/* GraphQL */ `
+  query GetSessionUserQuery {
+    getSessionUser {
+      id
+      firstName
+      lastName
+      username
+      profileImageURL
+      email
+    }
+  }
+`);
+
+export const getAllUsersQuery = graphql(/* GraphQL */ `
+  query GetAllUsersQuery {
+    getAllUsers {
       id
       firstName
       lastName

@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NextTopLoader height={2} />
+        <NextTopLoader height={2} zIndex={2000} />
         <ProgressBarProvider>
           <ReactQueryProvider>
             <ReduxProvider>

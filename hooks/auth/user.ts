@@ -1,28 +1,32 @@
 import { graphqlClient } from "@/clients/graphql";
 import { queryClient } from "@/clients/query";
-import { getCurrentUserQuery } from "@/graphql/queries/user";
+import {
+  getAllUsersQuery,
+  getCurrentUserQuery,
+  getSessionUserQuery,
+} from "@/graphql/queries/user";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCurrentUser = () => {
+export const useCurrentUser = (username: string) => {
   const response = useQuery({
     queryKey: ["current-user"],
-    queryFn: () => graphqlClient.request(getCurrentUserQuery),
+    queryFn: () => graphqlClient.request(getCurrentUserQuery, { username }),
   });
   return response.data?.getCurrentUser;
 };
 
 export const useSessionUser = async () => {
-  try {
-    const { getCurrentUser } = await queryClient.fetchQuery({
-      queryKey: ["current-user"],
-      queryFn: () => graphqlClient.request(getCurrentUserQuery),
-    });
-    await queryClient.invalidateQueries({
-      queryKey: ["current-user"],
-    });
-    if (!getCurrentUser) throw new Error("User not found");
-    return { user: getCurrentUser };
-  } catch (err) {
-    return { error: err };
-  }
+  const { getSessionUser } = await queryClient.fetchQuery({
+    queryKey: ["session-user"],
+    queryFn: () => graphqlClient.request(getSessionUserQuery),
+  });
+  return { user: getSessionUser };
+};
+
+export const useAllUsers = () => {
+  const response = useQuery({
+    queryKey: ["all-users"],
+    queryFn: () => graphqlClient.request(getAllUsersQuery),
+  });
+  return response.data?.getAllUsers;
 };
