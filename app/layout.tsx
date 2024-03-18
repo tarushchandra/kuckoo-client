@@ -5,7 +5,6 @@ import { Toaster } from "react-hot-toast";
 import { ReactQueryProvider } from "@/providers/QueryProvider";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
-import NextTopLoader from "nextjs-toploader";
 import ProgressBarProvider from "@/providers/ProgressBarProvider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NextTopLoader height={2} zIndex={2000} />
         <ProgressBarProvider>
           <ReactQueryProvider>
             <ReduxProvider>

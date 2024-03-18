@@ -4,7 +4,7 @@ import { selectAuth, selectUser } from "@/redux/features/auth/authSlice";
 import mergeClasses from "@/utils/mergeClasses";
 import { ArrowLeft } from "lucide-react";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 import Skeleton from "./ui/skeleton";
 
 interface WrapperProps {
@@ -16,7 +16,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children, className }) => {
   return (
     <div
       className={mergeClasses(
-        "p-2 border-y border-t-0 border-zinc-700 sticky top-0 z-10 bg-gradient-to-b from-black to-transparent backdrop-blur-md",
+        "p-2 border-y border-t-0 border-zinc-700 sticky top-0 bg-gradient-to-b from-black to-transparent backdrop-blur-md",
         className
       )}
     >
@@ -41,7 +41,6 @@ const Header: React.FC = () => {
   if (pathName.includes("/profile/")) {
     return (
       <Wrapper className="flex items-center gap-6 px-4">
-        <ArrowLeft />
         {isUserLoading ? (
           <div className="flex flex-col gap-2">
             <Skeleton className="w-36 h-6" />

@@ -62,7 +62,7 @@ const SideBar: React.FC = () => {
   const { user, isUserLoading } = auth;
 
   return (
-    <div className="col-span-3 sticky">
+    <div className="col-span-3">
       <div className="h-screen flex flex-col justify-between pb-4 sticky top-0">
         <div>
           <div className="text-3xl w-fit p-4 rounded-full cursor-pointer transition-all hover:bg-zinc-900">

@@ -5,7 +5,6 @@ import FeedCard from "@/components/feed-card";
 import Skeleton from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/auth/auth";
 import { useCurrentUser } from "@/hooks/auth/user";
-import { useRouter } from "@/hooks/router/router";
 import { selectAuth, selectUser } from "@/redux/features/auth/authSlice";
 import { CalendarDays } from "lucide-react";
 import Image from "next/image";
@@ -28,15 +27,15 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   }, [params.username]);
 
   return (
-    <div className="relative">
-      <div className="absolute -z-10 bg-zinc-700 w-full h-44" />
-      <div className="mt-20 w-full top-20">
+    <>
+      <div className="relative">
+        <div className="absolute -z-10 bg-zinc-700 w-full h-44" />
+      </div>
+      <div className="mt-20">
         <div className="flex flex-col gap-4 px-4 py-2 border-b border-zinc-700">
           <div className="flex justify-between items-end">
             {!currentUser ? (
-              <>
-                <Skeleton className="w-[140px] h-[140px] rounded-full" />
-              </>
+              <Skeleton className="w-[140px] h-[140px] rounded-full" />
             ) : (
               <Image
                 className="rounded-full top-28 left-4 border-4 border-black"
@@ -50,10 +49,13 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                 height={140}
               />
             )}
-
-            {sessionUser?.username === params.username && (
+            {sessionUser?.username === params.username ? (
               <button className="font-semibold text-md bg-white text-black px-4 py-2 rounded-full transition-all hover:bg-zinc-200">
                 Edit Profile
+              </button>
+            ) : (
+              <button className="font-semibold text-md bg-white text-black px-4 py-2 rounded-full transition-all hover:bg-zinc-200">
+                Follow
               </button>
             )}
           </div>
@@ -84,7 +86,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             </h1>
           </div>
         </div>
-        <div className="">
+        <div>
           <FeedCard />
           <FeedCard />
           <FeedCard />
@@ -101,6 +103,6 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           <FeedCard />
         </div>
       </div>
-    </div>
+    </>
   );
 }

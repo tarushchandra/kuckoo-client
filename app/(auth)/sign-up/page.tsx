@@ -4,10 +4,7 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import React from "react";
 import { useAuth } from "@/hooks/auth/auth";
 import Link from "next/link";
-import {
-  selectAuth,
-  selectGoogleButton,
-} from "@/redux/features/auth/authSlice";
+import { selectGoogleButton } from "@/redux/features/auth/authSlice";
 import Skeleton from "@/components/ui/skeleton";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,7 +19,6 @@ import {
   isUsernameExistQuery,
 } from "@/graphql/queries/user";
 import InputField from "@/components/input-field";
-import { useAppSelector } from "@/hooks/redux/redux";
 
 const signUpFormSchema = z.object({
   name: z
@@ -104,7 +100,7 @@ const SignUpPage: React.FC = () => {
       { user }
     );
     if (!createUserWithEmailAndPassword)
-      return toast.error("User could not register.");
+      return toast.error("User could not register. Try again later..");
 
     toast.success("Sign Up successful");
     router.push("/sign-in");
