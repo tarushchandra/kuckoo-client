@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  mutation createUserWithEmailAndPasswordMutation($user: SignUpFormInput!) {\n    createUserWithEmailAndPassword(user: $user)\n  }\n": types.CreateUserWithEmailAndPasswordMutationDocument,
     "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n": types.GetCustomUserTokenQueryDocument,
-    "\n  query GetCurrentUserQuery($username: String) {\n    getCurrentUser(username: $username) {\n      firstName\n      lastName\n      profileImageURL\n    }\n  }\n": types.GetCurrentUserQueryDocument,
+    "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      firstName\n      lastName\n      profileImageURL\n    }\n  }\n": types.GetUserQueryDocument,
     "\n  query GetSessionUserQuery {\n    getSessionUser {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetSessionUserQueryDocument,
     "\n  query GetAllUsersQuery {\n    getAllUsers {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetAllUsersQueryDocument,
     "\n  query IsUsernameExistQuery($username: String!) {\n    isUsernameExist(username: $username)\n  }\n": types.IsUsernameExistQueryDocument,
@@ -47,7 +47,7 @@ export function graphql(source: "\n  query getCustomUserTokenQuery($googleToken:
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetCurrentUserQuery($username: String) {\n    getCurrentUser(username: $username) {\n      firstName\n      lastName\n      profileImageURL\n    }\n  }\n"): (typeof documents)["\n  query GetCurrentUserQuery($username: String) {\n    getCurrentUser(username: $username) {\n      firstName\n      lastName\n      profileImageURL\n    }\n  }\n"];
+export function graphql(source: "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      firstName\n      lastName\n      profileImageURL\n    }\n  }\n"): (typeof documents)["\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      firstName\n      lastName\n      profileImageURL\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

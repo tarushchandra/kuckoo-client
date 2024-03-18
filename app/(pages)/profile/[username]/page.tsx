@@ -4,8 +4,8 @@ import { queryClient } from "@/clients/query";
 import FeedCard from "@/components/feed-card";
 import Skeleton from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/auth/auth";
-import { useCurrentUser } from "@/hooks/auth/user";
-import { selectAuth, selectUser } from "@/redux/features/auth/authSlice";
+import { useUser } from "@/hooks/auth/user";
+import { selectUser } from "@/redux/features/auth/authSlice";
 import { CalendarDays } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect } from "react";
@@ -18,11 +18,11 @@ interface ProfilePageProps {
 
 export default function ProfilePage({ params }: ProfilePageProps) {
   const { data: sessionUser } = useAuth(selectUser);
-  const currentUser = useCurrentUser(params.username);
+  const profileUser = useUser(params.username);
 
   useEffect(() => {
     return () => {
-      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     };
   }, [params.username]);
 
@@ -34,14 +34,14 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       <div className="mt-20">
         <div className="flex flex-col gap-4 px-4 py-2 border-b border-zinc-700">
           <div className="flex justify-between items-end">
-            {!currentUser ? (
+            {!profileUser ? (
               <Skeleton className="w-[140px] h-[140px] rounded-full" />
             ) : (
               <Image
                 className="rounded-full top-28 left-4 border-4 border-black"
                 src={
-                  currentUser?.profileImageURL
-                    ? currentUser.profileImageURL
+                  profileUser?.profileImageURL
+                    ? profileUser.profileImageURL
                     : ""
                 }
                 alt="user-image"
@@ -59,7 +59,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               </button>
             )}
           </div>
-          {!currentUser ? (
+          {!profileUser ? (
             <div className="flex flex-col gap-2">
               <Skeleton className="w-36 h-6" />
               <Skeleton className="w-28 h-4" />
@@ -67,7 +67,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           ) : (
             <div>
               <h1 className="text-xl font-bold">
-                {currentUser?.firstName} {currentUser?.lastName}
+                {profileUser?.firstName} {profileUser?.lastName}
               </h1>
               <h2 className="text-zinc-500 text-sm">@{params.username}</h2>
             </div>

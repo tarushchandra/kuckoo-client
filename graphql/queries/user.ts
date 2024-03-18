@@ -6,9 +6,9 @@ export const getCustomUserTokenQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export const getCurrentUserQuery = graphql(/* GraphQL */ `
-  query GetCurrentUserQuery($username: String) {
-    getCurrentUser(username: $username) {
+export const getUserQuery = graphql(/* GraphQL */ `
+  query GetUserQuery($username: String) {
+    getUser(username: $username) {
       firstName
       lastName
       profileImageURL
