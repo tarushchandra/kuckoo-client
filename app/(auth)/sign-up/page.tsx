@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { signUpFormRegEx } from "@/utils/regex";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { graphqlClient } from "@/clients/graphql";
+import { graphqlClient } from "@/lib/graphql";
 import toast from "react-hot-toast";
 import { createUserWithEmailAndPasswordMutation } from "@/graphql/mutations/user";
 import { useRouter } from "@/hooks/router/router";

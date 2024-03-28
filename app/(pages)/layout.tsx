@@ -20,7 +20,6 @@ export default function PagesLayout({
         <div className="grid grid-cols-12 h-screen w-[65%] mx-auto">
           <SideBar />
           <div className="col-span-6 flex flex-col border-x border-zinc-700 mr-6">
-            <Header />
             {children}
           </div>
           <ExploreBar />

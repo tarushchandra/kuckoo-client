@@ -9,9 +9,16 @@ export const getCustomUserTokenQuery = graphql(/* GraphQL */ `
 export const getUserQuery = graphql(/* GraphQL */ `
   query GetUserQuery($username: String) {
     getUser(username: $username) {
+      id
       firstName
       lastName
       profileImageURL
+      followers {
+        username
+      }
+      followings {
+        username
+      }
     }
   }
 `);
@@ -51,5 +58,47 @@ export const isUsernameExistQuery = graphql(/* GraphQL */ `
 export const isEmailExistQuery = graphql(/* GraphQL */ `
   query IsEmailExistQuery($email: String!) {
     isEmailExist(email: $email)
+  }
+`);
+
+export const getFollowersQuery = graphql(/* GraphQL */ `
+  query GetFollowersQuery($username: String) {
+    getUser(username: $username) {
+      followers {
+        id
+        firstName
+        lastName
+        username
+        email
+        profileImageURL
+        followers {
+          username
+        }
+      }
+    }
+  }
+`);
+
+export const getFollowingsQuery = graphql(/* GraphQL */ `
+  query GetFollowingsQuery($username: String) {
+    getUser(username: $username) {
+      followings {
+        id
+        firstName
+        lastName
+        username
+        email
+        profileImageURL
+        followers {
+          username
+        }
+      }
+    }
+  }
+`);
+
+export const getIsFollowingQuery = graphql(/* GraphQL */ `
+  query GetIsFollowingQuery($username: String!) {
+    isFollowing(username: $username)
   }
 `);

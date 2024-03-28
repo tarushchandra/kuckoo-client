@@ -1,5 +1,5 @@
 "use client";
-import { queryClient } from "@/clients/query";
+import { queryClient } from "@/lib/clients/query";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";

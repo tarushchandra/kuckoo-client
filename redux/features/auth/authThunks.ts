@@ -1,5 +1,5 @@
-import { graphqlClient } from "@/clients/graphql";
-import { queryClient } from "@/clients/query";
+import { graphqlClient } from "@/lib/clients/graphql";
+import { queryClient } from "@/lib/clients/query";
 import { User } from "@/gql/graphql";
 import { getCustomUserTokenQuery } from "@/graphql/queries/user";
 import { IsignInAction } from "@/hooks/auth/types";
