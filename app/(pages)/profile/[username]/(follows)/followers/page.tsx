@@ -5,10 +5,13 @@ import { useFollowers } from "@/hooks/auth/user";
 import { queryClient } from "@/lib/clients/query";
 import { useEffect } from "react";
 import { ProfilePageProps } from "../../page";
+import { useAuth } from "@/hooks/auth/auth";
+import { selectUser } from "@/redux/features/auth/authSlice";
 
 export default function FollowersPage({ params }: ProfilePageProps) {
   const { username } = params;
   const followers = useFollowers(username);
+  const { data: sessionUser } = useAuth(selectUser);
 
   useEffect(() => {
     return () => {
@@ -46,6 +49,9 @@ export default function FollowersPage({ params }: ProfilePageProps) {
             buttonClassName="px-4 py-2"
             key={follower?.id}
             user={follower}
+            showRemoveButton={true}
+            sessionUser={sessionUser}
+            profileUsername={username}
           />
         );
       })}

@@ -96,9 +96,3 @@ export const getFollowingsQuery = graphql(/* GraphQL */ `
     }
   }
 `);
-
-export const getIsFollowingQuery = graphql(/* GraphQL */ `
-  query GetIsFollowingQuery($username: String!) {
-    isFollowing(username: $username)
-  }
-`);

@@ -17,3 +17,9 @@ export const unfollowUserMutation = graphql(/* GraphQL */ `
     unfollowUser(to: $to)
   }
 `);
+
+export const removeFollowerMutation = graphql(/* GraphQL */ `
+  mutation RemoveFollower($userId: ID!) {
+    removeFollower(userId: $userId)
+  }
+`);

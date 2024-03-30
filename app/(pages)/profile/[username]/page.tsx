@@ -1,6 +1,6 @@
 import FeedCard from "@/components/feed-card";
 import Header from "@/components/header";
-import SocialButton from "@/components/social-button";
+import SocialButtons from "@/components/social-buttons";
 import { useUser } from "@/hooks/auth/user";
 import { CalendarDays } from "lucide-react";
 import Image from "next/image";
@@ -40,7 +40,10 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
               width={140}
               height={140}
             />
-            <SocialButton user={{ ...user, username }} className="px-4 py-2" />
+            <SocialButtons
+              user={{ ...user, username }}
+              className="px-4 py-2 text-md"
+            />
           </div>
           <div>
             <h1 className="text-xl font-bold">

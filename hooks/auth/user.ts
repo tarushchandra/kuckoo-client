@@ -1,7 +1,9 @@
 // "use client";
 
+import { User } from "@/gql/graphql";
 import {
   followUserMutation,
+  removeFollowerMutation,
   unfollowUserMutation,
 } from "@/graphql/mutations/user";
 import {
@@ -9,15 +11,12 @@ import {
   getUserQuery,
   getSessionUserQuery,
   getFollowingsQuery,
-  getIsFollowingQuery,
   getFollowersQuery,
 } from "@/graphql/queries/user";
 import { graphqlClient, graphqlEndPoint } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
-import { isClientSideRenderedPage } from "@/utils/isClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { print } from "graphql";
-import { useEffect } from "react";
 
 export const useSessionUser = async () => {
   const { getSessionUser } = await queryClient.fetchQuery({
@@ -52,12 +51,9 @@ export const useUser = async (username: string) => {
       query: print(getUserQuery),
       variables: { username },
     }),
-    next: {
-      tags: ["profile-user", username],
-    },
   });
   const data = await response.json();
-  return data?.data?.getUser;
+  return data?.data?.getUser as User;
 };
 
 export const useAllUsers = () => {
@@ -96,6 +92,16 @@ export const useUnfollowUser = async (userId: string) => {
     to: userId,
   });
   return unfollowUser;
+};
+
+export const useRemoveFollower = async (userId: string) => {
+  const { removeFollower } = await graphqlClient.request(
+    removeFollowerMutation,
+    {
+      userId,
+    }
+  );
+  return removeFollower;
 };
 
 // export const useIsFollowing = async (username: string) => {

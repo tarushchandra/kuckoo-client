@@ -2,18 +2,23 @@ import { User } from "@/gql/graphql";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import SocialButton from "./social-button";
+import SocialButton, { Button } from "./social-buttons";
 import mergeClasses from "@/utils/mergeClasses";
 
 interface UserCardProps {
   user: User;
   className?: string;
   buttonClassName?: string;
+  showRemoveButton?: boolean;
+  sessionUser?: User | null;
+  profileUsername?: string;
 }
 
 export const UserCard = (props: UserCardProps) => {
-  const { user, className, buttonClassName } = props;
+  const { user, className, buttonClassName, sessionUser, profileUsername } =
+    props;
   const { firstName, lastName, username, profileImageURL } = user;
+  const showRemoveButton = props.showRemoveButton || false;
 
   return (
     <div
@@ -38,7 +43,12 @@ export const UserCard = (props: UserCardProps) => {
           </div>
         </div>
       </Link>
-      <SocialButton user={{ ...user, username }} className={buttonClassName} />
+      <SocialButton
+        user={{ ...user, username }}
+        className={buttonClassName}
+        profileUsername={profileUsername}
+        showRemoveButton={showRemoveButton}
+      />
     </div>
   );
 };

@@ -16,6 +16,7 @@ const documents = {
     "\n  mutation createUserWithEmailAndPasswordMutation($user: SignUpFormInput!) {\n    createUserWithEmailAndPassword(user: $user)\n  }\n": types.CreateUserWithEmailAndPasswordMutationDocument,
     "\n  mutation FollowUserMutation($to: ID!) {\n    followUser(to: $to)\n  }\n": types.FollowUserMutationDocument,
     "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n": types.UnfollowUserMutationDocument,
+    "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
     "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n": types.GetCustomUserTokenQueryDocument,
     "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followers {\n        username\n      }\n      followings {\n        username\n      }\n    }\n  }\n": types.GetUserQueryDocument,
     "\n  query GetSessionUserQuery {\n    getSessionUser {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetSessionUserQueryDocument,
@@ -24,7 +25,6 @@ const documents = {
     "\n  query IsEmailExistQuery($email: String!) {\n    isEmailExist(email: $email)\n  }\n": types.IsEmailExistQueryDocument,
     "\n  query GetFollowersQuery($username: String) {\n    getUser(username: $username) {\n      followers {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n        followers {\n          username\n        }\n      }\n    }\n  }\n": types.GetFollowersQueryDocument,
     "\n  query GetFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      followings {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n        followers {\n          username\n        }\n      }\n    }\n  }\n": types.GetFollowingsQueryDocument,
-    "\n  query GetIsFollowingQuery($username: String!) {\n    isFollowing(username: $username)\n  }\n": types.GetIsFollowingQueryDocument,
 };
 
 /**
@@ -53,6 +53,10 @@ export function graphql(source: "\n  mutation FollowUserMutation($to: ID!) {\n  
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n"): (typeof documents)["\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n"): (typeof documents)["\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -85,10 +89,6 @@ export function graphql(source: "\n  query GetFollowersQuery($username: String) 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      followings {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n        followers {\n          username\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      followings {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n        followers {\n          username\n        }\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query GetIsFollowingQuery($username: String!) {\n    isFollowing(username: $username)\n  }\n"): (typeof documents)["\n  query GetIsFollowingQuery($username: String!) {\n    isFollowing(username: $username)\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
