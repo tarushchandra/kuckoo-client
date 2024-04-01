@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { signIn, signOut } from "./authThunks";
 import { User } from "@/gql/graphql";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/lib/redux/store";
 
 export type AuthStateValues =
   | IAuthState

@@ -25,6 +25,7 @@ const documents = {
     "\n  query IsEmailExistQuery($email: String!) {\n    isEmailExist(email: $email)\n  }\n": types.IsEmailExistQueryDocument,
     "\n  query GetFollowersQuery($username: String) {\n    getUser(username: $username) {\n      followers {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n        followers {\n          username\n        }\n      }\n    }\n  }\n": types.GetFollowersQueryDocument,
     "\n  query GetFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      followings {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n        followers {\n          username\n        }\n      }\n    }\n  }\n": types.GetFollowingsQueryDocument,
+    "\n  query GetRecommendedUsersQuery {\n    getRecommendedUsers {\n      id\n      firstName\n      lastName\n      username\n      email\n      profileImageURL\n    }\n  }\n": types.GetRecommendedUsersQueryDocument,
 };
 
 /**
@@ -89,6 +90,10 @@ export function graphql(source: "\n  query GetFollowersQuery($username: String) 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      followings {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n        followers {\n          username\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      followings {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n        followers {\n          username\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetRecommendedUsersQuery {\n    getRecommendedUsers {\n      id\n      firstName\n      lastName\n      username\n      email\n      profileImageURL\n    }\n  }\n"): (typeof documents)["\n  query GetRecommendedUsersQuery {\n    getRecommendedUsers {\n      id\n      firstName\n      lastName\n      username\n      email\n      profileImageURL\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

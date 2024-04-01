@@ -96,3 +96,16 @@ export const getFollowingsQuery = graphql(/* GraphQL */ `
     }
   }
 `);
+
+export const getRecommendedUsersQuery = graphql(/* GraphQL */ `
+  query GetRecommendedUsersQuery {
+    getRecommendedUsers {
+      id
+      firstName
+      lastName
+      username
+      email
+      profileImageURL
+    }
+  }
+`);

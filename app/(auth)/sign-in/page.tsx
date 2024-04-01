@@ -5,7 +5,7 @@ import React from "react";
 import { useAuth } from "@/hooks/auth/auth";
 import Link from "next/link";
 import Skeleton from "@/components/ui/skeleton";
-import { selectGoogleButton } from "@/redux/features/auth/authSlice";
+import { selectGoogleButton } from "@/lib/redux/features/auth/authSlice";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

@@ -2,7 +2,7 @@
 
 import AppLoading from "@/components/ui/app-loading";
 import { useAuth } from "@/hooks/auth/auth";
-import { selectAuth } from "@/redux/features/auth/authSlice";
+import { selectAuth } from "@/lib/redux/features/auth/authSlice";
 import { useRouter } from "@/hooks/router/router";
 import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";

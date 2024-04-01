@@ -1,11 +1,11 @@
-import { RootState } from "@/redux/store";
+import { RootState } from "@/lib/redux/store";
 import { useAppDispatch, useAppSelector } from "../redux/redux";
-import { signIn, signOut } from "@/redux/features/auth/authThunks";
+import { signIn, signOut } from "@/lib/redux/features/auth/authThunks";
 import { isClientSideRenderedPage } from "@/utils/isClient";
 import {
   AuthStateValues,
   updateGoogleButton,
-} from "@/redux/features/auth/authSlice";
+} from "@/lib/redux/features/auth/authSlice";
 import { useRouter } from "@/hooks/router/router";
 import { IsignInAction } from "./types";
 import { usePathname } from "next/navigation";

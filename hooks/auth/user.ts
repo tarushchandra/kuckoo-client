@@ -12,6 +12,7 @@ import {
   getSessionUserQuery,
   getFollowingsQuery,
   getFollowersQuery,
+  getRecommendedUsersQuery,
 } from "@/graphql/queries/user";
 import { graphqlClient, graphqlEndPoint } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
@@ -25,23 +26,6 @@ export const useSessionUser = async () => {
   });
   return { user: getSessionUser };
 };
-
-// export const useUser = (username: string) => {
-//   console.log("getUserQuery -", getUserQuery);
-
-//   const response = useQuery({
-//     queryKey: ["user"],
-//     queryFn: () => graphqlClient.request(getUserQuery, { username }),
-//   });
-
-//   useEffect(() => {
-//     return () => {
-//       queryClient.invalidateQueries({ queryKey: ["user"] });
-//     };
-//   }, [username]);
-
-//   return response.data?.getUser;
-// };
 
 export const useUser = async (username: string) => {
   const response = await fetch(graphqlEndPoint, {
@@ -104,34 +88,10 @@ export const useRemoveFollower = async (userId: string) => {
   return removeFollower;
 };
 
-// export const useIsFollowing = async (username: string) => {
-//   const response = await fetch(graphqlEndPoint, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       query: print(getIsFollowingQuery),
-//       variables: { username },
-//     }),
-//   });
-//   const data = await response.json();
-
-//   console.log("is following -", data);
-// };
-
-// const access_token = localStorage.getItem("access_token")
-
-// export const useFollowings = async (username: string) => {
-//   const res = await fetch(graphqlEndPoint, {
-//     method: "GET",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       query: getFollowingsQuery,
-//       variables: { username }, // Pass variables if needed
-//     }),
-//   });
-//   const data = await res.json();
-//   console.log(data);
-//   return data?.data?.getUser?.followings;
-// };
+export const useRecommendedUsers = () => {
+  const { data } = useQuery({
+    queryKey: ["recommended-users"],
+    queryFn: () => graphqlClient.request(getRecommendedUsersQuery),
+  });
+  return data?.getRecommendedUsers;
+};

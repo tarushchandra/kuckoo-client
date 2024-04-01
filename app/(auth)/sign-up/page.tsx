@@ -4,7 +4,7 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import React from "react";
 import { useAuth } from "@/hooks/auth/auth";
 import Link from "next/link";
-import { selectGoogleButton } from "@/redux/features/auth/authSlice";
+import { selectGoogleButton } from "@/lib/redux/features/auth/authSlice";
 import Skeleton from "@/components/ui/skeleton";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

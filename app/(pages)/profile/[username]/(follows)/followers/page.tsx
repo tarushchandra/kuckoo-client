@@ -6,7 +6,7 @@ import { queryClient } from "@/lib/clients/query";
 import { useEffect } from "react";
 import { ProfilePageProps } from "../../page";
 import { useAuth } from "@/hooks/auth/auth";
-import { selectUser } from "@/redux/features/auth/authSlice";
+import { selectUser } from "@/lib/redux/features/auth/authSlice";
 
 export default function FollowersPage({ params }: ProfilePageProps) {
   const { username } = params;

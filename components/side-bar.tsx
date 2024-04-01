@@ -6,7 +6,7 @@ import { BsTwitter } from "react-icons/bs";
 import { AiOutlineEllipsis } from "react-icons/ai";
 import { useAuth } from "@/hooks/auth/auth";
 import Skeleton from "./ui/skeleton";
-import { selectAuth } from "@/redux/features/auth/authSlice";
+import { selectAuth } from "@/lib/redux/features/auth/authSlice";
 import {
   Bell,
   Bookmark,
@@ -31,7 +31,7 @@ export const sidebarMenuItems: SideBarMenuI[] = [
     link: "/home",
   },
   {
-    title: "Explore",
+    title: "Search",
     icon: <Search />,
     link: "/search",
   },

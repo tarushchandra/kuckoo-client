@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import SideBar from "@/components/side-bar";
 import { AuthRoute } from "@/providers/AuthProvider";
-import Header from "@/components/header";
-import ExploreBar from "@/components/explore-bar";
+import ExploreBar from "../../components/explore-bar";
 
 export const metadata: Metadata = {
   title: "Twitter | Home",
@@ -19,7 +18,7 @@ export default function PagesLayout({
       <div className="overflow-y-scroll">
         <div className="grid grid-cols-12 h-screen w-[65%] mx-auto">
           <SideBar />
-          <div className="col-span-6 flex flex-col border-x border-zinc-700 mr-6">
+          <div className="col-span-6 flex flex-col border-x border-zinc-800 mr-6">
             {children}
           </div>
           <ExploreBar />

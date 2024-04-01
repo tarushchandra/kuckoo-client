@@ -10,13 +10,11 @@ interface UserCardProps {
   className?: string;
   buttonClassName?: string;
   showRemoveButton?: boolean;
-  sessionUser?: User | null;
   profileUsername?: string;
 }
 
 export const UserCard = (props: UserCardProps) => {
-  const { user, className, buttonClassName, sessionUser, profileUsername } =
-    props;
+  const { user, className, buttonClassName, profileUsername } = props;
   const { firstName, lastName, username, profileImageURL } = user;
   const showRemoveButton = props.showRemoveButton || false;
 

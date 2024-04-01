@@ -1,7 +1,7 @@
 "use client";
 import { User } from "@/gql/graphql";
 import { useAuth } from "@/hooks/auth/auth";
-import { selectUser } from "@/redux/features/auth/authSlice";
+import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import React, { useLayoutEffect, useState } from "react";
 import {
   useFollowUser,
