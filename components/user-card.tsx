@@ -42,7 +42,7 @@ export const UserCard = (props: UserCardProps) => {
         </div>
       </Link>
       <SocialButton
-        user={{ ...user, username }}
+        targetUser={{ ...user, username }}
         className={buttonClassName}
         profileUsername={profileUsername}
         showRemoveButton={showRemoveButton}

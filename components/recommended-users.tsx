@@ -1,11 +1,12 @@
 "use client";
-import { useAllUsers, useRecommendedUsers } from "@/hooks/auth/user";
+import { useRecommendedUsers } from "@/hooks/queries/user";
 import UserCard from "./user-card";
 import UserCardLoading from "./ui/user-card-loading";
+import Link from "next/link";
 
-export default function RecommendedUsers() {
+export default function RecommendedUsers(props: any) {
   const users = useRecommendedUsers();
-  // const users = useAllUsers();
+  console.log(users);
 
   return (
     <div className="bg-zinc-900 w-full rounded-2xl py-3 flex flex-col gap-3">
@@ -14,7 +15,7 @@ export default function RecommendedUsers() {
         {users ? (
           users.length > 0 ? (
             <>
-              {users.map((user) => (
+              {users.map((user: any) => (
                 <UserCard
                   key={user?.id}
                   user={user!}
@@ -22,14 +23,25 @@ export default function RecommendedUsers() {
                   buttonClassName="px-3 py-2 text-sm"
                 />
               ))}
-              <h1 className="text-sm px-4 text-[#1D9BF0] cursor-pointer hover:underline">
+              <Link
+                href="/explore/suggestions"
+                className="text-sm px-4 text-[#1D9BF0] cursor-pointer hover:underline"
+              >
                 Show more
-              </h1>
+              </Link>
             </>
           ) : (
-            <h1 className="text-center text-zinc-500">
-              Follow someone to start getting suggestions from us
-            </h1>
+            <>
+              <h1 className="text-center text-zinc-500">
+                Follow someone to start getting suggestions from us
+              </h1>
+              <Link
+                href="/explore/all-users"
+                className="text-sm px-4 text-[#1D9BF0] cursor-pointer hover:underline"
+              >
+                Explore users
+              </Link>
+            </>
           )
         ) : (
           Array.from({ length: 4 }, (_, index) => (

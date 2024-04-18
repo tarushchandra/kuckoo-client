@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/hooks/auth/auth";
+import { useAuth } from "@/hooks/auth";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import AppLoading from "@/components/ui/app-loading";
-import { useAuth } from "@/hooks/auth/auth";
+import { useAuth } from "@/hooks/auth";
 import { selectAuth } from "@/lib/redux/features/auth/authSlice";
-import { useRouter } from "@/hooks/router/router";
+import { useRouter } from "@/hooks/router";
 import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 

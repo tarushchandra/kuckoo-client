@@ -2,7 +2,7 @@
 
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import React from "react";
-import { useAuth } from "@/hooks/auth/auth";
+import { useAuth } from "@/hooks/auth";
 import Link from "next/link";
 import { selectGoogleButton } from "@/lib/redux/features/auth/authSlice";
 import Skeleton from "@/components/ui/skeleton";
@@ -10,10 +10,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { signUpFormRegEx } from "@/utils/regex";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { graphqlClient } from "@/lib/graphql";
+import { graphqlClient } from "@/lib/clients/graphql";
 import toast from "react-hot-toast";
 import { createUserWithEmailAndPasswordMutation } from "@/graphql/mutations/user";
-import { useRouter } from "@/hooks/router/router";
+import { useRouter } from "@/hooks/router";
 import {
   isEmailExistQuery,
   isUsernameExistQuery,

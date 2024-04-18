@@ -38,4 +38,36 @@ export default function HeaderOptions({ username }: { username: string }) {
       </div>
     );
   }
+
+  if (pathName.includes("explore")) {
+    const [option, setOption] = useState<number | null>(null);
+
+    useLayoutEffect(() => {
+      if (pathName.includes("suggestions")) setOption(0);
+      if (pathName.includes("all-users")) setOption(1);
+    }, [pathName]);
+
+    return (
+      <div className="flex text-sm text-zinc-500 font-semibold justify-around">
+        <Link
+          href={`/explore/suggestions`}
+          className={mergeClasses(
+            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-[#1D9BF0]",
+            option === 0 && "border-b text-white"
+          )}
+        >
+          Suggestions for you
+        </Link>
+        <Link
+          href={`/explore/all-users`}
+          className={mergeClasses(
+            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-[#1D9BF0]",
+            option === 1 && "border-b text-white"
+          )}
+        >
+          All Users
+        </Link>
+      </div>
+    );
+  }
 }

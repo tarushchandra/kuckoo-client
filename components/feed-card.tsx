@@ -22,7 +22,7 @@ const postButtons = [
 
 const FeedCard: React.FC = () => {
   return (
-    <div className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-700 transition-all p-3 hover:bg-zinc-900">
+    <div className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-800 transition-all p-3 hover:bg-zinc-900">
       <Image
         src={
           "https://media.licdn.com/dms/image/D5603AQEk1fpG7DDoCQ/profile-displayphoto-shrink_200_200/0/1702640584592?e=1714003200&v=beta&t=iuxdS8pY7FTUnu6Fo8GZios3L1tigP40X2WRC0Mz8Zo"

@@ -1,102 +1,92 @@
 "use client";
 import { User } from "@/gql/graphql";
-import { useAuth } from "@/hooks/auth/auth";
+import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
-import React, { useLayoutEffect, useState } from "react";
+import React from "react";
+import { usePathname } from "next/navigation";
+import mergeClasses from "@/utils/mergeClasses";
+import { useIsFollowing } from "@/hooks/queries/user";
+import Skeleton from "./ui/skeleton";
 import {
   useFollowUser,
   useRemoveFollower,
   useUnfollowUser,
-} from "@/hooks/auth/user";
-import { usePathname } from "next/navigation";
-import mergeClasses from "@/utils/mergeClasses";
-import revalidateProfileUser from "@/lib/actions/user";
-import { useRouter } from "@/hooks/router/router";
+} from "@/hooks/mutations/user";
 
 interface SocialButtonProps {
-  user: User;
+  targetUser: User;
   className?: string;
   showRemoveButton?: boolean;
   profileUsername?: string;
 }
 
-interface IremoveButton {
-  isLoading: boolean;
-  isSuccess: boolean;
-}
-
 export default function SocialButtons(props: SocialButtonProps) {
-  const { user, className, showRemoveButton, profileUsername } = props;
+  const { targetUser, className, showRemoveButton, profileUsername } = props;
   const { data: sessionUser } = useAuth(selectUser);
   const pathName = usePathname();
-  const [amIFollowing, setAmIFollowing] = useState<boolean | null>(null);
-  const [isFollowsButtonLoading, setIsFollowsButtonLoading] = useState(false);
-  const [removeButton, setRemoveButton] = useState<IremoveButton>({
-    isLoading: false,
-    isSuccess: false,
-  });
 
-  useLayoutEffect(() => {
-    if (sessionUser?.username === user.username) return;
+  const amIFollowing = useIsFollowing(sessionUser?.id!, targetUser.id);
+  const followUser = useFollowUser();
+  const unfollowUser = useUnfollowUser();
+  const removeFollower = useRemoveFollower();
 
-    const doIFollow = user.followers?.find(
-      (user) => user?.username === sessionUser?.username
-    );
-    if (!doIFollow) return setAmIFollowing(false);
-    setAmIFollowing(true);
-  }, [user.username, user.followers]);
+  if (sessionUser?.username === targetUser.username) return;
+  if (amIFollowing === undefined || amIFollowing === null) return;
 
-  const handleFollowUser = async (userId: string) => {
-    setIsFollowsButtonLoading(true);
-    const didIFollowed = await useFollowUser(userId);
-    if (didIFollowed) {
-      await revalidateProfileUser(sessionUser?.username!, user.username);
-      setAmIFollowing(true);
-    }
-    setIsFollowsButtonLoading(false);
+  // if (
+  //   showRemoveButton &&
+  //   sessionUser?.username === profileUsername &&
+  //   (amIFollowing === undefined || amIFollowing === null)
+  // ) {
+  //   return (
+  //     <div className="flex gap-2">
+  //       <Skeleton className="w-20 h-10 rounded-full" />
+  //       <Skeleton className="w-20 h-10 rounded-full" />
+  //     </div>
+  //   );
+  // }
+
+  // if (amIFollowing === undefined || amIFollowing === null) {
+  //   return <Skeleton className="w-28 h-10 rounded-full" />;
+  // }
+
+  const followsMutationPayload = {
+    sessionUserId: sessionUser?.id!,
+    targetUserId: targetUser.id,
+    sessionUsername: sessionUser?.username!,
+    targetUsername: targetUser.username,
   };
 
-  const handleUnfollowUser = async (userId: string) => {
-    setIsFollowsButtonLoading(true);
-    const didIUnfollowed = await useUnfollowUser(userId);
-    if (didIUnfollowed) {
-      await revalidateProfileUser(sessionUser?.username!, user.username);
-      setAmIFollowing(false);
-    }
-    setIsFollowsButtonLoading(false);
-  };
+  const handleFollowUser = async () =>
+    followUser.mutate(followsMutationPayload);
 
-  const handleRemoveFollower = async (userId: string) => {
-    if (removeButton.isSuccess) return;
-    setRemoveButton((btn) => ({ ...btn, isLoading: true }));
-    const didIRemoved = await useRemoveFollower(userId);
-    if (didIRemoved) {
-      await revalidateProfileUser(sessionUser?.username!, user.username);
-      setRemoveButton((btn) => ({ ...btn, isSuccess: true }));
-    }
-    setRemoveButton((btn) => ({ ...btn, isLoading: false }));
+  const handleUnfollowUser = () => unfollowUser.mutate(followsMutationPayload);
+
+  const handleRemoveFollower = () => {
+    if (removeFollower.isSuccess) return;
+    removeFollower.mutate(followsMutationPayload);
   };
 
   if (
     (pathName.includes("followers") || pathName.includes("followings")) &&
-    user.username === sessionUser?.username
+    targetUser.username === sessionUser?.username
   )
     return;
 
-  if (sessionUser?.username === user.username)
-    return <Button className={className}>Edit Profile</Button>;
+  if (sessionUser?.username === targetUser.username) return;
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 justify-start items-center">
       <>
         {amIFollowing ? (
           <Button
             className={mergeClasses(
               className,
-              isFollowsButtonLoading && "disabled:bg-zinc-400"
+              "bg-zinc-800 border border-zinc-700 hover:bg-zinc-900",
+              unfollowUser.isPending && "text-zinc-400 disabled:bg-zinc-900"
             )}
-            onClick={() => handleUnfollowUser(user.id)}
-            isLoading={isFollowsButtonLoading}
+            onClick={handleUnfollowUser}
+            isLoading={unfollowUser.isPending}
           >
             Unfollow
           </Button>
@@ -104,10 +94,11 @@ export default function SocialButtons(props: SocialButtonProps) {
           <Button
             className={mergeClasses(
               className,
-              isFollowsButtonLoading && "disabled:bg-zinc-400"
+              "bg-white text-black border border-zinc-400",
+              followUser.isPending && "text-zinc-900 disabled:bg-zinc-400"
             )}
-            onClick={() => handleFollowUser(user.id)}
-            isLoading={isFollowsButtonLoading}
+            onClick={handleFollowUser}
+            isLoading={followUser.isPending}
           >
             Follow
           </Button>
@@ -118,11 +109,12 @@ export default function SocialButtons(props: SocialButtonProps) {
           <Button
             className={mergeClasses(
               className,
-              removeButton.isSuccess &&
+              "bg-white text-black",
+              removeFollower.isSuccess &&
                 "bg-zinc-500 cursor-not-allowed hover:bg-zinc-500"
             )}
-            isLoading={removeButton.isLoading}
-            onClick={() => handleRemoveFollower(user.id)}
+            isLoading={removeFollower.isPending}
+            onClick={handleRemoveFollower}
           >
             Remove
           </Button>
@@ -150,7 +142,7 @@ export const Button = ({
       {...props}
       disabled={isLoading}
       className={mergeClasses(
-        "font-semibold text-sm bg-white text-black rounded-full transition-all hover:bg-zinc-200 disabled:cursor-wait",
+        "font-semibold text-sm rounded-full transition-all hover:bg-zinc-200 disabled:cursor-wait",
         className
       )}
     >

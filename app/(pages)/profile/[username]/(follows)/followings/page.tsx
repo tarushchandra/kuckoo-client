@@ -1,14 +1,19 @@
 "use client";
 import UserCardLoading from "@/components/ui/user-card-loading";
 import UserCard from "@/components/user-card";
-import { useFollowings } from "@/hooks/auth/user";
+import { useFollowings } from "@/hooks/queries/user";
 import { queryClient } from "@/lib/clients/query";
 import { useEffect } from "react";
 import { ProfilePageProps } from "../../page";
+import { useAuth } from "@/hooks/auth";
+import { selectUser } from "@/lib/redux/features/auth/authSlice";
 
 export default function MyFollowings({ params }: ProfilePageProps) {
   const { username } = params;
   const followings = useFollowings(username);
+  const { data: sessionUser } = useAuth(selectUser);
+
+  console.log("followings -", followings);
 
   useEffect(() => {
     return () => {
@@ -41,9 +46,9 @@ export default function MyFollowings({ params }: ProfilePageProps) {
     <div className="px-4 py-4 flex flex-col gap-2">
       {followings.map((following: any) => (
         <UserCard
-          className="px-10 py-3 rounded-lg hover:bg-zinc-900"
-          buttonClassName="px-4 py-2"
           key={following?.id}
+          className="px-10 py-3 rounded-lg hover:bg-zinc-950"
+          buttonClassName="px-4 py-2"
           user={following}
         />
       ))}

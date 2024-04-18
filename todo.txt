@@ -1,0 +1,1 @@
+- Implement mutual connections in followings page too.

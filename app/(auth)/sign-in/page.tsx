@@ -2,7 +2,7 @@
 
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import React from "react";
-import { useAuth } from "@/hooks/auth/auth";
+import { useAuth } from "@/hooks/auth";
 import Link from "next/link";
 import Skeleton from "@/components/ui/skeleton";
 import { selectGoogleButton } from "@/lib/redux/features/auth/authSlice";
@@ -38,7 +38,7 @@ const SignInPage: React.FC = () => {
 
   // Sign In with Email and Password
   const onSubmit = async (data: signInFormType) => {
-    signInAction({ user: data });
+    await signInAction({ user: data });
   };
 
   return (

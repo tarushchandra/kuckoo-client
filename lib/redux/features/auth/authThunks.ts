@@ -3,9 +3,9 @@ import { queryClient } from "@/lib/clients/query";
 import { User } from "@/gql/graphql";
 import { getCustomUserTokenQuery } from "@/graphql/queries/user";
 import { IsignInAction } from "@/hooks/auth/types";
-import { useSessionUser } from "@/hooks/auth/user";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
+import { getSessionUser } from "@/services/user";
 
 const getCustomUserToken = async (payload: IsignInAction) => {
   try {
@@ -45,7 +45,7 @@ export const signIn = createAsyncThunk(
       }
       await queryClient.invalidateQueries({ queryKey: ["session-user"] });
 
-      const { user } = await useSessionUser();
+      const { user } = await getSessionUser();
       if (!user) {
         localStorage.removeItem("__access__token");
         throw new Error("You are not authenticated");

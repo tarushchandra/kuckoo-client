@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { BsTwitter } from "react-icons/bs";
 import { AiOutlineEllipsis } from "react-icons/ai";
-import { useAuth } from "@/hooks/auth/auth";
+import { useAuth } from "@/hooks/auth";
 import Skeleton from "./ui/skeleton";
 import { selectAuth } from "@/lib/redux/features/auth/authSlice";
 import {

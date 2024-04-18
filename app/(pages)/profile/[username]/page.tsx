@@ -1,8 +1,11 @@
 import FeedCard from "@/components/feed-card";
 import Header from "@/components/header";
+import MutualFollowers from "@/components/mutual-followers";
+import MyFollows from "@/components/my-follows";
 import SocialButtons from "@/components/social-buttons";
-import { useUser } from "@/hooks/auth/user";
+import { getUser } from "@/services/user";
 import { CalendarDays } from "lucide-react";
+import { unstable_noStore as noStore } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -14,8 +17,11 @@ export interface ProfilePageProps {
 }
 
 export default async function UserProfilePage({ params }: ProfilePageProps) {
+  // noStore();
   const { username } = params;
-  const user = await useUser(username);
+  const user = await getUser(username);
+
+  // console.log("user -", user);
 
   return (
     <>
@@ -31,7 +37,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
         <div className="absolute -z-10 bg-zinc-700 w-full h-44" />
       </div>
       <div className="mt-20">
-        <div className="flex flex-col gap-4 px-4 py-2 border-b border-zinc-700">
+        <div className="flex flex-col gap-4 px-4 py-2 border-b border-zinc-800">
           <div className="flex justify-between items-end">
             <Image
               className="rounded-full top-28 left-4 border-4 border-black"
@@ -41,7 +47,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
               height={140}
             />
             <SocialButtons
-              user={{ ...user, username }}
+              targetUser={{ ...user, username }}
               className="px-4 py-2 text-md"
             />
           </div>
@@ -55,23 +61,9 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
             <CalendarDays size={20} />
             <h2>Joined March 2024</h2>
           </div>
-          <div className="text-zinc-500 text-sm flex gap-2">
-            <Link href={`/profile/${username}/followers`}>
-              <h3>
-                <span className="font-bold text-white">
-                  {user?.followers?.length}
-                </span>{" "}
-                Followers
-              </h3>
-            </Link>
-            <Link href={`/profile/${username}/followings`}>
-              <h3 className="cursor-pointer">
-                <span className="font-bold text-white">
-                  {user?.followings?.length}
-                </span>{" "}
-                Followings
-              </h3>
-            </Link>
+          <div className="flex flex-col gap-1">
+            <MyFollows targetUser={{ ...user, username }} />
+            <MutualFollowers myUsername={username} />
           </div>
         </div>
         <div>

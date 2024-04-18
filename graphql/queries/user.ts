@@ -13,12 +13,6 @@ export const getUserQuery = graphql(/* GraphQL */ `
       firstName
       lastName
       profileImageURL
-      followers {
-        username
-      }
-      followings {
-        username
-      }
     }
   }
 `);
@@ -45,6 +39,9 @@ export const getAllUsersQuery = graphql(/* GraphQL */ `
       username
       profileImageURL
       email
+      followers {
+        username
+      }
     }
   }
 `);
@@ -71,9 +68,6 @@ export const getFollowersQuery = graphql(/* GraphQL */ `
         username
         email
         profileImageURL
-        followers {
-          username
-        }
       }
     }
   }
@@ -89,11 +83,23 @@ export const getFollowingsQuery = graphql(/* GraphQL */ `
         username
         email
         profileImageURL
-        followers {
-          username
-        }
       }
     }
+  }
+`);
+
+export const getMutualFollowersQuery = graphql(/* GraphQL */ `
+  query GetMutualUsers($username: String!) {
+    getMutualFollowers(username: $username) {
+      username
+      profileImageURL
+    }
+  }
+`);
+
+export const getIsFollowingQuery = graphql(/* GraphQL */ `
+  query GetIsFollowingQuery($userId: String!) {
+    isFollowing(userId: $userId)
   }
 `);
 
@@ -106,6 +112,22 @@ export const getRecommendedUsersQuery = graphql(/* GraphQL */ `
       username
       email
       profileImageURL
+    }
+  }
+`);
+
+export const getTotalFollowersQuery = graphql(/* GraphQL */ `
+  query GetTotalFollowersQuery($username: String) {
+    getUser(username: $username) {
+      totalFollowers
+    }
+  }
+`);
+
+export const getTotalFollowingsQuery = graphql(/* GraphQL */ `
+  query GetTotalFollowingsQuery($username: String) {
+    getUser(username: $username) {
+      totalFollowings
     }
   }
 `);

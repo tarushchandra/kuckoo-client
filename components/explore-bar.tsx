@@ -5,8 +5,8 @@ import RecommendedUsers from "./recommended-users";
 const ExploreBar = () => {
   return (
     <div className="col-span-3">
-      <div className="mt-4 flex flex-col gap-4 sticky top-0">
-        {/* <div className="relative w-full">
+      <div className="mt-2 flex flex-col gap-4 sticky top-0">
+        {/* <div className="relative w-full mt-1">
           <Search
             size={22}
             className="text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2"
