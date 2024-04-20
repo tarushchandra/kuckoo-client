@@ -13,6 +13,12 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    staleTimes: {
+      dynamic: 0,
+      static: 180,
+    },
+  },
   // logging: {
   //   fetches: {
   //     fullUrl: true,

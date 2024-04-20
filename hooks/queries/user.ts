@@ -15,7 +15,6 @@ import {
   getTotalFollowingsQuery,
 } from "@/graphql/queries/user";
 import { followUserMutation } from "@/graphql/mutations/user";
-import revalidateProfileUser from "@/lib/actions/user";
 
 export const useAllUsers = () => {
   const response = useQuery({
@@ -30,13 +29,6 @@ export const useFollowers = (username: string) => {
     queryKey: ["followers"],
     queryFn: () => graphqlClient.request(getFollowersQuery, { username }),
   });
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["followers"] });
-    };
-  }, [username]);
-
   return response.data?.getUser?.followers;
 };
 
@@ -48,20 +40,12 @@ export const useFollowings = (username: string) => {
   return response.data?.getUser?.followings;
 };
 
-export const useIsFollowing = (sessionUserId: string, userId: string) => {
+export const useIsFollowing = (sessionUserId: string, targetUserId: string) => {
   const response = useQuery({
-    queryKey: [sessionUserId, "is-following", userId],
-    queryFn: () => graphqlClient.request(getIsFollowingQuery, { userId }),
+    queryKey: [sessionUserId, "is-following", targetUserId],
+    queryFn: () =>
+      graphqlClient.request(getIsFollowingQuery, { userId: targetUserId }),
   });
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({
-        queryKey: [sessionUserId, "is-following", userId],
-      });
-    };
-  }, [userId]);
-
   return response.data?.isFollowing;
 };
 

@@ -13,6 +13,8 @@ export const getUserQuery = graphql(/* GraphQL */ `
       firstName
       lastName
       profileImageURL
+      totalFollowers
+      totalFollowings
     }
   }
 `);

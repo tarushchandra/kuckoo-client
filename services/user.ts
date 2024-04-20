@@ -33,7 +33,7 @@ export const getUser = async (username: string) => {
     next: {
       tags: [`/profile/${username}`],
     },
-    // cache: "no-store",
+    cache: "no-store",
   });
   const data = await response.json();
   return data?.data?.getUser as User;

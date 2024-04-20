@@ -3,7 +3,7 @@ import {
   removeFollowerMutation,
   unfollowUserMutation,
 } from "@/graphql/mutations/user";
-import revalidateProfileUser from "@/lib/actions/user";
+import revalidateUserProfile from "@/lib/actions/user";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
 import { useMutation } from "@tanstack/react-query";
@@ -15,28 +15,23 @@ interface FollowsMutationPayload {
   targetUsername: string;
 }
 
+const onFollowsSuccess = async (variables: FollowsMutationPayload) => {
+  await queryClient.invalidateQueries({
+    queryKey: [variables.sessionUserId, "is-following", variables.targetUserId],
+  });
+  await revalidateUserProfile(variables.targetUsername);
+  await queryClient.invalidateQueries({
+    queryKey: ["recommended-users"],
+  });
+};
+
 export const useFollowUser = () => {
   return useMutation({
     mutationFn: (variables: FollowsMutationPayload) =>
       graphqlClient.request(followUserMutation, {
         to: variables.targetUserId,
       }),
-    onSuccess: async (data, variables) => {
-      await queryClient.invalidateQueries({
-        queryKey: [
-          variables.sessionUserId,
-          "is-following",
-          variables.targetUserId,
-        ],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["total-followers"],
-      });
-      // await revalidateProfileUser(
-      //   variables.sessionUsername,
-      //   variables.targetUsername
-      // );
-    },
+    onSuccess: async (data, variables) => onFollowsSuccess(variables),
   });
 };
 
@@ -46,22 +41,7 @@ export const useUnfollowUser = () => {
       graphqlClient.request(unfollowUserMutation, {
         to: variables.targetUserId,
       }),
-    onSuccess: async (data, variables) => {
-      await queryClient.invalidateQueries({
-        queryKey: [
-          variables.sessionUserId,
-          "is-following",
-          variables.targetUserId,
-        ],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["total-followers"],
-      });
-      // await revalidateProfileUser(
-      //   variables.sessionUsername,
-      //   variables.targetUsername
-      // );
-    },
+    onSuccess: async (data, variables) => onFollowsSuccess(variables),
   });
 };
 
@@ -71,18 +51,5 @@ export const useRemoveFollower = () => {
       graphqlClient.request(removeFollowerMutation, {
         userId: variables.targetUserId,
       }),
-    onSuccess: async (data, variables) => {
-      await queryClient.invalidateQueries({
-        queryKey: [
-          variables.targetUserId,
-          "is-following",
-          variables.sessionUserId,
-        ],
-      });
-      // await revalidateProfileUser(
-      //   variables.sessionUsername,
-      //   variables.targetUsername
-      // );
-    },
   });
 };

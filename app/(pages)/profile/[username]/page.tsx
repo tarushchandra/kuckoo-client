@@ -1,9 +1,9 @@
 import FeedCard from "@/components/feed-card";
 import Header from "@/components/header";
 import MutualFollowers from "@/components/mutual-followers";
-import MyFollows from "@/components/my-follows";
 import SocialButtons from "@/components/social-buttons";
 import { getUser } from "@/services/user";
+import { truncate } from "fs";
 import { CalendarDays } from "lucide-react";
 import { unstable_noStore as noStore } from "next/cache";
 import Image from "next/image";
@@ -62,7 +62,24 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
             <h2>Joined March 2024</h2>
           </div>
           <div className="flex flex-col gap-1">
-            <MyFollows targetUser={{ ...user, username }} />
+            <div className="text-zinc-500 text-sm flex gap-2">
+              <Link href={`/profile/${username}/followers`}>
+                <h3>
+                  <span className="font-bold text-white">
+                    {user.totalFollowers}
+                  </span>{" "}
+                  Followers
+                </h3>
+              </Link>
+              <Link href={`/profile/${username}/followings`}>
+                <h3 className="cursor-pointer">
+                  <span className="font-bold text-white">
+                    {user.totalFollowings}
+                  </span>{" "}
+                  Followings
+                </h3>
+              </Link>
+            </div>
             <MutualFollowers myUsername={username} />
           </div>
         </div>

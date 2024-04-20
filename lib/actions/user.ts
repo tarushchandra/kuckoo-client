@@ -14,25 +14,29 @@ import { revalidatePath, revalidateTag } from "next/cache";
     all the profile pages of the followings of the target user.
 */
 
-export default async function revalidateProfileUser(
-  sessionUsername: string,
-  targetUsername: string
-) {
-  console.log("users to revalide -");
-  console.log("sesssion user -", sessionUsername);
-  console.log("target user -", targetUsername);
+// export default async function revalidateProfileUser(
+//   sessionUsername: string,
+//   targetUsername: string
+// ) {
+//   console.log("users to revalide -");
+//   console.log("sesssion user -", sessionUsername);
+//   console.log("target user -", targetUsername);
 
-  revalidateTag(`/profile/${sessionUsername}`);
+//   revalidateTag(`/profile/${sessionUsername}`);
+//   revalidateTag(`/profile/${targetUsername}`);
+
+//   // targetUser.followings?.forEach((following) => {
+//   //   revalidateTag(`/profile/${following?.username}`);
+//   //   console.log(`reavalidated - /profile/${following?.username}`);
+//   // });
+
+//   /*
+//     - invalidates the profile user cache when any user is being followed
+//       or unfollowed from that particular profile user's followers list.
+//   */
+//   // if (profileUsername) revalidateTag(`/profile/${profileUsername}`);
+// }
+
+export default async function revalidateUserProfile(targetUsername: string) {
   revalidateTag(`/profile/${targetUsername}`);
-
-  // targetUser.followings?.forEach((following) => {
-  //   revalidateTag(`/profile/${following?.username}`);
-  //   console.log(`reavalidated - /profile/${following?.username}`);
-  // });
-
-  /* 
-    - invalidates the profile user cache when any user is being followed 
-      or unfollowed from that particular profile user's followers list.
-  */
-  // if (profileUsername) revalidateTag(`/profile/${profileUsername}`);
 }

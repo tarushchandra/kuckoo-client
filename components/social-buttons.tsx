@@ -30,6 +30,8 @@ export default function SocialButtons(props: SocialButtonProps) {
   const unfollowUser = useUnfollowUser();
   const removeFollower = useRemoveFollower();
 
+  // console.log(`amIFollowing ${targetUser.username} -`, amIFollowing);
+
   if (sessionUser?.username === targetUser.username) return;
   if (amIFollowing === undefined || amIFollowing === null) return;
 
@@ -94,7 +96,7 @@ export default function SocialButtons(props: SocialButtonProps) {
           <Button
             className={mergeClasses(
               className,
-              "bg-white text-black border border-zinc-400",
+              "bg-white text-black border border-zinc-400 hover:bg-zinc-200",
               followUser.isPending && "text-zinc-900 disabled:bg-zinc-400"
             )}
             onClick={handleFollowUser}
@@ -109,9 +111,9 @@ export default function SocialButtons(props: SocialButtonProps) {
           <Button
             className={mergeClasses(
               className,
-              "bg-white text-black",
+              "bg-red-600 hover:bg-red-700",
               removeFollower.isSuccess &&
-                "bg-zinc-500 cursor-not-allowed hover:bg-zinc-500"
+                "text-zinc-400 bg-red-950 cursor-not-allowed hover:bg-red-950"
             )}
             isLoading={removeFollower.isPending}
             onClick={handleRemoveFollower}
@@ -142,7 +144,7 @@ export const Button = ({
       {...props}
       disabled={isLoading}
       className={mergeClasses(
-        "font-semibold text-sm rounded-full transition-all hover:bg-zinc-200 disabled:cursor-wait",
+        "font-semibold text-sm rounded-full transition-all disabled:cursor-wait",
         className
       )}
     >

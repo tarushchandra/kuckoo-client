@@ -6,7 +6,7 @@ import { useTotalFollowers, useTotalFollowings } from "@/hooks/queries/user";
 import Skeleton from "./ui/skeleton";
 import { getTotalFollowers, getTotalFollowings } from "@/services/user";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export default async function MyFollows({ targetUser }: { targetUser: User }) {
   // const totalFollowers = useTotalFollowers(targetUser.username);
