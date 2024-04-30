@@ -11,8 +11,7 @@ import {
   getRecommendedUsersQuery,
   getMutualFollowersQuery,
   getIsFollowingQuery,
-  getTotalFollowersQuery,
-  getTotalFollowingsQuery,
+  getUserTweets,
 } from "@/graphql/queries/user";
 import { followUserMutation } from "@/graphql/mutations/user";
 
@@ -29,6 +28,12 @@ export const useFollowers = (username: string) => {
     queryKey: ["followers"],
     queryFn: () => graphqlClient.request(getFollowersQuery, { username }),
   });
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ["followers"] });
+    };
+  }, [username]);
   return response.data?.getUser?.followers;
 };
 
@@ -37,6 +42,13 @@ export const useFollowings = (username: string) => {
     queryKey: ["followings"],
     queryFn: () => graphqlClient.request(getFollowingsQuery, { username }),
   });
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ["followings"] });
+    };
+  }, [username]);
+
   return response.data?.getUser?.followings;
 };
 
@@ -45,6 +57,14 @@ export const useIsFollowing = (sessionUserId: string, targetUserId: string) => {
     queryKey: [sessionUserId, "is-following", targetUserId],
     queryFn: () =>
       graphqlClient.request(getIsFollowingQuery, { userId: targetUserId }),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({
+        queryKey: [sessionUserId, "is-following", targetUserId],
+      });
+    };
   });
   return response.data?.isFollowing;
 };
@@ -69,42 +89,6 @@ export const useRecommendedUsers = () => {
     queryFn: () => graphqlClient.request(getRecommendedUsersQuery),
   });
   return data?.getRecommendedUsers;
-};
-
-export const useTotalFollowers = (username: string) => {
-  const { data } = useQuery({
-    queryKey: ["total-followers"],
-    queryFn: () =>
-      graphqlClient.request(getTotalFollowersQuery, {
-        username,
-      }),
-  });
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["total-followers"] });
-    };
-  }, [username]);
-
-  return data?.getUser?.totalFollowers;
-};
-
-export const useTotalFollowings = (username: string) => {
-  const { data } = useQuery({
-    queryKey: ["total-followings"],
-    queryFn: () =>
-      graphqlClient.request(getTotalFollowingsQuery, {
-        username,
-      }),
-  });
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["total-followings"] });
-    };
-  }, [username]);
-
-  return data?.getUser?.totalFollowings;
 };
 
 // ------------------------------------------------------------------------

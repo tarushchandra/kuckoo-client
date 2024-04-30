@@ -1,14 +1,15 @@
-import FeedCard from "@/components/feed-card";
+import FeedCard from "@/components/tweet-card";
 import Header from "@/components/header";
 import MutualFollowers from "@/components/mutual-followers";
 import SocialButtons from "@/components/social-buttons";
+import TweetsFeed from "@/components/tweets-feed";
 import { getUser } from "@/services/user";
-import { truncate } from "fs";
 import { CalendarDays } from "lucide-react";
 import { unstable_noStore as noStore } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import dayjs from "dayjs";
 
 export interface ProfilePageProps {
   params: {
@@ -21,7 +22,11 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const { username } = params;
   const user = await getUser(username);
 
+  const dateJoined = dayjs(Number(user.createdAt));
+  const formattedDate = dateJoined.format("D, MMMM YYYY");
+
   // console.log("user -", user);
+  // console.log("dateJoined -", formattedDate);
 
   return (
     <>
@@ -30,7 +35,9 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
           <h1 className="text-lg font-semibold">
             {user?.firstName} {user?.lastName}
           </h1>
-          <h2 className="text-sm text-zinc-500">0 Posts</h2>
+          <h2 className="text-sm text-zinc-500">
+            {user.tweets?.length} Tweets
+          </h2>
         </div>
       </Header>
       <div className="relative">
@@ -59,14 +66,14 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
           </div>
           <div className="flex items-center gap-2 text-sm text-zinc-500">
             <CalendarDays size={20} />
-            <h2>Joined March 2024</h2>
+            <h2>Joined {formattedDate}</h2>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-zinc-500 text-sm flex gap-2">
               <Link href={`/profile/${username}/followers`}>
                 <h3>
                   <span className="font-bold text-white">
-                    {user.totalFollowers}
+                    {user.followersCount}
                   </span>{" "}
                   Followers
                 </h3>
@@ -74,7 +81,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
               <Link href={`/profile/${username}/followings`}>
                 <h3 className="cursor-pointer">
                   <span className="font-bold text-white">
-                    {user.totalFollowings}
+                    {user.followingsCount}
                   </span>{" "}
                   Followings
                 </h3>
@@ -83,22 +90,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
             <MutualFollowers myUsername={username} />
           </div>
         </div>
-        <div>
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-        </div>
+        <TweetsFeed targetUser={{ ...user, username }} />
       </div>
     </>
   );

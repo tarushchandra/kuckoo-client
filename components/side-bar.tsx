@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { BsTwitter } from "react-icons/bs";
 import { AiOutlineEllipsis } from "react-icons/ai";
@@ -17,6 +17,7 @@ import {
   User,
 } from "lucide-react";
 import Link from "next/link";
+import CreateTweetModal from "./create-tweet-modal";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -60,6 +61,7 @@ export const sidebarMenuItems: SideBarMenuI[] = [
 const SideBar: React.FC = () => {
   const { data: auth, signOutAction } = useAuth(selectAuth);
   const { user, isUserLoading } = auth;
+  const [isCreateTweetModalOpen, setIsCreateTweetModalOpen] = useState(false);
 
   return (
     <div className="col-span-3">
@@ -89,7 +91,10 @@ const SideBar: React.FC = () => {
                 );
               })}
             </div>
-            <button className="bg-[#1D9BF0] w-full py-4 text-lg font-semibold rounded-full transition-all hover:bg-[#1993e6] active:scale-[0.95]">
+            <button
+              onClick={() => setIsCreateTweetModalOpen(true)}
+              className="bg-[#1D9BF0] w-full py-4 text-lg font-semibold rounded-full transition-all hover:bg-[#1993e6] active:scale-[0.95]"
+            >
               Tweet
             </button>
           </div>
@@ -129,6 +134,14 @@ const SideBar: React.FC = () => {
           </div>
         )}
       </div>
+      <>
+        {isCreateTweetModalOpen && (
+          <CreateTweetModal
+            sessionUser={user!}
+            setIsCreateTweetModalOpen={setIsCreateTweetModalOpen}
+          />
+        )}
+      </>
     </div>
   );
 };

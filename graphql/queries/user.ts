@@ -13,8 +13,12 @@ export const getUserQuery = graphql(/* GraphQL */ `
       firstName
       lastName
       profileImageURL
-      totalFollowers
-      totalFollowings
+      followersCount
+      followingsCount
+      createdAt
+      tweets {
+        id
+      }
     }
   }
 `);
@@ -118,18 +122,30 @@ export const getRecommendedUsersQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export const getTotalFollowersQuery = graphql(/* GraphQL */ `
-  query GetTotalFollowersQuery($username: String) {
+export const getUserTweets = graphql(/* GraphQL */ `
+  query GetUserTweetsQuery($username: String) {
     getUser(username: $username) {
-      totalFollowers
+      tweets {
+        id
+        content
+        createdAt
+      }
     }
   }
 `);
 
-export const getTotalFollowingsQuery = graphql(/* GraphQL */ `
-  query GetTotalFollowingsQuery($username: String) {
-    getUser(username: $username) {
-      totalFollowings
-    }
-  }
-`);
+// export const getTotalFollowersQuery = graphql(/* GraphQL */ `
+//   query GetTotalFollowersQuery($username: String) {
+//     getUser(username: $username) {
+//       totalFollowers
+//     }
+//   }
+// `);
+
+// export const getTotalFollowingsQuery = graphql(/* GraphQL */ `
+//   query GetTotalFollowingsQuery($username: String) {
+//     getUser(username: $username) {
+//       totalFollowings
+//     }
+//   }
+// `);

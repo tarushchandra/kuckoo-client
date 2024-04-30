@@ -13,12 +13,15 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n  mutation CreateTweet($payload: TweetInput!) {\n    createTweet(payload: $payload)\n  }\n": types.CreateTweetDocument,
+    "\n  mutation DeleteTweet($tweetId: ID!) {\n    deleteTweet(tweetId: $tweetId)\n  }\n": types.DeleteTweetDocument,
+    "\n  mutation UpdateTweet($tweetId: ID!, $content: String!) {\n    updateTweet(tweetId: $tweetId, content: $content)\n  }\n": types.UpdateTweetDocument,
     "\n  mutation createUserWithEmailAndPasswordMutation($user: SignUpFormInput!) {\n    createUserWithEmailAndPassword(user: $user)\n  }\n": types.CreateUserWithEmailAndPasswordMutationDocument,
     "\n  mutation FollowUserMutation($to: ID!) {\n    followUser(to: $to)\n  }\n": types.FollowUserMutationDocument,
     "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n": types.UnfollowUserMutationDocument,
     "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
     "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n": types.GetCustomUserTokenQueryDocument,
-    "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      totalFollowers\n      totalFollowings\n    }\n  }\n": types.GetUserQueryDocument,
+    "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweets {\n        id\n      }\n    }\n  }\n": types.GetUserQueryDocument,
     "\n  query GetSessionUserQuery {\n    getSessionUser {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetSessionUserQueryDocument,
     "\n  query GetAllUsersQuery {\n    getAllUsers {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n      followers {\n        username\n      }\n    }\n  }\n": types.GetAllUsersQueryDocument,
     "\n  query IsUsernameExistQuery($username: String!) {\n    isUsernameExist(username: $username)\n  }\n": types.IsUsernameExistQueryDocument,
@@ -28,8 +31,7 @@ const documents = {
     "\n  query GetMutualUsers($username: String!) {\n    getMutualFollowers(username: $username) {\n      username\n      profileImageURL\n    }\n  }\n": types.GetMutualUsersDocument,
     "\n  query GetIsFollowingQuery($userId: String!) {\n    isFollowing(userId: $userId)\n  }\n": types.GetIsFollowingQueryDocument,
     "\n  query GetRecommendedUsersQuery {\n    getRecommendedUsers {\n      id\n      firstName\n      lastName\n      username\n      email\n      profileImageURL\n    }\n  }\n": types.GetRecommendedUsersQueryDocument,
-    "\n  query GetTotalFollowersQuery($username: String) {\n    getUser(username: $username) {\n      totalFollowers\n    }\n  }\n": types.GetTotalFollowersQueryDocument,
-    "\n  query GetTotalFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      totalFollowings\n    }\n  }\n": types.GetTotalFollowingsQueryDocument,
+    "\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        createdAt\n      }\n    }\n  }\n": types.GetUserTweetsQueryDocument,
 };
 
 /**
@@ -46,6 +48,18 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateTweet($payload: TweetInput!) {\n    createTweet(payload: $payload)\n  }\n"): (typeof documents)["\n  mutation CreateTweet($payload: TweetInput!) {\n    createTweet(payload: $payload)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteTweet($tweetId: ID!) {\n    deleteTweet(tweetId: $tweetId)\n  }\n"): (typeof documents)["\n  mutation DeleteTweet($tweetId: ID!) {\n    deleteTweet(tweetId: $tweetId)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateTweet($tweetId: ID!, $content: String!) {\n    updateTweet(tweetId: $tweetId, content: $content)\n  }\n"): (typeof documents)["\n  mutation UpdateTweet($tweetId: ID!, $content: String!) {\n    updateTweet(tweetId: $tweetId, content: $content)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -69,7 +83,7 @@ export function graphql(source: "\n  query getCustomUserTokenQuery($googleToken:
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      totalFollowers\n      totalFollowings\n    }\n  }\n"): (typeof documents)["\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      totalFollowers\n      totalFollowings\n    }\n  }\n"];
+export function graphql(source: "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweets {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweets {\n        id\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -109,11 +123,7 @@ export function graphql(source: "\n  query GetRecommendedUsersQuery {\n    getRe
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetTotalFollowersQuery($username: String) {\n    getUser(username: $username) {\n      totalFollowers\n    }\n  }\n"): (typeof documents)["\n  query GetTotalFollowersQuery($username: String) {\n    getUser(username: $username) {\n      totalFollowers\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query GetTotalFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      totalFollowings\n    }\n  }\n"): (typeof documents)["\n  query GetTotalFollowingsQuery($username: String) {\n    getUser(username: $username) {\n      totalFollowings\n    }\n  }\n"];
+export function graphql(source: "\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        createdAt\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
