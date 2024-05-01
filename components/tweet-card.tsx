@@ -39,6 +39,7 @@ interface TweetCardProps {
   tweet: {
     id: string;
     content: string;
+    imageURL: string;
     createdAt: string;
     author: User;
   };
@@ -47,7 +48,7 @@ interface TweetCardProps {
 
 const TweetCard: React.FC<TweetCardProps> = (props) => {
   const { tweet, sessionUser } = props;
-  const { id, content, createdAt, author } = tweet;
+  const { id, content, createdAt, author, imageURL } = tweet;
   const { firstName, lastName, username } = author;
   const formattedCreatedAt = dayjs(Number(createdAt)).fromNow();
 
@@ -98,7 +99,18 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
                 )}
               </div>
             </div>
-            <p className="text-sm">{content}</p>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm">{content}</p>
+              {imageURL && (
+                <Image
+                  src={imageURL}
+                  alt="tweet-image"
+                  className="rounded-xl w-full h-full border border-zinc-800"
+                  width={600}
+                  height={600}
+                />
+              )}
+            </div>
           </div>
           <div className="text-zinc-500 flex justify-between px-10 pt-1">
             {postButtons.map((btn) => {

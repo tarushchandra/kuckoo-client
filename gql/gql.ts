@@ -20,6 +20,8 @@ const documents = {
     "\n  mutation FollowUserMutation($to: ID!) {\n    followUser(to: $to)\n  }\n": types.FollowUserMutationDocument,
     "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n": types.UnfollowUserMutationDocument,
     "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
+    "\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n": types.GetSignedUrlForUploadingImageQueryDocument,
+    "\n  query getSignedURLForAccessingImageQuery($key: String!) {\n    getSignedURLForAccessingImage(key: $key)\n  }\n": types.GetSignedUrlForAccessingImageQueryDocument,
     "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n": types.GetCustomUserTokenQueryDocument,
     "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweets {\n        id\n      }\n    }\n  }\n": types.GetUserQueryDocument,
     "\n  query GetSessionUserQuery {\n    getSessionUser {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetSessionUserQueryDocument,
@@ -31,7 +33,7 @@ const documents = {
     "\n  query GetMutualUsers($username: String!) {\n    getMutualFollowers(username: $username) {\n      username\n      profileImageURL\n    }\n  }\n": types.GetMutualUsersDocument,
     "\n  query GetIsFollowingQuery($userId: String!) {\n    isFollowing(userId: $userId)\n  }\n": types.GetIsFollowingQueryDocument,
     "\n  query GetRecommendedUsersQuery {\n    getRecommendedUsers {\n      id\n      firstName\n      lastName\n      username\n      email\n      profileImageURL\n    }\n  }\n": types.GetRecommendedUsersQueryDocument,
-    "\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        createdAt\n      }\n    }\n  }\n": types.GetUserTweetsQueryDocument,
+    "\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        imageURL\n        createdAt\n      }\n    }\n  }\n": types.GetUserTweetsQueryDocument,
 };
 
 /**
@@ -79,6 +81,14 @@ export function graphql(source: "\n  mutation RemoveFollower($userId: ID!) {\n  
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n"): (typeof documents)["\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query getSignedURLForAccessingImageQuery($key: String!) {\n    getSignedURLForAccessingImage(key: $key)\n  }\n"): (typeof documents)["\n  query getSignedURLForAccessingImageQuery($key: String!) {\n    getSignedURLForAccessingImage(key: $key)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n"): (typeof documents)["\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -123,7 +133,7 @@ export function graphql(source: "\n  query GetRecommendedUsersQuery {\n    getRe
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        createdAt\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        imageURL\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserTweetsQuery($username: String) {\n    getUser(username: $username) {\n      tweets {\n        id\n        content\n        imageURL\n        createdAt\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

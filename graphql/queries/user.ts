@@ -128,6 +128,7 @@ export const getUserTweets = graphql(/* GraphQL */ `
       tweets {
         id
         content
+        imageURL
         createdAt
       }
     }

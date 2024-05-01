@@ -19,7 +19,7 @@ export default function TweetCardLoading() {
           <Skeleton className="w-6/6 h-3" />
           <Skeleton className="w-3/6 h-3" />
         </div>
-        <Skeleton className="w-full h-52 rounded-2xl" />
+        <Skeleton className="w-full h-72 rounded-xl" />
         <div className="flex justify-between px-10">
           <Skeleton className="w-6 h-4 rounded-full" />
           <Skeleton className="w-6 h-4 rounded-full" />

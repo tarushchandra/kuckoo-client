@@ -6,15 +6,64 @@ import Image from "next/image";
 import { Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
 import { useCreateTweet } from "@/hooks/mutations/tweet";
+import {
+  getSignedURLforAccessingImage,
+  getSignedURLforUploadingImage,
+} from "@/services/tweet";
+import toast from "react-hot-toast";
+import Skeleton from "@/components/ui/skeleton";
 
 export default function HomePage() {
   const { data: sessionUser } = useAuth(selectUser);
-  const [textContent, setTextContent] = useState("");
   const createTweetMutation = useCreateTweet(sessionUser?.username!);
+  const [textContent, setTextContent] = useState("");
+  const [uploadedImageURL, setUploadedImageURL] = useState("");
+  const [isImageUploading, setIsImageUploading] = useState(false);
+
+  const handleSelectImage = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+
+    input.addEventListener("change", async () => {
+      const file = input.files?.item(0);
+      if (!file) return;
+
+      setIsImageUploading(true);
+
+      const PUTSignedURL = await getSignedURLforUploadingImage({
+        imageName: file.name.split(".")[0],
+        imageType: file.type.split("/")[1],
+      });
+      if (!PUTSignedURL) return;
+
+      await fetch(PUTSignedURL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
+      });
+      toast.success("Uploaded");
+
+      const PUTSignedURLObject = new URL(PUTSignedURL);
+      const { origin, pathname } = PUTSignedURLObject;
+      const GETUrl = origin + pathname;
+
+      setUploadedImageURL(GETUrl);
+      setIsImageUploading(false);
+    });
+
+    input.click();
+  };
 
   const handleCreateTweet = async () => {
-    await createTweetMutation.mutateAsync({ content: textContent });
+    await createTweetMutation.mutateAsync({
+      content: textContent,
+      imageURL: uploadedImageURL,
+    });
     setTextContent("");
+    setUploadedImageURL("");
   };
 
   return (
@@ -30,7 +79,7 @@ export default function HomePage() {
             className="rounded-full"
           />
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <textarea
             name="tweet-input"
             id="tweet-input"
@@ -41,8 +90,31 @@ export default function HomePage() {
             onChange={(e) => setTextContent(e.target.value)}
             value={textContent}
           />
-          <div className="flex justify-between items-center">
-            <ImageIcon className="text-[#1D9BF0] cursor-pointer" size={20} />
+          <>
+            {isImageUploading ? (
+              <Skeleton className="w-full h-80 rounded-lg" />
+            ) : (
+              uploadedImageURL && (
+                <div className="w-full h-80">
+                  <Image
+                    src={uploadedImageURL}
+                    alt="uploaded-image"
+                    className="rounded-lg w-full h-full object-cover"
+                    width={600}
+                    height={600}
+                  />
+                </div>
+              )
+            )}
+          </>
+          <div className="flex justify-between items-center py-1">
+            <div className="rounded-full cursor-pointer p-[0.4rem] transition-all hover:bg-[#051f30]">
+              <ImageIcon
+                className="text-[#1D9BF0]"
+                size={20}
+                onClick={handleSelectImage}
+              />
+            </div>
             <button
               onClick={handleCreateTweet}
               disabled={createTweetMutation.isPending}
