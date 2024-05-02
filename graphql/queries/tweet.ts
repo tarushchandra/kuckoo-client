@@ -5,9 +5,3 @@ export const getSignedURLForUploadingImageQuery = graphql(/* GraphQL */ `
     getSignedURLForUploadingImage(payload: $payload)
   }
 `);
-
-export const getSignedURLForAccessingImageQuery = graphql(/* GraphQL */ `
-  query getSignedURLForAccessingImageQuery($key: String!) {
-    getSignedURLForAccessingImage(key: $key)
-  }
-`);

@@ -33,15 +33,15 @@ export default function Modal({ children, wrapperId, onClose }: ModalProps) {
   if (!wrapperElement) return null;
 
   return createPortal(
-    <div className="transition-all duration-1000 ease-in-out overflow-hidden">
+    <>
       <div
         onClick={onClose}
-        className="fixed left-0 top-0 w-screen h-screen bg-black opacity-90 z-50 transition-opacity duration-1000 ease-in-out"
+        className="fixed left-0 top-0 w-screen h-screen bg-black opacity-90 z-50"
       />
-      <div className="fixed left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 z-[1000] rounded-lg bg-black border border-zinc-800 transition-all transform duration-1000 ease-in-out">
+      <div className="fixed left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 z-[1000] rounded-lg bg-black border border-zinc-800">
         {children}
       </div>
-    </div>,
+    </>,
     wrapperElement
   );
 }
