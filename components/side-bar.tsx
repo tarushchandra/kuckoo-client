@@ -137,7 +137,6 @@ const SideBar: React.FC = () => {
       <>
         {isCreateTweetModalOpen && (
           <CreateTweetModal
-            sessionUser={user!}
             setIsCreateTweetModalOpen={setIsCreateTweetModalOpen}
           />
         )}

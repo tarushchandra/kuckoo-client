@@ -1,19 +1,8 @@
 import { getSignedURLforUploadingImage } from "@/services/tweet";
-import { useState } from "react";
 import toast from "react-hot-toast";
 
-export const useSelectAndUploadImage = () => {
-  const [uploadedImageURL, setUploadedImageURL] = useState("");
-
-  return {
-    uploadedImageURL,
-    setUploadedImageURL,
-    handleSelectAndUploadImage,
-  };
-};
-
-const handleSelectAndUploadImage = (
-  setUploadedImageURL: (str: string) => void
+export const handleSelectAndUploadImage = (
+  setImageURL: (str: string) => void
 ) => {
   const input = document.createElement("input");
   input.setAttribute("type", "file");
@@ -43,7 +32,7 @@ const handleSelectAndUploadImage = (
     const { origin, pathname } = PUTSignedURLObject;
     const GETUrl = origin + pathname;
 
-    setUploadedImageURL(GETUrl);
+    setImageURL(GETUrl);
     toast.success("Uploaded", { id: "upload" });
   });
 

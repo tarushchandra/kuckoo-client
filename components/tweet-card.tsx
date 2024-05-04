@@ -14,6 +14,7 @@ import React, { useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import DeleteTweetModal from "./delete-tweet-modal";
 import EditTweetModal from "./edit-tweet-modal";
+import Link from "next/link";
 
 dayjs.extend(relativeTime);
 
@@ -58,20 +59,25 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
   return (
     <>
       <div className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-800 transition-all p-3 hover:bg-zinc-900">
-        <Image
-          src={tweet.author.profileImageURL!}
-          alt="user-image"
-          className="rounded-full"
-          width={40}
-          height={40}
-        />
+        <Link href={`/profile/${username}`}>
+          <Image
+            src={tweet.author.profileImageURL!}
+            alt="user-image"
+            className="rounded-full transition-all hover:opacity-90"
+            width={40}
+            height={40}
+          />
+        </Link>
         <div className="flex flex-col gap-2 w-full">
           <div className="flex flex-col gap-[0.1rem]">
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
-                <h1 className="font-semibold">
+                <Link
+                  href={`/profile/${username}`}
+                  className="font-semibold hover:underline"
+                >
                   {firstName} {lastName}
-                </h1>
+                </Link>
                 <div className="flex items-center gap-2 text-zinc-500 text-sm">
                   <span>@{username}</span>
                   <div className="bg-zinc-500 w-1 h-1 rounded-full" />
@@ -131,8 +137,7 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
 
       {isEditTweetModalOpen && (
         <EditTweetModal
-          tweetId={id}
-          textContent={content}
+          tweet={tweet}
           sessionUser={sessionUser}
           setIsEditTweetModalOpen={setIsEditTweetModalOpen}
         />

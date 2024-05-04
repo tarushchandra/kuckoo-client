@@ -13,7 +13,7 @@ export const deleteTweetMutation = graphql(/* GraphQL */ `
 `);
 
 export const updateTweetMutation = graphql(/* GraphQL */ `
-  mutation UpdateTweet($tweetId: ID!, $content: String!) {
-    updateTweet(tweetId: $tweetId, content: $content)
+  mutation UpdateTweet($tweetId: ID!, $payload: TweetInput!) {
+    updateTweet(tweetId: $tweetId, payload: $payload)
   }
 `);

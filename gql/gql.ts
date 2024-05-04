@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  mutation CreateTweet($payload: TweetInput!) {\n    createTweet(payload: $payload)\n  }\n": types.CreateTweetDocument,
     "\n  mutation DeleteTweet($tweetId: ID!) {\n    deleteTweet(tweetId: $tweetId)\n  }\n": types.DeleteTweetDocument,
-    "\n  mutation UpdateTweet($tweetId: ID!, $content: String!) {\n    updateTweet(tweetId: $tweetId, content: $content)\n  }\n": types.UpdateTweetDocument,
+    "\n  mutation UpdateTweet($tweetId: ID!, $payload: TweetInput!) {\n    updateTweet(tweetId: $tweetId, payload: $payload)\n  }\n": types.UpdateTweetDocument,
     "\n  mutation createUserWithEmailAndPasswordMutation($user: SignUpFormInput!) {\n    createUserWithEmailAndPassword(user: $user)\n  }\n": types.CreateUserWithEmailAndPasswordMutationDocument,
     "\n  mutation FollowUserMutation($to: ID!) {\n    followUser(to: $to)\n  }\n": types.FollowUserMutationDocument,
     "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n": types.UnfollowUserMutationDocument,
@@ -61,7 +61,7 @@ export function graphql(source: "\n  mutation DeleteTweet($tweetId: ID!) {\n    
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation UpdateTweet($tweetId: ID!, $content: String!) {\n    updateTweet(tweetId: $tweetId, content: $content)\n  }\n"): (typeof documents)["\n  mutation UpdateTweet($tweetId: ID!, $content: String!) {\n    updateTweet(tweetId: $tweetId, content: $content)\n  }\n"];
+export function graphql(source: "\n  mutation UpdateTweet($tweetId: ID!, $payload: TweetInput!) {\n    updateTweet(tweetId: $tweetId, payload: $payload)\n  }\n"): (typeof documents)["\n  mutation UpdateTweet($tweetId: ID!, $payload: TweetInput!) {\n    updateTweet(tweetId: $tweetId, payload: $payload)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
