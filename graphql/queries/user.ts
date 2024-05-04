@@ -122,7 +122,7 @@ export const getRecommendedUsersQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export const getUserTweets = graphql(/* GraphQL */ `
+export const getUserTweetsQuery = graphql(/* GraphQL */ `
   query GetUserTweetsQuery($username: String) {
     getUser(username: $username) {
       tweets {

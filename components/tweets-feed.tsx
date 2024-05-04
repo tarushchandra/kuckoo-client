@@ -2,27 +2,31 @@
 
 import React from "react";
 import TweetCard from "./tweet-card";
-import { User } from "@/gql/graphql";
+import { Tweet, User } from "@/gql/graphql";
 import TweetCardLoading from "./ui/tweet-card-loading";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
-import { useUserTweets } from "@/hooks/queries/tweet";
+import { useTweetsFeed, useUserTweets } from "@/hooks/queries/tweet";
 
 interface TweetsFeedProps {
-  targetUser: User;
+  targetUser?: User;
 }
 
 export default function TweetsFeed(props: TweetsFeedProps) {
   const { targetUser } = props;
   const { data: sessionUser } = useAuth(selectUser);
-  const tweets = useUserTweets(targetUser.username);
+
+  let tweets: any = [];
+  if (targetUser) {
+    tweets = useUserTweets(targetUser.username);
+  } else {
+    tweets = useTweetsFeed(sessionUser?.username!);
+  }
 
   if (!tweets)
     return Array.from({ length: 4 }, (_, index) => (
       <TweetCardLoading key={index} />
     ));
-
-  tweets.sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt));
 
   return (
     <div>
@@ -30,7 +34,7 @@ export default function TweetsFeed(props: TweetsFeedProps) {
         tweets.map((tweet: any) => (
           <TweetCard
             key={tweet.id}
-            tweet={{ ...tweet, author: targetUser }}
+            tweet={{ ...tweet, author: targetUser ? targetUser : tweet.author }}
             sessionUser={sessionUser!}
           />
         ))

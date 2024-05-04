@@ -5,3 +5,20 @@ export const getSignedURLForUploadingImageQuery = graphql(/* GraphQL */ `
     getSignedURLForUploadingImage(payload: $payload)
   }
 `);
+
+export const getTweetsFeedQuery = graphql(/* GraphQL */ `
+  query GetTweetsFeed {
+    getTweetsFeed {
+      id
+      content
+      imageURL
+      createdAt
+      author {
+        firstName
+        lastName
+        username
+        profileImageURL
+      }
+    }
+  }
+`);

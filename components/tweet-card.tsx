@@ -78,9 +78,9 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
                   <span>{formattedCreatedAt}</span>
                 </div>
               </div>
-              <div className="flex gap-1">
+              <>
                 {sessionUser.username === author.username && (
-                  <>
+                  <div className="flex gap-1">
                     <div
                       className="bg-white text-black p-1 rounded-full transition-all hover:bg-zinc-200"
                       title="Edit this tweet"
@@ -95,9 +95,9 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
                     >
                       <Trash2 size={15} className="transition-all text-white" />
                     </div>
-                  </>
+                  </div>
                 )}
-              </div>
+              </>
             </div>
             <div className="flex flex-col gap-2">
               <p className="text-sm">{content}</p>
