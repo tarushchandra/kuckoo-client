@@ -15,6 +15,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import DeleteTweetModal from "./delete-tweet-modal";
 import EditTweetModal from "./edit-tweet-modal";
 import Link from "next/link";
+import PostTweetModal, { MODE } from "./post-tweet-modal";
 
 dayjs.extend(relativeTime);
 
@@ -136,10 +137,10 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
       </div>
 
       {isEditTweetModalOpen && (
-        <EditTweetModal
+        <PostTweetModal
+          mode={MODE.EDIT_TWEET}
+          onClose={() => setIsEditTweetModalOpen(false)}
           tweet={tweet}
-          sessionUser={sessionUser}
-          setIsEditTweetModalOpen={setIsEditTweetModalOpen}
         />
       )}
 

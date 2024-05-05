@@ -8,17 +8,13 @@ import Image from "next/image";
 import { useState } from "react";
 import mergeClasses from "@/utils/mergeClasses";
 import { Tweet } from "@/gql/graphql";
-
-export enum MODE {
-  CREATE_TWEET,
-  EDIT_TWEET,
-}
+import { MODE } from "./post-tweet-modal";
 
 interface PostTweetProps {
   mode: MODE;
   onClose?: () => void;
   tweet?: Tweet;
-  showCancelButton: boolean;
+  showCancelButton?: boolean;
   containerClassName?: string;
   buttonClassName?: string;
 }
@@ -26,7 +22,7 @@ interface PostTweetProps {
 export default function PostTweet(props: PostTweetProps) {
   const {
     onClose,
-    showCancelButton,
+    showCancelButton = true,
     containerClassName,
     buttonClassName,
     mode,

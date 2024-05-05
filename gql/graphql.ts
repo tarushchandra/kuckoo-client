@@ -131,7 +131,7 @@ export type SignUpFormInput = {
 export type Tweet = {
   __typename?: 'Tweet';
   author?: Maybe<User>;
-  content: Scalars['String']['output'];
+  content?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   imageURL?: Maybe<Scalars['String']['output']>;
@@ -224,7 +224,7 @@ export type GetSignedUrlForUploadingImageQueryQuery = { __typename?: 'Query', ge
 export type GetTweetsFeedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTweetsFeedQuery = { __typename?: 'Query', getTweetsFeed?: Array<{ __typename?: 'Tweet', id: string, content: string, imageURL?: string | null, createdAt: string, author?: { __typename?: 'User', firstName: string, lastName?: string | null, username: string, profileImageURL?: string | null } | null } | null> | null };
+export type GetTweetsFeedQuery = { __typename?: 'Query', getTweetsFeed?: Array<{ __typename?: 'Tweet', id: string, content?: string | null, imageURL?: string | null, createdAt: string, author?: { __typename?: 'User', firstName: string, lastName?: string | null, username: string, profileImageURL?: string | null } | null } | null> | null };
 
 export type GetCustomUserTokenQueryQueryVariables = Exact<{
   googleToken?: InputMaybe<Scalars['String']['input']>;
@@ -303,7 +303,7 @@ export type GetUserTweetsQueryQueryVariables = Exact<{
 }>;
 
 
-export type GetUserTweetsQueryQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', tweets?: Array<{ __typename?: 'Tweet', id: string, content: string, imageURL?: string | null, createdAt: string } | null> | null } | null };
+export type GetUserTweetsQueryQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', tweets?: Array<{ __typename?: 'Tweet', id: string, content?: string | null, imageURL?: string | null, createdAt: string } | null> | null } | null };
 
 
 export const CreateTweetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateTweet"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"payload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TweetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTweet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"payload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"payload"}}}]}]}}]} as unknown as DocumentNode<CreateTweetMutation, CreateTweetMutationVariables>;

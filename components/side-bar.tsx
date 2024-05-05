@@ -7,17 +7,9 @@ import { AiOutlineEllipsis } from "react-icons/ai";
 import { useAuth } from "@/hooks/auth";
 import Skeleton from "./ui/skeleton";
 import { selectAuth } from "@/lib/redux/features/auth/authSlice";
-import {
-  Bell,
-  Bookmark,
-  Home,
-  Mail,
-  Search,
-  Twitter,
-  User,
-} from "lucide-react";
+import { Bell, Bookmark, Home, Mail, Search, User } from "lucide-react";
 import Link from "next/link";
-import CreateTweetModal from "./create-tweet-modal";
+import PostTweetModal, { MODE } from "./post-tweet-modal";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -136,8 +128,9 @@ const SideBar: React.FC = () => {
       </div>
       <>
         {isCreateTweetModalOpen && (
-          <CreateTweetModal
-            setIsCreateTweetModalOpen={setIsCreateTweetModalOpen}
+          <PostTweetModal
+            mode={MODE.CREATE_TWEET}
+            onClose={() => setIsCreateTweetModalOpen(false)}
           />
         )}
       </>
