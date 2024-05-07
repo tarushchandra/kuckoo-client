@@ -19,6 +19,10 @@ export const getTweetsFeedQuery = graphql(/* GraphQL */ `
         username
         profileImageURL
       }
+      tweetEngagement {
+        likesCount
+        isTweetLikedBySessionUser
+      }
     }
   }
 `);

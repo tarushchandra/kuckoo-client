@@ -130,23 +130,11 @@ export const getUserTweetsQuery = graphql(/* GraphQL */ `
         content
         imageURL
         createdAt
+        tweetEngagement {
+          likesCount
+          isTweetLikedBySessionUser
+        }
       }
     }
   }
 `);
-
-// export const getTotalFollowersQuery = graphql(/* GraphQL */ `
-//   query GetTotalFollowersQuery($username: String) {
-//     getUser(username: $username) {
-//       totalFollowers
-//     }
-//   }
-// `);
-
-// export const getTotalFollowingsQuery = graphql(/* GraphQL */ `
-//   query GetTotalFollowingsQuery($username: String) {
-//     getUser(username: $username) {
-//       totalFollowings
-//     }
-//   }
-// `);

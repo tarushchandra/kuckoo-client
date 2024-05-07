@@ -6,10 +6,11 @@ import { BsTwitter } from "react-icons/bs";
 import { AiOutlineEllipsis } from "react-icons/ai";
 import { useAuth } from "@/hooks/auth";
 import Skeleton from "./ui/skeleton";
-import { selectAuth } from "@/lib/redux/features/auth/authSlice";
+import { selectAuth, selectUser } from "@/lib/redux/features/auth/authSlice";
 import { Bell, Bookmark, Home, Mail, Search, User } from "lucide-react";
 import Link from "next/link";
 import PostTweetModal, { MODE } from "./post-tweet-modal";
+import SignOutModal from "./signout-modal";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -51,9 +52,10 @@ export const sidebarMenuItems: SideBarMenuI[] = [
 ];
 
 const SideBar: React.FC = () => {
-  const { data: auth, signOutAction } = useAuth(selectAuth);
-  const { user, isUserLoading } = auth;
+  const { data: sessionUser } = useAuth(selectUser);
+
   const [isCreateTweetModalOpen, setIsCreateTweetModalOpen] = useState(false);
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
 
   return (
     <div className="col-span-3">
@@ -72,7 +74,7 @@ const SideBar: React.FC = () => {
                     key={item.title}
                     href={
                       item.link === "/profile"
-                        ? `/profile/${user?.username}`
+                        ? `/profile/${sessionUser?.username}`
                         : item.link
                     }
                     className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
@@ -91,47 +93,46 @@ const SideBar: React.FC = () => {
             </button>
           </div>
         </div>
-        {!isUserLoading ? (
-          <div
-            onClick={signOutAction}
-            className="flex justify-between items-center cursor-pointer px-4 py-3 mr-2 transition-all rounded-full hover:bg-zinc-900"
-          >
-            <div className="flex gap-3 items-center">
-              <Image
-                src={user?.profileImageURL ? user.profileImageURL : ""}
-                alt="user-image"
-                width={45}
-                height={45}
-                className="rounded-full"
-              />
-              <div className="flex flex-col text-sm">
-                <span className="font-semibold">
-                  {user ? user.firstName + " " + user.lastName : ""}
-                </span>
-                <span className="text-zinc-500">@{user?.username}</span>
-              </div>
+
+        <div
+          onClick={() => setIsSignOutModalOpen(true)}
+          className="flex justify-between items-center cursor-pointer px-4 py-3 mr-2 transition-all rounded-full hover:bg-zinc-900"
+        >
+          <div className="flex gap-3 items-center">
+            <Image
+              src={
+                sessionUser?.profileImageURL ? sessionUser.profileImageURL : ""
+              }
+              alt="user-image"
+              width={45}
+              height={45}
+              className="rounded-full"
+            />
+            <div className="flex flex-col text-sm">
+              <span className="font-semibold">
+                {sessionUser
+                  ? sessionUser.firstName + " " + sessionUser.lastName
+                  : ""}
+              </span>
+              <span className="text-zinc-500">@{sessionUser?.username}</span>
             </div>
-            <AiOutlineEllipsis className="text-xl" />
           </div>
-        ) : (
-          <div className="flex justify-between items-center mr-2 px-4 py-3 rounded-full">
-            <div className="flex gap-3">
-              <Skeleton className="w-12 h-12 rounded-full" />
-              <div className="flex flex-col gap-2 justify-center">
-                <Skeleton className="w-32 h-4" />
-                <Skeleton className="w-28 h-4" />
-              </div>
-            </div>
-            <Skeleton className="w-4 h-4 rounded-full" />
-          </div>
-        )}
+          <AiOutlineEllipsis className="text-xl" />
+        </div>
       </div>
+
       <>
         {isCreateTweetModalOpen && (
           <PostTweetModal
             mode={MODE.CREATE_TWEET}
             onClose={() => setIsCreateTweetModalOpen(false)}
           />
+        )}
+      </>
+
+      <>
+        {isSignOutModalOpen && (
+          <SignOutModal onClose={() => setIsSignOutModalOpen(false)} />
         )}
       </>
     </div>

@@ -23,7 +23,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const user = await getUser(username);
 
   const dateJoined = dayjs(Number(user.createdAt));
-  const formattedDate = dateJoined.format("D, MMMM YYYY");
+  const formattedDate = dateJoined.format("MMMM D, YYYY");
 
   // console.log("user -", user);
   // console.log("dateJoined -", formattedDate);

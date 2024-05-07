@@ -1,5 +1,5 @@
 "use client";
-import { User } from "@/gql/graphql";
+import { TweetEngagement as TweetEnagementType, User } from "@/gql/graphql";
 import dayjs from "dayjs";
 import {
   Bookmark,
@@ -13,9 +13,14 @@ import Image from "next/image";
 import React, { useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import DeleteTweetModal from "./delete-tweet-modal";
-import EditTweetModal from "./edit-tweet-modal";
 import Link from "next/link";
 import PostTweetModal, { MODE } from "./post-tweet-modal";
+import {
+  useDislikeTweet,
+  useLikeTweet,
+} from "@/hooks/mutations/tweet-engagement";
+import mergeClasses from "@/utils/mergeClasses";
+import TweetEngagement from "./tweet-engagement";
 
 dayjs.extend(relativeTime);
 
@@ -44,13 +49,14 @@ interface TweetCardProps {
     imageURL: string;
     createdAt: string;
     author: User;
+    tweetEngagement: TweetEnagementType | null;
   };
   sessionUser: User;
 }
 
 const TweetCard: React.FC<TweetCardProps> = (props) => {
   const { tweet, sessionUser } = props;
-  const { id, content, createdAt, author, imageURL } = tweet;
+  const { id, content, createdAt, author, imageURL, tweetEngagement } = tweet;
   const { firstName, lastName, username } = author;
   const formattedCreatedAt = dayjs(Number(createdAt)).fromNow();
 
@@ -59,7 +65,10 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
 
   return (
     <>
-      <div className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-800 transition-all p-3 hover:bg-zinc-900">
+      <Link
+        href={`/tweet/${id}`}
+        className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-800 transition-all p-3 hover:bg-zinc-950"
+      >
         <Link href={`/profile/${username}`}>
           <Image
             src={tweet.author.profileImageURL!}
@@ -109,32 +118,21 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
             <div className="flex flex-col gap-2">
               <p className="text-sm">{content}</p>
               {imageURL && (
-                <Image
-                  src={imageURL}
-                  alt="tweet-image"
-                  className="rounded-xl w-full h-full border border-zinc-800"
-                  width={600}
-                  height={600}
-                />
+                <div>
+                  <Image
+                    src={imageURL}
+                    alt="tweet-image"
+                    className="rounded-xl w-full h-full border border-zinc-800 object-cover"
+                    width={640}
+                    height={360}
+                  />
+                </div>
               )}
             </div>
           </div>
-          <div className="text-zinc-500 flex justify-between px-10 pt-1">
-            {postButtons.map((btn) => {
-              return (
-                <div
-                  key={btn.id}
-                  className={`flex gap-1 justify-center items-center`}
-                >
-                  <span>{<btn.Icon size={17} />}</span>
-                  <h1 className="text-xs">0</h1>
-                </div>
-              );
-            })}
-            <Bookmark size={17} />
-          </div>
+          <TweetEngagement tweet={tweet} tweetEngagement={tweetEngagement} />
         </div>
-      </div>
+      </Link>
 
       {isEditTweetModalOpen && (
         <PostTweetModal
@@ -156,3 +154,17 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
 };
 
 export default TweetCard;
+
+{
+  /* {postButtons.map((btn) => {
+              return (
+                <div
+                  key={btn.id}
+                  className="flex gap-1 justify-center items-center"
+                >
+                  <span>{<btn.Icon size={17} />}</span>
+                  <h1 className="text-xs">0</h1>
+                </div>
+              );
+            })} */
+}
