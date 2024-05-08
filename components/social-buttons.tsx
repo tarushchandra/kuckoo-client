@@ -38,7 +38,7 @@ export default function SocialButtons(props: SocialButtonProps) {
   // console.log(`amIFollowing ${targetUser.username} -`, amIFollowing);
 
   if (sessionUser?.username === targetUser.username) return;
-  if (amIFollowing === undefined || amIFollowing === null) return;
+  // if (amIFollowing === undefined || amIFollowing === null) return;
 
   // if (
   //   showRemoveButton &&
@@ -56,6 +56,23 @@ export default function SocialButtons(props: SocialButtonProps) {
   // if (amIFollowing === undefined || amIFollowing === null) {
   //   return <Skeleton className="w-28 h-10 rounded-full" />;
   // }
+
+  if (
+    showRemoveButton &&
+    sessionUser?.username === profileUsername &&
+    (amIFollowing === undefined || amIFollowing === null)
+  ) {
+    return (
+      <div className="flex gap-2">
+        <Skeleton className="w-20 h-10 rounded-full" />
+        <Skeleton className="w-20 h-10 rounded-full" />
+      </div>
+    );
+  }
+
+  if (amIFollowing === undefined || amIFollowing === null) {
+    return <h1 className="text-sm text-zinc-600 animate-pulse">Loading...</h1>;
+  }
 
   const followsMutationPayload = {
     sessionUserId: sessionUser?.id!,

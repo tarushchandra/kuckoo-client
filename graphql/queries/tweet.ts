@@ -20,10 +20,6 @@ export const getTweetQuery = graphql(/* GraphQL */ `
         username
         profileImageURL
       }
-      tweetEngagement {
-        likesCount
-        isTweetLikedBySessionUser
-      }
     }
   }
 `);
@@ -45,6 +41,16 @@ export const getTweetsFeedQuery = graphql(/* GraphQL */ `
         likesCount
         isTweetLikedBySessionUser
       }
+    }
+  }
+`);
+
+export const getMutualTweetLikersQuery = graphql(/* GraphQL */ `
+  query GetMutualLikers($tweetId: String!) {
+    getMutualLikers(tweetId: $tweetId) {
+      id
+      username
+      profileImageURL
     }
   }
 `);

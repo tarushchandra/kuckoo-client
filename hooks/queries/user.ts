@@ -11,7 +11,6 @@ import {
   getRecommendedUsersQuery,
   getMutualFollowersQuery,
   getIsFollowingQuery,
-  getUserTweets,
 } from "@/graphql/queries/user";
 import { followUserMutation } from "@/graphql/mutations/user";
 
@@ -71,13 +70,15 @@ export const useIsFollowing = (sessionUserId: string, targetUserId: string) => {
 
 export const useMutualFollowers = (username: string) => {
   const { data } = useQuery({
-    queryKey: ["mutual-followers"],
+    queryKey: ["mutual-followers", username],
     queryFn: () => graphqlClient.request(getMutualFollowersQuery, { username }),
   });
 
   useEffect(() => {
     return () => {
-      queryClient.removeQueries({ queryKey: ["mutual-followers"] });
+      queryClient.invalidateQueries({
+        queryKey: ["mutual-followers", username],
+      });
     };
   }, [username]);
   return data?.getMutualFollowers;

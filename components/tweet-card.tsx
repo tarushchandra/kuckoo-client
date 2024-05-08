@@ -50,10 +50,7 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
 
   return (
     <>
-      <Link
-        href={`/tweet/${id}`}
-        className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-800 transition-all p-3 hover:bg-zinc-950"
-      >
+      <div className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-800 transition-all p-3 hover:bg-zinc-950">
         <Link href={`/profile/${username}`}>
           <Image
             src={tweet.author.profileImageURL!}
@@ -64,7 +61,7 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
           />
         </Link>
         <div className="flex flex-col gap-2 w-full">
-          <div className="flex flex-col gap-[0.1rem]">
+          <Link href={`/tweet/${id}`} className="flex flex-col gap-[0.1rem]">
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
                 <Link
@@ -94,10 +91,10 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
                 </div>
               )}
             </div>
-          </div>
-          <TweetEngagement tweet={tweet} tweetEngagement={tweetEngagement} />
+          </Link>
+          <TweetEngagement tweet={tweet} tweetEngagement={tweetEngagement!} />
         </div>
-      </Link>
+      </div>
     </>
   );
 };

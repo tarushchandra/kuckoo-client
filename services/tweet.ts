@@ -1,9 +1,10 @@
 import { ImageUploadInput } from "@/gql/graphql";
 import {
   getSignedURLForUploadingImageQuery,
-  getSignedURLForAccessingImageQuery,
+  getTweetQuery,
 } from "@/graphql/queries/tweet";
-import { graphqlClient } from "@/lib/clients/graphql";
+import { graphqlClient, graphqlEndPoint } from "@/lib/clients/graphql";
+import { print } from "graphql";
 
 export const getSignedURLforUploadingImage = async (
   payload: ImageUploadInput
@@ -17,10 +18,19 @@ export const getSignedURLforUploadingImage = async (
   return response.getSignedURLForUploadingImage;
 };
 
-export const getSignedURLforAccessingImage = async (key: string) => {
-  const response = await graphqlClient.request(
-    getSignedURLForAccessingImageQuery,
-    { key }
-  );
-  return response.getSignedURLForAccessingImage;
+export const getTweet = async (tweetId: string) => {
+  const response = await fetch(graphqlEndPoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: print(getTweetQuery),
+      variables: { tweetId },
+    }),
+    next: {
+      tags: [`/tweet/${tweetId}`],
+    },
+    cache: "no-store",
+  });
+  const data = await response.json();
+  return data.data.getTweet;
 };
