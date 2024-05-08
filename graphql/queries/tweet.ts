@@ -6,6 +6,28 @@ export const getSignedURLForUploadingImageQuery = graphql(/* GraphQL */ `
   }
 `);
 
+export const getTweetQuery = graphql(/* GraphQL */ `
+  query GetTweet($tweetId: String!) {
+    getTweet(tweetId: $tweetId) {
+      content
+      id
+      imageURL
+      createdAt
+      author {
+        id
+        firstName
+        lastName
+        username
+        profileImageURL
+      }
+      tweetEngagement {
+        likesCount
+        isTweetLikedBySessionUser
+      }
+    }
+  }
+`);
+
 export const getTweetsFeedQuery = graphql(/* GraphQL */ `
   query GetTweetsFeed {
     getTweetsFeed {

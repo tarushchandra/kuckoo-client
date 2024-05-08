@@ -9,8 +9,8 @@ export default function SignOutModal({ onClose }: { onClose: () => void }) {
     <Modal wrapperId="signout-modal" onClose={onClose}>
       <div className="p-8 flex flex-col gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-center">Sign Out?</h1>
-          <h2 className="text-zinc-400">Do you really want to sign out?</h2>
+          {/* <h1 className="text-2xl font-bold text-center">Sign Out?</h1> */}
+          <h2 className="text-zinc-400">Do you want to sign out?</h2>
         </div>
         <div className="flex gap-2 justify-center">
           <button

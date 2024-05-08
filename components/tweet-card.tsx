@@ -1,25 +1,13 @@
 "use client";
 import { TweetEngagement as TweetEnagementType, User } from "@/gql/graphql";
 import dayjs from "dayjs";
-import {
-  Bookmark,
-  FilePenLine,
-  Heart,
-  MessageCircle,
-  Send,
-  Trash2,
-} from "lucide-react";
+import { FilePenLine, Heart, MessageCircle, Send, Trash2 } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import DeleteTweetModal from "./delete-tweet-modal";
 import Link from "next/link";
 import PostTweetModal, { MODE } from "./post-tweet-modal";
-import {
-  useDislikeTweet,
-  useLikeTweet,
-} from "@/hooks/mutations/tweet-engagement";
-import mergeClasses from "@/utils/mergeClasses";
 import TweetEngagement from "./tweet-engagement";
 
 dayjs.extend(relativeTime);
@@ -60,9 +48,6 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
   const { firstName, lastName, username } = author;
   const formattedCreatedAt = dayjs(Number(createdAt)).fromNow();
 
-  const [isDeleteTweetModalOpen, setIsDeleteTweetModalOpen] = useState(false);
-  const [isEditTweetModalOpen, setIsEditTweetModalOpen] = useState(false);
-
   return (
     <>
       <Link
@@ -94,26 +79,6 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
                   <span>{formattedCreatedAt}</span>
                 </div>
               </div>
-              <>
-                {sessionUser.username === author.username && (
-                  <div className="flex gap-1">
-                    <div
-                      className="bg-white text-black p-1 rounded-full transition-all hover:bg-zinc-200"
-                      title="Edit this tweet"
-                      onClick={() => setIsEditTweetModalOpen(true)}
-                    >
-                      <FilePenLine size={15} />
-                    </div>
-                    <div
-                      className="bg-red-700 p-1 rounded-full transition-all hover:bg-red-800"
-                      title="Delete this tweet?"
-                      onClick={() => setIsDeleteTweetModalOpen(true)}
-                    >
-                      <Trash2 size={15} className="transition-all text-white" />
-                    </div>
-                  </div>
-                )}
-              </>
             </div>
             <div className="flex flex-col gap-2">
               <p className="text-sm">{content}</p>
@@ -133,22 +98,6 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
           <TweetEngagement tweet={tweet} tweetEngagement={tweetEngagement} />
         </div>
       </Link>
-
-      {isEditTweetModalOpen && (
-        <PostTweetModal
-          mode={MODE.EDIT_TWEET}
-          onClose={() => setIsEditTweetModalOpen(false)}
-          tweet={tweet}
-        />
-      )}
-
-      {isDeleteTweetModalOpen && (
-        <DeleteTweetModal
-          tweetId={id}
-          sessionUsername={sessionUser.username}
-          setIsDeleteTweetModalOpen={setIsDeleteTweetModalOpen}
-        />
-      )}
     </>
   );
 };

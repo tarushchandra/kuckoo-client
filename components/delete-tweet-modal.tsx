@@ -1,15 +1,17 @@
 import { useDeleteTweet } from "@/hooks/mutations/tweet";
 import Modal from "./ui/modal";
+import { useAuth } from "@/hooks/auth";
+import { selectUser } from "@/lib/redux/features/auth/authSlice";
 
 interface DeleteTweetModalProps {
   setIsDeleteTweetModalOpen: (isOpen: boolean) => void;
   tweetId: string;
-  sessionUsername: string;
 }
 
 export default function DeleteTweetModal(props: DeleteTweetModalProps) {
-  const { setIsDeleteTweetModalOpen, sessionUsername, tweetId } = props;
-  const deleteTweetMutation = useDeleteTweet(sessionUsername);
+  const { setIsDeleteTweetModalOpen, tweetId } = props;
+  const { data: sessionUser } = useAuth(selectUser);
+  const deleteTweetMutation = useDeleteTweet(sessionUser?.username!);
 
   return (
     <Modal

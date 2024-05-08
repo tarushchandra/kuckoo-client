@@ -23,6 +23,7 @@ const documents = {
     "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n": types.UnfollowUserMutationDocument,
     "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
     "\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n": types.GetSignedUrlForUploadingImageQueryDocument,
+    "\n  query GetTweet($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      content\n      id\n      imageURL\n      createdAt\n      author {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n      }\n    }\n  }\n": types.GetTweetDocument,
     "\n  query GetTweetsFeed {\n    getTweetsFeed {\n      id\n      content\n      imageURL\n      createdAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n      }\n    }\n  }\n": types.GetTweetsFeedDocument,
     "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n": types.GetCustomUserTokenQueryDocument,
     "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweets {\n        id\n      }\n    }\n  }\n": types.GetUserQueryDocument,
@@ -92,6 +93,10 @@ export function graphql(source: "\n  mutation RemoveFollower($userId: ID!) {\n  
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n"): (typeof documents)["\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetTweet($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      content\n      id\n      imageURL\n      createdAt\n      author {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetTweet($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      content\n      id\n      imageURL\n      createdAt\n      author {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -1,4 +1,4 @@
-import { getTweetsFeedQuery } from "@/graphql/queries/tweet";
+import { getTweetQuery, getTweetsFeedQuery } from "@/graphql/queries/tweet";
 import { getUserTweetsQuery } from "@/graphql/queries/user";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
@@ -33,4 +33,19 @@ export const useTweetsFeed = (sessionUsername: string) => {
   }, [sessionUsername]);
 
   return data?.getTweetsFeed;
+};
+
+export const useTweet = (tweetId: string) => {
+  const { data } = useQuery({
+    queryKey: ["tweet", tweetId],
+    queryFn: () => graphqlClient.request(getTweetQuery, { tweetId }),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ["tweet", tweetId] });
+    };
+  }, [tweetId]);
+
+  return data?.getTweet;
 };

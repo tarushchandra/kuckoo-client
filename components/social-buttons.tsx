@@ -21,7 +21,12 @@ interface SocialButtonProps {
 }
 
 export default function SocialButtons(props: SocialButtonProps) {
-  const { targetUser, className, showRemoveButton, profileUsername } = props;
+  const {
+    targetUser,
+    className,
+    showRemoveButton = false,
+    profileUsername,
+  } = props;
   const { data: sessionUser } = useAuth(selectUser);
   const pathName = usePathname();
 
