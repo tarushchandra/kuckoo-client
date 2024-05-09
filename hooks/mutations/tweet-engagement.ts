@@ -21,7 +21,8 @@ export const useLikeTweet = (fns: OptimisticUpdaters) => {
   return useMutation({
     mutationFn: ({ tweetId }: { tweetId: string }) =>
       graphqlClient.request(likeTweetMutation, { tweetId }),
-
+    onSuccess: (variables, params) =>
+      queryClient.invalidateQueries({ queryKey: ["liked-by", params.tweetId] }),
     onMutate: async (variables) => {
       if (path.includes("tweet")) {
         await queryClient.cancelQueries({
@@ -85,7 +86,8 @@ export const useDislikeTweet = (fns: OptimisticUpdaters) => {
   return useMutation({
     mutationFn: ({ tweetId }: { tweetId: string }) =>
       graphqlClient.request(dislikeTweetMutation, { tweetId }),
-
+    onSuccess: (variables, params) =>
+      queryClient.invalidateQueries({ queryKey: ["liked-by", params.tweetId] }),
     onMutate: async (variables) => {
       if (path.includes("tweet")) {
         await queryClient.cancelQueries({

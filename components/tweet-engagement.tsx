@@ -5,12 +5,10 @@ import {
   useLikeTweet,
 } from "@/hooks/mutations/tweet-engagement";
 import { useTweetEngagement } from "@/hooks/queries/tweet-engagement";
-import { graphqlClient } from "@/lib/clients/graphql";
-import mergeClasses from "@/utils/mergeClasses";
 import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Skeleton from "./ui/skeleton";
 
 interface TweetEngagementProps {
@@ -62,57 +60,51 @@ export default function TweetEngagement(props: TweetEngagementProps) {
 
     return (
       <div className="text-zinc-500 flex justify-between px-10 pt-2 border-t border-zinc-800">
-        <>
-          {tweetEngagement?.isTweetLikedBySessionUser ? (
-            <div
-              onClick={handleDislikeTweet}
-              className="flex gap-1 justify-center items-center cursor-pointer"
-            >
-              <Heart size={17} strokeWidth={0} className="fill-red-600" />
-              <h1 className="text-xs text-red-600">
-                {tweetEngagement.likesCount}
-              </h1>
-            </div>
-          ) : (
-            <div
-              onClick={handleLikeTweet}
-              className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400"
-            >
-              <Heart size={17} />
-              <h1 className="text-xs">
-                {tweetEngagement ? tweetEngagement.likesCount : 0}
-              </h1>
-            </div>
-          )}
-        </>
-        <>
-          <Link
-            href={`/tweet/${id}`}
-            className="flex gap-1 justify-center items-center cursor-pointer"
-          >
-            <MessageCircle size={17} />
-            <h1 className="text-xs">0</h1>
-          </Link>
-        </>
-        <div className="flex gap-1 justify-center items-center cursor-pointer">
-          <Send size={17} />
-          <h1 className="text-xs">0</h1>
-        </div>
-        <Bookmark size={17} className="cursor-pointer" />
+        <TweetEngagementLogic
+          handlerFns={{ handleLikeTweet, handleDislikeTweet }}
+          tweetEngagement={tweetEngagement!}
+          tweetId={id}
+        />
       </div>
     );
   }
 
   return (
     <div className="text-zinc-500 flex justify-between px-10">
+      <TweetEngagementLogic
+        tweetEngagement={{ isTweetLikedBySessionUser, likesCount }}
+        handlerFns={{ handleDislikeTweet, handleLikeTweet }}
+        tweetId={id}
+      />
+    </div>
+  );
+}
+
+interface TweetEngagementLogicProps {
+  handlerFns: {
+    handleLikeTweet: () => void;
+    handleDislikeTweet: () => void;
+  };
+  tweetEngagement: TweetEngagementType;
+  tweetId: string;
+}
+
+const TweetEngagementLogic = (props: TweetEngagementLogicProps) => {
+  const { handlerFns, tweetEngagement, tweetId: id } = props;
+  const { handleDislikeTweet, handleLikeTweet } = handlerFns;
+
+  return (
+    <>
       <>
-        {isTweetLikedBySessionUser ? (
+        {tweetEngagement?.isTweetLikedBySessionUser ? (
           <div
             onClick={handleDislikeTweet}
             className="flex gap-1 justify-center items-center cursor-pointer"
           >
             <Heart size={17} strokeWidth={0} className="fill-red-600" />
-            <h1 className="text-xs text-red-600">{likesCount}</h1>
+            <h1 className="text-xs text-red-600">
+              {tweetEngagement.likesCount}
+            </h1>
           </div>
         ) : (
           <div
@@ -120,7 +112,9 @@ export default function TweetEngagement(props: TweetEngagementProps) {
             className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400"
           >
             <Heart size={17} />
-            <h1 className="text-xs">{likesCount}</h1>
+            <h1 className="text-xs">
+              {tweetEngagement ? tweetEngagement.likesCount : 0}
+            </h1>
           </div>
         )}
       </>
@@ -138,6 +132,6 @@ export default function TweetEngagement(props: TweetEngagementProps) {
         <h1 className="text-xs">0</h1>
       </div>
       <Bookmark size={17} className="cursor-pointer" />
-    </div>
+    </>
   );
-}
+};

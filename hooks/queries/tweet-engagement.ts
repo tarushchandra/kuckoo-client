@@ -1,4 +1,8 @@
-import { getTweetEngagementQuery } from "@/graphql/queries/tweet-engagement";
+import {
+  getDetailedLikedByQuery,
+  getLikedByQuery,
+  getTweetEngagementQuery,
+} from "@/graphql/queries/tweet-engagement";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
 import { useQuery } from "@tanstack/react-query";
@@ -17,4 +21,34 @@ export const useTweetEngagement = (tweetId: string) => {
   }, [tweetId]);
 
   return data?.getTweet?.tweetEngagement;
+};
+
+export const useTweetsLikedBy = (tweetId: string) => {
+  const { data } = useQuery({
+    queryKey: ["liked-by", tweetId],
+    queryFn: () => graphqlClient.request(getLikedByQuery, { tweetId }),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ["liked-by", tweetId] });
+    };
+  }, [tweetId]);
+
+  return data?.getTweetEngagement;
+};
+
+export const useDetailedTweetsLikedBy = (tweetId: string) => {
+  const { data } = useQuery({
+    queryKey: ["detailed-liked-by", tweetId],
+    queryFn: () => graphqlClient.request(getDetailedLikedByQuery, { tweetId }),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ["detailed-liked-by", tweetId] });
+    };
+  }, [tweetId]);
+
+  return data?.getTweetEngagement?.likedBy;
 };

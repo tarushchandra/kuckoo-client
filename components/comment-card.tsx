@@ -4,7 +4,7 @@ import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import { FilePenLine, Heart, MessageCircle, Reply, Trash2 } from "lucide-react";
 import Image from "next/image";
 
-export default function Comment() {
+export default function CommentCard() {
   const { data: sessionUser } = useAuth(selectUser);
 
   return (

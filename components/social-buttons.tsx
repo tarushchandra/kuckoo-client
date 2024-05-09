@@ -21,23 +21,21 @@ interface SocialButtonProps {
 }
 
 export default function SocialButtons(props: SocialButtonProps) {
-  const {
-    targetUser,
-    className,
-    showRemoveButton = false,
-    profileUsername,
-  } = props;
+  const { targetUser, className, showRemoveButton, profileUsername } = props;
   const { data: sessionUser } = useAuth(selectUser);
   const pathName = usePathname();
+
+  // console.log(`sb props -`, props);
 
   const amIFollowing = useIsFollowing(sessionUser?.id!, targetUser.id);
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
   const removeFollower = useRemoveFollower();
 
-  // console.log(`amIFollowing ${targetUser.username} -`, amIFollowing);
+  console.log(`amIFollowing ${targetUser.username} -`, amIFollowing);
 
   if (sessionUser?.username === targetUser.username) return;
+
   // if (amIFollowing === undefined || amIFollowing === null) return;
 
   // if (
@@ -56,19 +54,6 @@ export default function SocialButtons(props: SocialButtonProps) {
   // if (amIFollowing === undefined || amIFollowing === null) {
   //   return <Skeleton className="w-28 h-10 rounded-full" />;
   // }
-
-  if (
-    showRemoveButton &&
-    sessionUser?.username === profileUsername &&
-    (amIFollowing === undefined || amIFollowing === null)
-  ) {
-    return (
-      <div className="flex gap-2">
-        <Skeleton className="w-20 h-10 rounded-full" />
-        <Skeleton className="w-20 h-10 rounded-full" />
-      </div>
-    );
-  }
 
   if (amIFollowing === undefined || amIFollowing === null) {
     return <h1 className="text-sm text-zinc-600 animate-pulse">Loading...</h1>;

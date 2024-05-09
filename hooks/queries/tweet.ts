@@ -1,8 +1,4 @@
-import {
-  getMutualTweetLikersQuery,
-  getTweetQuery,
-  getTweetsFeedQuery,
-} from "@/graphql/queries/tweet";
+import { getTweetQuery, getTweetsFeedQuery } from "@/graphql/queries/tweet";
 import { getUserTweetsQuery } from "@/graphql/queries/user";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
@@ -52,20 +48,4 @@ export const useTweet = (tweetId: string) => {
   }, [tweetId]);
 
   return data?.getTweet;
-};
-
-export const useMutualTweetLikers = (tweetId: string) => {
-  const { data } = useQuery({
-    queryKey: ["mutual-likers", tweetId],
-    queryFn: () =>
-      graphqlClient.request(getMutualTweetLikersQuery, { tweetId }),
-  });
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["mutual-likers", tweetId] });
-    };
-  }, [tweetId]);
-
-  return data?.getMutualLikers;
 };

@@ -44,13 +44,3 @@ export const getTweetsFeedQuery = graphql(/* GraphQL */ `
     }
   }
 `);
-
-export const getMutualTweetLikersQuery = graphql(/* GraphQL */ `
-  query GetMutualLikers($tweetId: String!) {
-    getMutualLikers(tweetId: $tweetId) {
-      id
-      username
-      profileImageURL
-    }
-  }
-`);

@@ -10,3 +10,28 @@ export const getTweetEngagementQuery = graphql(/* GraphQL */ `
     }
   }
 `);
+
+export const getLikedByQuery = graphql(/* GraphQL */ `
+  query GetLikedByQuery($tweetId: String!) {
+    getTweetEngagement(tweetId: $tweetId) {
+      likedBy {
+        username
+        profileImageURL
+      }
+    }
+  }
+`);
+
+export const getDetailedLikedByQuery = graphql(/* GraphQL */ `
+  query GetDetailedLikedByQuery($tweetId: String!) {
+    getTweetEngagement(tweetId: $tweetId) {
+      likedBy {
+        username
+        profileImageURL
+        firstName
+        lastName
+        id
+      }
+    }
+  }
+`);
