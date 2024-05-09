@@ -3,14 +3,15 @@
 import Image from "next/image";
 import Skeleton from "./ui/skeleton";
 import { useState } from "react";
-import LikedByModal from "./liked-by-modal";
+import LikedByModal from "./tweet-likes-modal";
 import { useTweetsLikedBy } from "@/hooks/queries/tweet-engagement";
+import TweetLikesModal from "./tweet-likes-modal";
 
 interface MutualTweetLikersProps {
   tweetId: string;
 }
 
-export default function MutualTweetLikers({ tweetId }: MutualTweetLikersProps) {
+export default function TweetLikes({ tweetId }: MutualTweetLikersProps) {
   const tweetEngagement = useTweetsLikedBy(tweetId);
   const [isLikedByModalOpen, setIsLikedByModalOpen] = useState(false);
 
@@ -56,7 +57,7 @@ export default function MutualTweetLikers({ tweetId }: MutualTweetLikersProps) {
       </div>
 
       {isLikedByModalOpen && (
-        <LikedByModal
+        <TweetLikesModal
           tweetId={tweetId}
           onClose={() => setIsLikedByModalOpen(false)}
         />

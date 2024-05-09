@@ -1,13 +1,14 @@
 import TweetComments from "@/components/tweet-comments";
 import EditOrDeleteTweetButtons from "@/components/edit-delete-tweet-buttons";
 import Header from "@/components/header";
-import MutualTweetLikers from "@/components/liked-by";
 import TweetEngagement from "@/components/tweet-engagement";
 import { getTweet } from "@/services/tweet";
 import dayjs from "dayjs";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Likes from "@/components/tweet-likes";
+import TweetLikes from "@/components/tweet-likes";
 
 interface TweetPageProps {
   params: {
@@ -70,7 +71,7 @@ export default async function TweetPage(props: TweetPageProps) {
             />
           )}
           <div className="flex justify-between items-center">
-            <MutualTweetLikers tweetId={tweet.id} />
+            <TweetLikes tweetId={tweet.id} />
             <h2 className="text-sm text-zinc-500">{formattedDate}</h2>
           </div>
           <TweetEngagement tweet={tweet} />

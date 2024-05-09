@@ -1,20 +1,16 @@
 import UserCard from "./user-card";
-import Link from "next/link";
 import UserCardLoading from "./ui/user-card-loading";
 import Modal from "./ui/modal";
 import { X } from "lucide-react";
 import { useDetailedTweetsLikedBy } from "@/hooks/queries/tweet-engagement";
 
-export default function LikedByModal({
-  tweetId,
-  onClose,
-}: {
+interface TweetLikesModal {
   tweetId: string;
   onClose: () => void;
-}) {
-  const users = useDetailedTweetsLikedBy(tweetId);
+}
 
-  console.log("detailed users -", users);
+export default function TweetLikesModal({ tweetId, onClose }: TweetLikesModal) {
+  const users = useDetailedTweetsLikedBy(tweetId);
 
   return (
     <Modal wrapperId="liked-by-modal" onClose={onClose}>
@@ -44,16 +40,8 @@ export default function LikedByModal({
       <X
         onClick={onClose}
         size={22}
-        className="absolute top-4 right-2 bg-zinc-800 rounded-full p-1 cursor-pointer"
+        className="absolute top-4 right-2 bg-zinc-800 rounded-full p-1 cursor-pointer text-zinc-400 transition-all hover:text-white"
       />
     </Modal>
   );
-}
-
-{
-  /* <X
-  onClick={onClose}
-  size={22}
-  className="absolute  right-2 bg-zinc-800 rounded-full p-1 cursor-pointer"
-/>; */
 }
