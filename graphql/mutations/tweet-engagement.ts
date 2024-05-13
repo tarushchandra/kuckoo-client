@@ -11,3 +11,21 @@ export const dislikeTweetMutation = graphql(/* GraphQL */ `
     dislikeTweet(tweetId: $tweetId)
   }
 `);
+
+export const createCommentMutation = graphql(/* GraphQL */ `
+  mutation CreateComment($tweetId: String!, $content: String!) {
+    createComment(tweetId: $tweetId, content: $content)
+  }
+`);
+
+export const editCommentMutation = graphql(/* GraphQL */ `
+  mutation EditComment($commentId: String!, $content: String!) {
+    updateComment(commentId: $commentId, content: $content)
+  }
+`);
+
+export const deleteCommentMutation = graphql(/* GraphQL */ `
+  mutation DeleteComment($tweetId: String!, $commentId: String!) {
+    deleteComment(tweetId: $tweetId, commentId: $commentId)
+  }
+`);

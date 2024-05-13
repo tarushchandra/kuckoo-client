@@ -35,7 +35,6 @@ export default function TweetsFeed(props: TweetsFeedProps) {
           <TweetCard
             key={tweet.id}
             tweet={{ ...tweet, author: targetUser ? targetUser : tweet.author }}
-            sessionUser={sessionUser!}
           />
         ))
       ) : (

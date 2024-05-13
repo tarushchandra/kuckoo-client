@@ -1,6 +1,7 @@
 import {
   getDetailedLikedByQuery,
   getLikedByQuery,
+  getTweetCommentsQuery,
   getTweetEngagementQuery,
 } from "@/graphql/queries/tweet-engagement";
 import { graphqlClient } from "@/lib/clients/graphql";
@@ -50,5 +51,20 @@ export const useDetailedTweetsLikedBy = (tweetId: string) => {
     };
   }, [tweetId]);
 
-  return data?.getTweetEngagement?.likedBy;
+  return data?.getTweetEngagement?.likes;
+};
+
+export const useTweetComments = (tweetId: string) => {
+  const { data } = useQuery({
+    queryKey: ["tweet-comments", tweetId],
+    queryFn: () => graphqlClient.request(getTweetCommentsQuery, { tweetId }),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ["tweet-comments", tweetId] });
+    };
+  }, [tweetId]);
+
+  return data?.getTweet?.tweetEngagement;
 };

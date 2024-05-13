@@ -16,11 +16,11 @@ export default function TweetLikes({ tweetId }: MutualTweetLikersProps) {
   const [isLikedByModalOpen, setIsLikedByModalOpen] = useState(false);
 
   if (tweetEngagement === undefined) return <Skeleton className="w-72 h-5" />;
-  if (tweetEngagement === null)
+  if (!tweetEngagement || tweetEngagement?.likes?.length === 0)
     return <h1 className="text-sm font-semibold text-zinc-500">No likes</h1>;
 
-  const firstThree = tweetEngagement.likedBy?.slice(0, 3);
-  const remaining = tweetEngagement.likedBy?.slice(3);
+  const firstThreeUsers = tweetEngagement.likes?.slice(0, 3);
+  const remainingUsers = tweetEngagement.likes?.slice(3);
 
   return (
     <>
@@ -28,9 +28,9 @@ export default function TweetLikes({ tweetId }: MutualTweetLikersProps) {
         onClick={() => setIsLikedByModalOpen(true)}
         className="flex gap-2 text-sm font-semibold text-zinc-500 cursor-pointer"
       >
-        <h1 className="hover:underline">Liked by -</h1>
+        <h1 className="hover:underline">Likes -</h1>
         <div className="flex gap-1">
-          {firstThree?.map((user: any) => {
+          {firstThreeUsers?.map((user: any) => {
             return (
               <div
                 key={user?.username}
@@ -48,10 +48,10 @@ export default function TweetLikes({ tweetId }: MutualTweetLikersProps) {
             );
           })}
         </div>
-        {remaining?.length! > 0 && (
+        {remainingUsers?.length! > 0 && (
           <h1>
-            and {remaining?.length}{" "}
-            {remaining?.length! > 1 ? "others" : "other"}
+            and {remainingUsers?.length}{" "}
+            {remainingUsers?.length! > 1 ? "others" : "other"}
           </h1>
         )}
       </div>

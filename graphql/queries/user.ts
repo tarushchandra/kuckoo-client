@@ -130,9 +130,11 @@ export const getUserTweetsQuery = graphql(/* GraphQL */ `
         content
         imageURL
         createdAt
+        updatedAt
         tweetEngagement {
           likesCount
           isTweetLikedBySessionUser
+          commentsCount
         }
       }
     }

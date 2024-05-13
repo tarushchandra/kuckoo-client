@@ -6,10 +6,10 @@ import {
 } from "@/hooks/mutations/tweet-engagement";
 import { useTweetEngagement } from "@/hooks/queries/tweet-engagement";
 import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Skeleton from "./ui/skeleton";
+import PostCommentModal, { COMMENT_MODE } from "./post-comment-modal";
 
 interface TweetEngagementProps {
   tweet: Tweet;
@@ -20,28 +20,38 @@ interface TweetEngagementProps {
 
 export default function TweetEngagement(props: TweetEngagementProps) {
   const { tweet, tweetEngagement } = props;
-  const { id } = tweet;
   const path = usePathname();
 
   const [isTweetLikedBySessionUser, setIsTweetLikedBySessionUser] = useState<
     boolean | null
-  >(tweetEngagement?.isTweetLikedBySessionUser || null);
+  >(() => {
+    if (tweetEngagement?.isTweetLikedBySessionUser) return true;
+    else if (tweetEngagement?.isTweetLikedBySessionUser === false) return false;
+    else return null;
+  });
   const [likesCount, setLikesCount] = useState(
     tweetEngagement?.likesCount || 0
   );
+  const [commentsCount, setCommentsCount] = useState(
+    tweetEngagement?.commentsCount || 0
+  );
 
-  const optimisticUpdaters = { setIsTweetLikedBySessionUser, setLikesCount };
+  const optimisticUpdaters = {
+    setIsTweetLikedBySessionUser,
+    setLikesCount,
+    setCommentsCount,
+  };
   const likeTweetMutation = useLikeTweet(optimisticUpdaters);
   const dislikeTweetMutation = useDislikeTweet(optimisticUpdaters);
 
   const handleLikeTweet = () => {
     if (likeTweetMutation.isPending) return;
-    likeTweetMutation.mutate({ tweetId: id });
+    likeTweetMutation.mutate({ tweetId: tweet.id });
   };
 
   const handleDislikeTweet = () => {
     if (dislikeTweetMutation.isPending) return;
-    dislikeTweetMutation.mutate({ tweetId: id });
+    dislikeTweetMutation.mutate({ tweetId: tweet.id });
   };
 
   if (path.includes("tweet")) {
@@ -63,7 +73,7 @@ export default function TweetEngagement(props: TweetEngagementProps) {
         <TweetEngagementLogic
           handlerFns={{ handleLikeTweet, handleDislikeTweet }}
           tweetEngagement={tweetEngagement!}
-          tweetId={id}
+          tweet={tweet}
         />
       </div>
     );
@@ -72,66 +82,106 @@ export default function TweetEngagement(props: TweetEngagementProps) {
   return (
     <div className="text-zinc-500 flex justify-between px-10">
       <TweetEngagementLogic
-        tweetEngagement={{ isTweetLikedBySessionUser, likesCount }}
+        tweetEngagement={{
+          ...tweetEngagement,
+          isTweetLikedBySessionUser,
+          likesCount,
+          commentsCount,
+        }}
         handlerFns={{ handleDislikeTweet, handleLikeTweet }}
-        tweetId={id}
+        tweet={tweet}
+        onCommentMutation={{
+          onSuccess: () => setCommentsCount((x) => x + 1),
+          onError: () => setCommentsCount((x) => x - 1),
+        }}
       />
     </div>
   );
 }
+
+// -----------------------------------------------------------------------------------
 
 interface TweetEngagementLogicProps {
   handlerFns: {
     handleLikeTweet: () => void;
     handleDislikeTweet: () => void;
   };
-  tweetEngagement: TweetEngagementType;
-  tweetId: string;
+  tweetEngagement: TweetEngagementType | null;
+  tweet: Tweet;
+  onCommentMutation?: { onSuccess: () => void; onError: () => void };
 }
 
-const TweetEngagementLogic = (props: TweetEngagementLogicProps) => {
-  const { handlerFns, tweetEngagement, tweetId: id } = props;
+function TweetEngagementLogic(props: TweetEngagementLogicProps) {
+  const { handlerFns, tweetEngagement, tweet, onCommentMutation } = props;
   const { handleDislikeTweet, handleLikeTweet } = handlerFns;
+  const [isCreateCommentModalOpen, setIsCreateCommentModalOpen] =
+    useState(false);
+
+  const modifiedOnCommentMutation = {
+    ...onCommentMutation,
+    onSuccess: () => {
+      onCommentMutation?.onSuccess();
+      setIsCreateCommentModalOpen(false);
+    },
+  };
+
+  // console.log("tweetEngagement -", tweetEngagement);
 
   return (
     <>
       <>
-        {tweetEngagement?.isTweetLikedBySessionUser ? (
-          <div
-            onClick={handleDislikeTweet}
-            className="flex gap-1 justify-center items-center cursor-pointer"
-          >
-            <Heart size={17} strokeWidth={0} className="fill-red-600" />
-            <h1 className="text-xs text-red-600">
-              {tweetEngagement.likesCount}
-            </h1>
-          </div>
-        ) : (
-          <div
-            onClick={handleLikeTweet}
-            className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400"
-          >
-            <Heart size={17} />
-            <h1 className="text-xs">
-              {tweetEngagement ? tweetEngagement.likesCount : 0}
-            </h1>
-          </div>
-        )}
-      </>
-      <>
-        <Link
-          href={`/tweet/${id}`}
-          className="flex gap-1 justify-center items-center cursor-pointer"
+        <>
+          {tweetEngagement?.isTweetLikedBySessionUser ? (
+            <div
+              onClick={handleDislikeTweet}
+              className="flex gap-1 justify-center items-center cursor-pointer"
+            >
+              <Heart size={17} strokeWidth={0} className="fill-red-600" />
+              <h1 className="text-xs text-red-600">
+                {tweetEngagement.likesCount}
+              </h1>
+            </div>
+          ) : (
+            <div
+              onClick={handleLikeTweet}
+              className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400"
+            >
+              <Heart size={17} />
+              <h1 className="text-xs">
+                {tweetEngagement?.likesCount ? tweetEngagement.likesCount : 0}
+              </h1>
+            </div>
+          )}
+        </>
+        <div
+          onClick={() => setIsCreateCommentModalOpen(true)}
+          className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400"
         >
           <MessageCircle size={17} />
+          <h1 className="text-xs">
+            {tweetEngagement?.commentsCount ? tweetEngagement.commentsCount : 0}
+          </h1>
+        </div>
+        <div className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400">
+          <Send size={17} />
           <h1 className="text-xs">0</h1>
-        </Link>
+        </div>
+        <Bookmark
+          size={17}
+          className="cursor-pointer transition-all hover:text-zinc-400"
+        />
       </>
-      <div className="flex gap-1 justify-center items-center cursor-pointer">
-        <Send size={17} />
-        <h1 className="text-xs">0</h1>
-      </div>
-      <Bookmark size={17} className="cursor-pointer" />
+      <>
+        {isCreateCommentModalOpen && (
+          <PostCommentModal
+            mode={COMMENT_MODE.CREATE_COMMENT_ON_TWEET}
+            onClose={() => setIsCreateCommentModalOpen(false)}
+            tweet={tweet}
+            tweetEngagement={tweetEngagement!}
+            onCommentMutation={modifiedOnCommentMutation as any}
+          />
+        )}
+      </>
     </>
   );
-};
+}

@@ -6,6 +6,7 @@ export const getTweetEngagementQuery = graphql(/* GraphQL */ `
       tweetEngagement {
         likesCount
         isTweetLikedBySessionUser
+        commentsCount
       }
     }
   }
@@ -14,7 +15,7 @@ export const getTweetEngagementQuery = graphql(/* GraphQL */ `
 export const getLikedByQuery = graphql(/* GraphQL */ `
   query GetLikedByQuery($tweetId: String!) {
     getTweetEngagement(tweetId: $tweetId) {
-      likedBy {
+      likes {
         username
         profileImageURL
       }
@@ -25,12 +26,33 @@ export const getLikedByQuery = graphql(/* GraphQL */ `
 export const getDetailedLikedByQuery = graphql(/* GraphQL */ `
   query GetDetailedLikedByQuery($tweetId: String!) {
     getTweetEngagement(tweetId: $tweetId) {
-      likedBy {
+      likes {
         username
         profileImageURL
         firstName
         lastName
         id
+      }
+    }
+  }
+`);
+
+export const getTweetCommentsQuery = graphql(/* GraphQL */ `
+  query GetTweetCommentsQuery($tweetId: String!) {
+    getTweet(tweetId: $tweetId) {
+      tweetEngagement {
+        comments {
+          id
+          content
+          createdAt
+          updatedAt
+          author {
+            firstName
+            lastName
+            username
+            profileImageURL
+          }
+        }
       }
     }
   }

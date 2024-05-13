@@ -36,17 +36,26 @@ interface TweetCardProps {
     content: string;
     imageURL: string;
     createdAt: string;
+    updatedAt: string;
     author: User;
     tweetEngagement: TweetEnagementType | null;
   };
-  sessionUser: User;
 }
 
 const TweetCard: React.FC<TweetCardProps> = (props) => {
-  const { tweet, sessionUser } = props;
-  const { id, content, createdAt, author, imageURL, tweetEngagement } = tweet;
+  const { tweet } = props;
+  const {
+    id,
+    content,
+    createdAt,
+    author,
+    imageURL,
+    tweetEngagement,
+    updatedAt,
+  } = tweet;
   const { firstName, lastName, username } = author;
   const formattedCreatedAt = dayjs(Number(createdAt)).fromNow();
+  const formattedUpdatedAt = dayjs(Number(updatedAt)).fromNow();
 
   return (
     <>
@@ -74,6 +83,14 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
                   <span>@{username}</span>
                   <div className="bg-zinc-500 w-1 h-1 rounded-full" />
                   <span>{formattedCreatedAt}</span>
+                  <>
+                    {tweet.createdAt !== tweet.updatedAt && (
+                      <>
+                        <div className="bg-zinc-500 w-1 h-1 rounded-full" />
+                        <h2>edited</h2>
+                      </>
+                    )}
+                  </>
                 </div>
               </div>
             </div>
@@ -92,7 +109,14 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
               )}
             </div>
           </Link>
-          <TweetEngagement tweet={tweet} tweetEngagement={tweetEngagement!} />
+          <TweetEngagement
+            tweet={{
+              ...tweet,
+              createdAt: formattedCreatedAt,
+              updatedAt: formattedUpdatedAt,
+            }}
+            tweetEngagement={tweetEngagement!}
+          />
         </div>
       </div>
     </>
@@ -100,17 +124,3 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
 };
 
 export default TweetCard;
-
-{
-  /* {postButtons.map((btn) => {
-              return (
-                <div
-                  key={btn.id}
-                  className="flex gap-1 justify-center items-center"
-                >
-                  <span>{<btn.Icon size={17} />}</span>
-                  <h1 className="text-xs">0</h1>
-                </div>
-              );
-            })} */
-}

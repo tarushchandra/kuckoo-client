@@ -13,6 +13,7 @@ export const getTweetQuery = graphql(/* GraphQL */ `
       id
       imageURL
       createdAt
+      updatedAt
       author {
         id
         firstName
@@ -31,6 +32,7 @@ export const getTweetsFeedQuery = graphql(/* GraphQL */ `
       content
       imageURL
       createdAt
+      updatedAt
       author {
         firstName
         lastName
@@ -40,6 +42,7 @@ export const getTweetsFeedQuery = graphql(/* GraphQL */ `
       tweetEngagement {
         likesCount
         isTweetLikedBySessionUser
+        commentsCount
       }
     }
   }

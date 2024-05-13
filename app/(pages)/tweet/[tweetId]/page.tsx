@@ -7,8 +7,10 @@ import dayjs from "dayjs";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Likes from "@/components/tweet-likes";
 import TweetLikes from "@/components/tweet-likes";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 interface TweetPageProps {
   params: {
@@ -23,11 +25,16 @@ export default async function TweetPage(props: TweetPageProps) {
   const tweet = await getTweet(tweetId);
   // console.log("tweet -", tweet);
 
-  const { author, content, imageURL, createdAt, tweetEngagement } = tweet;
+  const { author, content, imageURL, createdAt, updatedAt } = tweet;
   const { firstName, lastName, username, profileImageURL } = author;
 
   const tweetCreatedAt = dayjs(Number(createdAt));
-  const formattedDate = tweetCreatedAt.format("MMMM D, YYYY");
+  const tweetUpdatedAt = dayjs(Number(updatedAt));
+  const formattedCreatedDate = tweetCreatedAt.format("MMMM D, YYYY");
+  const formattedCreatedTime = tweetCreatedAt.format("h:mm A");
+  const formattedUpdatedDate = tweetUpdatedAt.format("MMMM D, YYYY");
+  const formattedUpdatedTime = tweetUpdatedAt.format("h:mm A");
+  const formattedCreatedDateFromNow = tweetCreatedAt.fromNow();
 
   return (
     <>
@@ -70,13 +77,38 @@ export default async function TweetPage(props: TweetPageProps) {
               height={360}
             />
           )}
-          <div className="flex justify-between items-center">
-            <TweetLikes tweetId={tweet.id} />
-            <h2 className="text-sm text-zinc-500">{formattedDate}</h2>
-          </div>
-          <TweetEngagement tweet={tweet} />
+          <>
+            {tweet.createdAt === tweet.updatedAt ? (
+              <div className="flex justify-between items-center">
+                <TweetLikes tweetId={tweetId} />
+                <div className="flex items-center gap-2 text-sm text-zinc-500">
+                  <h2>{formattedCreatedDate}</h2>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <div className="flex gap-2 text-sm text-zinc-500 font-semibold">
+                  <h2>
+                    Created - {formattedCreatedDate} at {formattedCreatedTime}
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-zinc-500 w-1 h-1 rounded-full" />
+                    <h2>
+                      Edited - {formattedUpdatedDate} at {formattedUpdatedTime}
+                    </h2>
+                  </div>
+                </div>
+                <TweetLikes tweetId={tweetId} />
+              </div>
+            )}
+          </>
+          <TweetEngagement
+            tweet={{ ...tweet, createdAt: formattedCreatedDateFromNow }}
+          />
         </div>
-        <TweetComments />
+        <TweetComments
+          tweet={{ ...tweet, createdAt: formattedCreatedDateFromNow }}
+        />
       </div>
     </>
   );

@@ -29,7 +29,7 @@ export default function EditOrDeleteTweetButtons(
     <>
       <div className="flex gap-1">
         <div
-          className="bg-white text-black p-1 rounded-full transition-all cursor-pointer hover:bg-zinc-200"
+          className="bg-zinc-200 text-black p-1 rounded-full transition-all cursor-pointer hover:bg-zinc-200"
           title="Edit this tweet"
           onClick={() => setIsEditTweetModalOpen(true)}
         >
@@ -40,7 +40,7 @@ export default function EditOrDeleteTweetButtons(
           title="Delete this tweet?"
           onClick={() => setIsDeleteTweetModalOpen(true)}
         >
-          <Trash2 size={15} className="transition-all text-white" />
+          <Trash2 size={15} className="transition-all text-zinc-200" />
         </div>
       </div>
 

@@ -1,54 +1,35 @@
 "use client";
-import Image from "next/image";
 import CommentCard from "./comment-card";
-import { useAuth } from "@/hooks/auth";
-import { selectUser } from "@/lib/redux/features/auth/authSlice";
+import { useTweetComments } from "@/hooks/queries/tweet-engagement";
+import CreateComment from "./create-comment";
+import { Tweet } from "@/gql/graphql";
+import { COMMENT_MODE } from "./post-comment-modal";
 
-export default function TweetComments() {
-  const { data: sessionUser } = useAuth(selectUser);
+export default function TweetComments({ tweet }: { tweet: Tweet }) {
+  const tweetEngagement = useTweetComments(tweet.id);
+
+  // console.log("tweetEngagement -", tweetEngagement);
+  // console.log("comments -", tweetEngagement?.comments);
 
   return (
-    <div className="px-4 pt-4 border-t border-zinc-800">
-      <div className="pb-2 flex gap-2 items-start border-b border-zinc-800">
-        <Image
-          src={sessionUser?.profileImageURL!}
-          alt="session-user-image"
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
-        <textarea
-          name="tweet-input"
-          id="tweet-input"
-          rows={3}
-          cols={50}
-          className="bg-black text-sm focus:outline-none  my-[0.34rem] border-b border-b-zinc-800"
-          placeholder={`Add a comment`}
-        />
-        <button className="bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1">
-          Post
-        </button>
-      </div>
+    <div className=" pt-4 border-t border-zinc-800">
+      <CreateComment
+        tweet={tweet}
+        tweetEngagement={tweetEngagement as any}
+        placeholder="Add a comment"
+        mode={COMMENT_MODE.CREATE_COMMENT_ON_TWEET}
+      />
 
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
-      <CommentCard />
+      <>
+        {tweetEngagement === undefined ? (
+          <h1 className="text-center">Loading...</h1>
+        ) : (
+          tweetEngagement?.comments &&
+          tweetEngagement.comments.map((comment: any) => (
+            <CommentCard key={comment?.id} comment={comment} tweet={tweet} />
+          ))
+        )}
+      </>
     </div>
   );
 }
