@@ -32,7 +32,7 @@ export default function SocialButtons(props: SocialButtonProps) {
   const unfollowUser = useUnfollowUser();
   const removeFollower = useRemoveFollower();
 
-  console.log(`amIFollowing ${targetUser.username} -`, amIFollowing);
+  // console.log(`amIFollowing ${targetUser.username} -`, amIFollowing);
 
   if (sessionUser?.username === targetUser.username) return;
 

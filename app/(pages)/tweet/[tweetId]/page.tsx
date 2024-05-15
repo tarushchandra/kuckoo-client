@@ -38,78 +38,78 @@ export default async function TweetPage(props: TweetPageProps) {
 
   return (
     <>
-      <Header className="p-4 flex gap-2 items-center">
-        <ArrowLeft size={20} />
-        <h1 className="text-xl font-semibold">{firstName}'s Tweet</h1>
+      <Header className="p-4">
+        <div className="flex gap-2 items-center">
+          <ArrowLeft size={20} />
+          <h1 className="text-xl font-semibold">{firstName}'s Tweet</h1>
+        </div>
       </Header>
-      <div>
-        <div className="px-4 pt-4 pb-2 flex flex-col gap-3 ">
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2 items-center">
-              <Link href={`/profile/${username}`}>
-                <Image
-                  src={profileImageURL!}
-                  alt="user-image"
-                  className="rounded-full transition-all hover:opacity-90"
-                  width={45}
-                  height={45}
-                />
+      <div className="px-4 pt-4 pb-2 flex flex-col gap-3 ">
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2 items-center">
+            <Link href={`/profile/${username}`}>
+              <Image
+                src={profileImageURL!}
+                alt="user-image"
+                className="rounded-full transition-all hover:opacity-90"
+                width={45}
+                height={45}
+              />
+            </Link>
+            <div className="flex flex-col gap-0">
+              <Link
+                href={`/profile/${username}`}
+                className="font-semibold hover:underline"
+              >
+                {firstName} {lastName}
               </Link>
-              <div className="flex flex-col gap-0">
-                <Link
-                  href={`/profile/${username}`}
-                  className="font-semibold hover:underline"
-                >
-                  {firstName} {lastName}
-                </Link>
-                <h2 className="text-sm text-zinc-500">@{username}</h2>
+              <h2 className="text-sm text-zinc-500">@{username}</h2>
+            </div>
+          </div>
+          <EditOrDeleteTweetButtons author={tweet.author} tweet={tweet} />
+        </div>
+        <p className="text-md">{content}</p>
+        {imageURL && (
+          <Image
+            src={imageURL!}
+            alt="tweet-image"
+            className="rounded-xl w-full h-full border border-zinc-800 object-cover"
+            width={640}
+            height={360}
+          />
+        )}
+        <>
+          {tweet.createdAt === tweet.updatedAt ? (
+            <div className="flex justify-between items-center">
+              <TweetLikes tweetId={tweetId} />
+              <div className="flex items-center gap-2 text-sm text-zinc-500">
+                <h2>{formattedCreatedDate}</h2>
               </div>
             </div>
-            <EditOrDeleteTweetButtons author={tweet.author} tweet={tweet} />
-          </div>
-          <p className="text-md">{content}</p>
-          {imageURL && (
-            <Image
-              src={imageURL!}
-              alt="tweet-image"
-              className="rounded-xl w-full h-full border border-zinc-800 object-cover"
-              width={640}
-              height={360}
-            />
-          )}
-          <>
-            {tweet.createdAt === tweet.updatedAt ? (
-              <div className="flex justify-between items-center">
-                <TweetLikes tweetId={tweetId} />
-                <div className="flex items-center gap-2 text-sm text-zinc-500">
-                  <h2>{formattedCreatedDate}</h2>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-1">
-                <div className="flex gap-2 text-sm text-zinc-500 font-semibold">
+          ) : (
+            <div className="flex flex-col gap-1">
+              <div className="flex gap-2 text-sm text-zinc-500 font-semibold">
+                <h2>
+                  Created - {formattedCreatedDate} at {formattedCreatedTime}
+                </h2>
+                <div className="flex items-center gap-2">
+                  <div className="bg-zinc-500 w-1 h-1 rounded-full" />
                   <h2>
-                    Created - {formattedCreatedDate} at {formattedCreatedTime}
+                    Edited - {formattedUpdatedDate} at {formattedUpdatedTime}
                   </h2>
-                  <div className="flex items-center gap-2">
-                    <div className="bg-zinc-500 w-1 h-1 rounded-full" />
-                    <h2>
-                      Edited - {formattedUpdatedDate} at {formattedUpdatedTime}
-                    </h2>
-                  </div>
                 </div>
-                <TweetLikes tweetId={tweetId} />
               </div>
-            )}
-          </>
-          <TweetEngagement
-            tweet={{ ...tweet, createdAt: formattedCreatedDateFromNow }}
-          />
-        </div>
-        <TweetComments
+              <TweetLikes tweetId={tweetId} />
+            </div>
+          )}
+        </>
+        <TweetEngagement
           tweet={{ ...tweet, createdAt: formattedCreatedDateFromNow }}
         />
       </div>
+      <TweetComments
+        tweet={{ ...tweet, createdAt: formattedCreatedDateFromNow }}
+      />
     </>
   );
 }

@@ -10,6 +10,10 @@ import Link from "next/link";
 import { useState } from "react";
 import DeleteCommentModal from "./delete-comment-modal";
 import PostCommentModal, { COMMENT_MODE } from "./post-comment-modal";
+import {
+  useDislikeComment,
+  useLikeComment,
+} from "@/hooks/mutations/tweet-engagement";
 
 dayjs.extend(relativeTime);
 
@@ -23,21 +27,36 @@ export default function CommentCard({ comment, tweet }: CommentCardProps) {
   const { content, createdAt, author, id } = comment;
   const formattedCommentCreatedAt = dayjs(Number(createdAt)).fromNow();
 
-  // console.log("props -", { comment, tweetId });
-
   const [isDeleteCommentModalOpen, setIsDeleteCommentModalOpen] =
     useState(false);
   const [isEditCommentModalOpen, setIsEditCommentModalOpen] = useState(false);
 
+  const [isCommentLikedBySessionUser, setIsCommentLikedBySessionUser] =
+    useState(comment.isCommentLikedBySessionUser);
+  const [likesCount, setLikesCount] = useState(comment.likesCount);
+
+  const updaterFns = {
+    like: () => {
+      setIsCommentLikedBySessionUser(true);
+      setLikesCount((x) => x! + 1);
+    },
+    dislike: () => {
+      setIsCommentLikedBySessionUser(false);
+      setLikesCount((x) => x! - 1);
+    },
+  };
+  const likeCommentMutation = useLikeComment(updaterFns);
+  const dislikeCommentMutation = useDislikeComment(updaterFns);
+
   return (
     <div className="hover:bg-zinc-950 px-4">
-      <div className="flex py-4 gap-2 items-start border-b border-zinc-800">
-        <Link href={`/profile/${author?.username}`}>
+      <div className="flex py-4 gap-2 items-start border-b border-zinc-800 w-full">
+        <Link href={`/profile/${author?.username}`} className="">
           <Image
             src={author?.profileImageURL!}
             alt="session-user-image"
-            width={40}
-            height={40}
+            width={45}
+            height={45}
             className="rounded-full transition-all hover:opacity-90"
           />
         </Link>
@@ -90,10 +109,27 @@ export default function CommentCard({ comment, tweet }: CommentCardProps) {
           </div>
           <p>{content}</p>
           <div className="text-zinc-500 flex gap-4  pt-1">
-            <div className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400">
-              <Heart size={15} />
-              <h1 className="text-xs">0</h1>
-            </div>
+            <>
+              {isCommentLikedBySessionUser ? (
+                <div
+                  onClick={() =>
+                    dislikeCommentMutation.mutate({ commentId: id })
+                  }
+                  className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400"
+                >
+                  <Heart size={15} strokeWidth={0} className="fill-red-600" />
+                  <h1 className="text-xs text-red-600">{likesCount}</h1>
+                </div>
+              ) : (
+                <div
+                  onClick={() => likeCommentMutation.mutate({ commentId: id })}
+                  className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400"
+                >
+                  <Heart size={15} />
+                  <h1 className="text-xs">{likesCount}</h1>
+                </div>
+              )}
+            </>
             <div className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400">
               <MessageCircle size={15} />
               <h1 className="text-xs">0</h1>

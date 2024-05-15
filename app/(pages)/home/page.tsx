@@ -7,7 +7,7 @@ import { MODE } from "@/components/post-tweet-modal";
 export default function HomePage() {
   return (
     <>
-      <Header className="p-4 text-xl font-semibold">Home</Header>
+      <Header className="p-4 text-xl font-semibold">Tweets Feed</Header>
       <PostTweet
         mode={MODE.CREATE_TWEET}
         showCancelButton={false}

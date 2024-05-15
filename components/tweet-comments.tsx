@@ -4,6 +4,7 @@ import { useTweetComments } from "@/hooks/queries/tweet-engagement";
 import CreateComment from "./create-comment";
 import { Tweet } from "@/gql/graphql";
 import { COMMENT_MODE } from "./post-comment-modal";
+import CommentCardLoading from "./ui/comment-card-loading";
 
 export default function TweetComments({ tweet }: { tweet: Tweet }) {
   const tweetEngagement = useTweetComments(tweet.id);
@@ -12,7 +13,7 @@ export default function TweetComments({ tweet }: { tweet: Tweet }) {
   // console.log("comments -", tweetEngagement?.comments);
 
   return (
-    <div className=" pt-4 border-t border-zinc-800">
+    <div className="border-t border-zinc-800">
       <CreateComment
         tweet={tweet}
         tweetEngagement={tweetEngagement as any}
@@ -22,12 +23,24 @@ export default function TweetComments({ tweet }: { tweet: Tweet }) {
 
       <>
         {tweetEngagement === undefined ? (
-          <h1 className="text-center">Loading...</h1>
-        ) : (
-          tweetEngagement?.comments &&
-          tweetEngagement.comments.map((comment: any) => (
-            <CommentCard key={comment?.id} comment={comment} tweet={tweet} />
+          Array.from({ length: 8 }, (_, index) => (
+            <CommentCardLoading key={index} />
           ))
+        ) : (
+          <>
+            {tweetEngagement?.comments &&
+            tweetEngagement.comments.length !== 0 ? (
+              tweetEngagement.comments.map((comment: any) => (
+                <CommentCard
+                  key={comment?.id}
+                  comment={comment}
+                  tweet={tweet}
+                />
+              ))
+            ) : (
+              <h1 className="text-center pt-2 font-semibold">No comments</h1>
+            )}
+          </>
         )}
       </>
     </div>

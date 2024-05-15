@@ -69,7 +69,7 @@ export default function CreateComment(props: CreateCommentProps) {
   };
 
   return (
-    <div className="px-4 py-2 flex gap-2 items-start border-b border-zinc-800">
+    <div className="sticky bottom-0 px-4 py-2 flex gap-2 items-start border-b border-zinc-800">
       <Image
         src={sessionUser?.profileImageURL!}
         alt="session-user-image"

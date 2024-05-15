@@ -45,7 +45,7 @@ export default function DeleteCommentModal(props: DeleteTweetModalProps) {
         <div className="flex flex-col gap-4">
           <div>
             <h1 className="text-lg font-bold text-center">Delete Comment?</h1>
-            <h2 className="text-zinc-400 text-center">
+            <h2 className="text-zinc-400 text-sm text-center">
               Do you really want to delete this comment?
             </h2>
           </div>

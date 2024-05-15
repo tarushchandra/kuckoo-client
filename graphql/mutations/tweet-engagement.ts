@@ -29,3 +29,15 @@ export const deleteCommentMutation = graphql(/* GraphQL */ `
     deleteComment(tweetId: $tweetId, commentId: $commentId)
   }
 `);
+
+export const likeCommentMutation = graphql(/* GraphQL */ `
+  mutation LikeComment($commentId: String!) {
+    likeComment(commentId: $commentId)
+  }
+`);
+
+export const dislikeCommentMutation = graphql(/* GraphQL */ `
+  mutation DislikeComment($commentId: String!) {
+    dislikeComment(commentId: $commentId)
+  }
+`);

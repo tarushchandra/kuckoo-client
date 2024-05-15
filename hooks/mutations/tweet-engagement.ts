@@ -2,8 +2,10 @@ import { TweetEngagement } from "@/gql/graphql";
 import {
   createCommentMutation,
   deleteCommentMutation,
+  dislikeCommentMutation,
   dislikeTweetMutation,
   editCommentMutation,
+  likeCommentMutation,
   likeTweetMutation,
 } from "@/graphql/mutations/tweet-engagement";
 import { graphqlClient } from "@/lib/clients/graphql";
@@ -140,6 +142,8 @@ export const useDislikeTweet = (fns: OptimisticUpdaters) => {
   });
 };
 
+// -----------------------------------------------------------------------------------
+
 interface useCreateCommentParams {
   onCommentMutation?: { onSuccess: () => void; onError: () => void };
   setTextContent: React.Dispatch<React.SetStateAction<string>>;
@@ -266,5 +270,32 @@ export const useDeleteComment = () => {
       });
       toast.success("Comment deleted");
     },
+  });
+};
+
+interface CommentOptimisticUpdaters {
+  like: () => void;
+  dislike: () => void;
+}
+
+export const useLikeComment = (updaterFns: CommentOptimisticUpdaters) => {
+  const { like, dislike } = updaterFns;
+
+  return useMutation({
+    mutationFn: ({ commentId }: { commentId: string }) =>
+      graphqlClient.request(likeCommentMutation, { commentId }),
+    onMutate: () => like(),
+    onError: () => dislike(),
+  });
+};
+
+export const useDislikeComment = (updaterFns: CommentOptimisticUpdaters) => {
+  const { like, dislike } = updaterFns;
+
+  return useMutation({
+    mutationFn: ({ commentId }: { commentId: string }) =>
+      graphqlClient.request(dislikeCommentMutation, { commentId }),
+    onMutate: () => dislike(),
+    onError: () => like(),
   });
 };

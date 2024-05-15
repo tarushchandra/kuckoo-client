@@ -46,6 +46,8 @@ export const getTweetCommentsQuery = graphql(/* GraphQL */ `
           content
           createdAt
           updatedAt
+          likesCount
+          isCommentLikedBySessionUser
           author {
             firstName
             lastName
