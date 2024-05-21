@@ -39,10 +39,7 @@ export default async function TweetPage(props: TweetPageProps) {
   return (
     <>
       <Header className="p-4">
-        <div className="flex gap-2 items-center">
-          <ArrowLeft size={20} />
-          <h1 className="text-xl font-semibold">{firstName}'s Tweet</h1>
-        </div>
+        <h1 className="text-xl font-semibold">{firstName}'s Tweet</h1>
       </Header>
       <div className="px-4 pt-4 pb-2 flex flex-col gap-3 ">
         <div className="flex justify-between items-center">

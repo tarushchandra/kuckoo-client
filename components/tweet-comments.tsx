@@ -21,7 +21,7 @@ export default function TweetComments({ tweet }: { tweet: Tweet }) {
         mode={COMMENT_MODE.CREATE_COMMENT_ON_TWEET}
       />
 
-      <>
+      <div className="px-4">
         {tweetEngagement === undefined ? (
           Array.from({ length: 8 }, (_, index) => (
             <CommentCardLoading key={index} />
@@ -42,7 +42,7 @@ export default function TweetComments({ tweet }: { tweet: Tweet }) {
             )}
           </>
         )}
-      </>
+      </div>
     </div>
   );
 }

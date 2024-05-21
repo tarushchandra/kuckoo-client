@@ -2,6 +2,7 @@ import { Comment, Tweet, TweetEngagement } from "@/gql/graphql";
 import { useAuth } from "@/hooks/auth";
 import {
   useCreateComment,
+  useCreateCommentReply,
   useEditComment,
 } from "@/hooks/mutations/tweet-engagement";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
@@ -31,8 +32,17 @@ export default function CreateComment(props: CreateCommentProps) {
     placeholder,
   } = props;
 
-  const [textContent, setTextContent] = useState(comment?.content || "");
+  // console.log("tweet -", tweet);
+  // console.log("comment -", comment);
+  // console.log("onClose -", onClose);
+
   const { data: sessionUser } = useAuth(selectUser);
+  const [textContent, setTextContent] = useState(
+    mode === COMMENT_MODE.EDIT_COMMENT_ON_TWEET ||
+      mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT
+      ? comment?.content!
+      : ""
+  );
 
   const createCommentMutation = useCreateComment({
     onCommentMutation,
@@ -40,6 +50,10 @@ export default function CreateComment(props: CreateCommentProps) {
     onClose,
   });
   const editCommentMutation = useEditComment(onClose!);
+  const createCommentReplyMutation = useCreateCommentReply({
+    onCommentMutation,
+    onClose,
+  });
 
   const handleCreateComment = () => {
     if (createCommentMutation.isPending) return;
@@ -65,11 +79,25 @@ export default function CreateComment(props: CreateCommentProps) {
       tweetId: tweet.id,
       commentId: comment?.id!,
       content: textContent,
+      parentCommentId: comment?.parentComment?.id!,
     });
   };
 
+  const handleCreateCommentReply = () => {
+    if (createCommentReplyMutation.isPending) return;
+
+    createCommentReplyMutation.mutate({
+      tweetId: tweet.id,
+      commentId: comment?.id!,
+      content: textContent,
+      parentCommentId: comment?.parentComment?.id!,
+    });
+  };
+
+  const handleEditCommentReply = () => {};
+
   return (
-    <div className="sticky bottom-0 px-4 py-2 flex gap-2 items-start border-b border-zinc-800">
+    <div className="px-4 py-2 flex gap-2 items-start border-b border-zinc-800">
       <Image
         src={sessionUser?.profileImageURL!}
         alt="session-user-image"
@@ -78,8 +106,6 @@ export default function CreateComment(props: CreateCommentProps) {
         className="rounded-full"
       />
       <textarea
-        name="tweet-input"
-        id="tweet-input"
         rows={3}
         cols={50}
         className="bg-black text-sm focus:outline-none  my-[0.34rem] border-b border-b-zinc-800"
@@ -105,8 +131,11 @@ export default function CreateComment(props: CreateCommentProps) {
             Post
           </button>
         )}
+      </>
 
-        {mode === COMMENT_MODE.EDIT_COMMENT_ON_TWEET && (
+      <>
+        {(mode === COMMENT_MODE.EDIT_COMMENT_ON_TWEET ||
+          mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT) && (
           <button
             onClick={handleEditComment}
             disabled={
@@ -126,6 +155,36 @@ export default function CreateComment(props: CreateCommentProps) {
           </button>
         )}
       </>
+
+      <>
+        {mode === COMMENT_MODE.CREATE_REPLY_ON_COMMENT && (
+          <button
+            onClick={handleCreateCommentReply}
+            disabled={!textContent || createCommentReplyMutation.isPending}
+            className={mergeClasses(
+              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
+              createCommentReplyMutation.isPending && "disabled:cursor-wait"
+            )}
+          >
+            Reply
+          </button>
+        )}
+      </>
+
+      {/* <>
+        {mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT && (
+          <button
+            onClick={handleEditCommentReply}
+            disabled={!textContent || createCommentReplyMutation.isPending}
+            className={mergeClasses(
+              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
+              createCommentReplyMutation.isPending && "disabled:cursor-wait"
+            )}
+          >
+            Reply
+          </button>
+        )}
+      </> */}
     </div>
   );
 }

@@ -14,26 +14,42 @@ import {
   useDislikeComment,
   useLikeComment,
 } from "@/hooks/mutations/tweet-engagement";
+import CommentReplies from "./comment-replies";
 
 dayjs.extend(relativeTime);
+
+/* 
+  - jab reply successful ho jaye, tab automatically replies component showcase ho jaana 
+    chahiye
+  - jab reply successful ho jaye, toh query invalidate karne ke bajaye, uss particular
+    react variable ko access karo, and usme newly added comment (reply) ko append kardo.
+    (iss practice se mai lazy loading of replies ko implement kar sakta hu)
+*/
 
 interface CommentCardProps {
   comment: Comment;
   tweet: Tweet;
+  setParentCommentsCount?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function CommentCard({ comment, tweet }: CommentCardProps) {
+export default function CommentCard(props: CommentCardProps) {
+  const { comment, tweet, setParentCommentsCount } = props;
   const { data: sessionUser } = useAuth(selectUser);
-  const { content, createdAt, author, id } = comment;
+  const { content, createdAt, author, id, parentComment, repliedTo } = comment;
   const formattedCommentCreatedAt = dayjs(Number(createdAt)).fromNow();
 
   const [isDeleteCommentModalOpen, setIsDeleteCommentModalOpen] =
     useState(false);
   const [isEditCommentModalOpen, setIsEditCommentModalOpen] = useState(false);
+  const [isCreateReplyModalOpen, setIsCreateReplyModalOpen] = useState(false);
+  const [showReplies, setShowReplies] = useState(false);
 
   const [isCommentLikedBySessionUser, setIsCommentLikedBySessionUser] =
     useState(comment.isCommentLikedBySessionUser);
-  const [likesCount, setLikesCount] = useState(comment.likesCount);
+  const [likesCount, setLikesCount] = useState(comment.likesCount || 0);
+  const [commentsCount, setCommentsCount] = useState(
+    comment.commentsCount || 0
+  );
 
   const updaterFns = {
     like: () => {
@@ -48,8 +64,10 @@ export default function CommentCard({ comment, tweet }: CommentCardProps) {
   const likeCommentMutation = useLikeComment(updaterFns);
   const dislikeCommentMutation = useDislikeComment(updaterFns);
 
+  // console.log("comment -", comment);
+
   return (
-    <div className="hover:bg-zinc-950 px-4">
+    <>
       <div className="flex py-4 gap-2 items-start border-b border-zinc-800 w-full">
         <Link href={`/profile/${author?.username}`} className="">
           <Image
@@ -107,7 +125,17 @@ export default function CommentCard({ comment, tweet }: CommentCardProps) {
               )}
             </>
           </div>
-          <p>{content}</p>
+          <div className="flex gap-2">
+            {parentComment && (
+              <Link
+                href={`/profile/${repliedTo?.author?.username}`}
+                className="text-[#1D9BF0] font-semibold"
+              >
+                @{repliedTo?.author?.username}
+              </Link>
+            )}
+            <p>{content}</p>
+          </div>
           <div className="text-zinc-500 flex gap-4  pt-1">
             <>
               {isCommentLikedBySessionUser ? (
@@ -130,36 +158,98 @@ export default function CommentCard({ comment, tweet }: CommentCardProps) {
                 </div>
               )}
             </>
-            <div className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400">
-              <MessageCircle size={15} />
-              <h1 className="text-xs">0</h1>
-            </div>
+            <>
+              {!parentComment && (
+                <div
+                  onClick={() => setShowReplies((x) => !x)}
+                  className="flex gap-1 justify-center items-center cursor-pointer transition-all hover:text-zinc-400"
+                >
+                  {showReplies ? (
+                    <>
+                      <MessageCircle
+                        size={15}
+                        strokeWidth={0}
+                        className="fill-zinc-200"
+                      />
+                      <h1 className="text-xs text-zinc-200">{commentsCount}</h1>
+                    </>
+                  ) : (
+                    <>
+                      <MessageCircle size={15} />
+                      <h1 className="text-xs">{commentsCount || 0}</h1>
+                    </>
+                  )}
+                </div>
+              )}
+            </>
             <Reply
               size={15}
               className="cursor-pointer transition-all hover:text-zinc-400"
+              onClick={() => setIsCreateReplyModalOpen(true)}
             />
           </div>
         </div>
       </div>
 
       <>
+        {showReplies && !parentComment && (
+          <CommentReplies
+            commentId={id}
+            tweet={tweet}
+            setParentCommentsCount={setCommentsCount}
+          />
+        )}
+      </>
+
+      <>
         {isDeleteCommentModalOpen && (
           <DeleteCommentModal
             onClose={() => setIsDeleteCommentModalOpen(false)}
+            onCommentMutation={() =>
+              setParentCommentsCount
+                ? setParentCommentsCount((x) => x - 1)
+                : setCommentsCount((x) => x - 1)
+            }
             tweetId={tweet.id}
             comment={{ ...comment, createdAt: formattedCommentCreatedAt }}
           />
         )}
 
-        {isEditCommentModalOpen && (
+        {isEditCommentModalOpen &&
+          (!parentComment ? (
+            <PostCommentModal
+              mode={COMMENT_MODE.EDIT_COMMENT_ON_TWEET}
+              onClose={() => setIsEditCommentModalOpen(false)}
+              tweet={tweet}
+              comment={comment}
+            />
+          ) : (
+            <PostCommentModal
+              mode={COMMENT_MODE.EDIT_REPLY_ON_COMMENT}
+              onClose={() => setIsEditCommentModalOpen(false)}
+              tweet={tweet}
+              comment={comment}
+            />
+          ))}
+
+        {isCreateReplyModalOpen && (
           <PostCommentModal
-            mode={COMMENT_MODE.EDIT_COMMENT_ON_TWEET}
-            onClose={() => setIsEditCommentModalOpen(false)}
+            mode={COMMENT_MODE.CREATE_REPLY_ON_COMMENT}
+            onClose={() => setIsCreateReplyModalOpen(false)}
+            onCommentMutation={{
+              onSuccess: () => {
+                setShowReplies(true);
+                setParentCommentsCount
+                  ? setParentCommentsCount((x) => x + 1)
+                  : setCommentsCount((x) => x + 1);
+              },
+              onError: () => {},
+            }}
             tweet={tweet}
-            comment={comment}
+            comment={{ ...comment, createdAt: formattedCommentCreatedAt }}
           />
         )}
       </>
-    </div>
+    </>
   );
 }

@@ -1,13 +1,17 @@
 import Skeleton from "./skeleton";
 
-export default function CommentCardLoading() {
+export default function CommentCardLoading({
+  className,
+}: {
+  className?: string;
+}) {
   return (
-    <div className="px-4 ">
+    <div className={className}>
       <div className="py-4 flex gap-2 border-y border-t-0 border-zinc-800">
         <div>
           <Skeleton className="w-[40px] h-[40px] rounded-full" />
         </div>
-        <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col gap-1 w-full">
           <div className="flex gap-3 items-center">
             <Skeleton className="w-32 h-3" />
             <div className="flex gap-2 items-center">

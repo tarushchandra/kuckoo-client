@@ -45,14 +45,16 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       </div>
       <div className="mt-20">
         <div className="flex flex-col gap-4 px-4 py-2 border-b border-zinc-800">
-          <div className="flex justify-between items-end">
-            <Image
-              className="rounded-full top-28 left-4 border-4 border-black"
-              src={user?.profileImageURL ? user.profileImageURL : ""}
-              alt="user-image"
-              width={140}
-              height={140}
-            />
+          <div className="flex justify-between items-end ">
+            <div className="w-[140px] h-[140px] rounded-full">
+              <Image
+                className="rounded-full top-28 left-4 border-4 border-black object-cover"
+                src={user?.profileImageURL ? user.profileImageURL : ""}
+                alt="user-image"
+                width={140}
+                height={140}
+              />
+            </div>
             <SocialButtons
               targetUser={{ ...user, username }}
               className="px-4 py-2 text-md"

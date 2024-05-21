@@ -41,3 +41,13 @@ export const dislikeCommentMutation = graphql(/* GraphQL */ `
     dislikeComment(commentId: $commentId)
   }
 `);
+
+export const createCommentReplyMutation = graphql(/* GraphQL */ `
+  mutation CreateReply(
+    $tweetId: String!
+    $commentId: String!
+    $content: String!
+  ) {
+    createReply(tweetId: $tweetId, commentId: $commentId, content: $content)
+  }
+`);

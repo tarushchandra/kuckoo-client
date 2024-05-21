@@ -10,10 +10,11 @@ interface DeleteTweetModalProps {
   onClose: () => void;
   tweetId: string;
   comment: Comment;
+  onCommentMutation: () => void;
 }
 
 export default function DeleteCommentModal(props: DeleteTweetModalProps) {
-  const { onClose, tweetId, comment } = props;
+  const { onClose, tweetId, comment, onCommentMutation } = props;
   const { data: sessionUser } = useAuth(selectUser);
   const deleteCommentMutation = useDeleteComment();
 
@@ -62,7 +63,9 @@ export default function DeleteCommentModal(props: DeleteTweetModalProps) {
                 await deleteCommentMutation.mutateAsync({
                   tweetId,
                   commentId: comment.id,
+                  parentCommentId: comment.parentComment?.id!,
                 });
+                onCommentMutation();
                 onClose();
               }}
               disabled={deleteCommentMutation.isPending}

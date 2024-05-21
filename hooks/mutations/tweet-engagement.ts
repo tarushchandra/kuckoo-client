@@ -1,6 +1,7 @@
 import { TweetEngagement } from "@/gql/graphql";
 import {
   createCommentMutation,
+  createCommentReplyMutation,
   deleteCommentMutation,
   dislikeCommentMutation,
   dislikeTweetMutation,
@@ -57,6 +58,7 @@ export const useLikeTweet = (fns: OptimisticUpdaters) => {
             return {
               getTweet: {
                 tweetEngagement: {
+                  ...prev.getTweet.tweetEngagement,
                   likesCount: prev?.getTweet?.tweetEngagement.likesCount + 1,
                   isTweetLikedBySessionUser: true,
                 },
@@ -83,6 +85,11 @@ export const useLikeTweet = (fns: OptimisticUpdaters) => {
       const { setIsTweetLikedBySessionUser, setLikesCount } = fns;
       setIsTweetLikedBySessionUser(false);
       setLikesCount((x) => x - 1);
+    },
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["tweet-engagement", variables.tweetId],
+      });
     },
   });
 };
@@ -112,6 +119,7 @@ export const useDislikeTweet = (fns: OptimisticUpdaters) => {
             return {
               getTweet: {
                 tweetEngagement: {
+                  ...prev.getTweet.tweetEngagement,
                   likesCount: prev?.getTweet?.tweetEngagement.likesCount - 1,
                   isTweetLikedBySessionUser: false,
                 },
@@ -138,6 +146,11 @@ export const useDislikeTweet = (fns: OptimisticUpdaters) => {
       const { setIsTweetLikedBySessionUser, setLikesCount } = fns;
       setIsTweetLikedBySessionUser(true);
       setLikesCount((x) => x + 1);
+    },
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["tweet-engagement", variables.tweetId],
+      });
     },
   });
 };
@@ -237,6 +250,7 @@ export const useEditComment = (onClose: () => void) => {
       commentId: string;
       content: string;
       tweetId: string;
+      parentCommentId: string;
     }) =>
       graphqlClient.request(editCommentMutation, {
         commentId: variables.commentId,
@@ -246,6 +260,15 @@ export const useEditComment = (onClose: () => void) => {
       queryClient.invalidateQueries({
         queryKey: ["tweet-comments", variables.tweetId],
       });
+      queryClient.invalidateQueries({
+        queryKey: [
+          "comment-replies",
+          variables.parentCommentId
+            ? variables.parentCommentId
+            : variables.tweetId,
+        ],
+      });
+
       toast.success("Comment updated");
       onClose();
     },
@@ -254,7 +277,11 @@ export const useEditComment = (onClose: () => void) => {
 
 export const useDeleteComment = () => {
   return useMutation({
-    mutationFn: (variables: { tweetId: string; commentId: string }) =>
+    mutationFn: (variables: {
+      tweetId: string;
+      commentId: string;
+      parentCommentId: string;
+    }) =>
       graphqlClient.request(deleteCommentMutation, {
         tweetId: variables.tweetId,
         commentId: variables.commentId,
@@ -262,11 +289,30 @@ export const useDeleteComment = () => {
     onSuccess: async (_, variables) => {
       console.log("variables -", variables);
 
+      await queryClient.setQueryData(
+        ["tweet-engagement", variables.tweetId],
+        (prev: any) => ({
+          getTweet: {
+            tweetEngagement: {
+              ...prev.getTweet.tweetEngagement,
+              commentsCount: prev.getTweet.tweetEngagement.commentsCount - 1,
+            },
+          },
+        })
+      );
+
+      if (!variables.parentCommentId)
+        await queryClient.invalidateQueries({
+          queryKey: ["tweet-comments", variables.tweetId],
+        });
+
       await queryClient.invalidateQueries({
-        queryKey: ["tweet-comments", variables.tweetId],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["tweet-engagement", variables.tweetId],
+        queryKey: [
+          "comment-replies",
+          variables.parentCommentId
+            ? variables.parentCommentId
+            : variables.commentId,
+        ],
       });
       toast.success("Comment deleted");
     },
@@ -297,5 +343,54 @@ export const useDislikeComment = (updaterFns: CommentOptimisticUpdaters) => {
       graphqlClient.request(dislikeCommentMutation, { commentId }),
     onMutate: () => dislike(),
     onError: () => like(),
+  });
+};
+
+export const useCreateCommentReply = ({
+  onClose,
+  onCommentMutation,
+}: {
+  onClose?: () => void;
+  onCommentMutation?: { onSuccess: () => void; onError: () => void };
+}) => {
+  return useMutation({
+    mutationFn: (variables: {
+      tweetId: string;
+      commentId: string;
+      content: string;
+      parentCommentId: string;
+    }) =>
+      graphqlClient.request(createCommentReplyMutation, {
+        tweetId: variables.tweetId,
+        commentId: variables.commentId,
+        content: variables.content,
+      }),
+
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: [
+          "comment-replies",
+          variables.parentCommentId
+            ? variables.parentCommentId
+            : variables.commentId,
+        ],
+      });
+
+      await queryClient.setQueryData(
+        ["tweet-engagement", variables.tweetId],
+        (prev: any) => ({
+          getTweet: {
+            tweetEngagement: {
+              ...prev.getTweet.tweetEngagement,
+              commentsCount: prev.getTweet.tweetEngagement.commentsCount + 1,
+            },
+          },
+        })
+      );
+
+      onClose && onClose();
+      onCommentMutation && onCommentMutation.onSuccess();
+      toast.success("Replied successfully!");
+    },
   });
 };

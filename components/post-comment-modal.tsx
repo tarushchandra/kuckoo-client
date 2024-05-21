@@ -10,7 +10,8 @@ import { X } from "lucide-react";
 export enum COMMENT_MODE {
   CREATE_COMMENT_ON_TWEET,
   EDIT_COMMENT_ON_TWEET,
-  CREATE_COMMENT_ON_COMMENT,
+  CREATE_REPLY_ON_COMMENT,
+  EDIT_REPLY_ON_COMMENT,
 }
 
 interface PostCommentModalProps {
@@ -32,7 +33,7 @@ export default function PostCommentModal(props: PostCommentModalProps) {
         <div className="p-6 w-[35rem]">
           {mode === COMMENT_MODE.CREATE_COMMENT_ON_TWEET && (
             <PostComment
-              mode={COMMENT_MODE.CREATE_COMMENT_ON_TWEET}
+              mode={mode}
               onClose={onClose}
               tweet={tweet}
               tweetEngagement={tweetEngagement}
@@ -42,19 +43,31 @@ export default function PostCommentModal(props: PostCommentModalProps) {
 
           {mode === COMMENT_MODE.EDIT_COMMENT_ON_TWEET && (
             <PostComment
-              mode={COMMENT_MODE.EDIT_COMMENT_ON_TWEET}
+              mode={mode}
               tweet={tweet}
               comment={comment as any}
               onClose={onClose}
             />
           )}
 
-          {/* {mode === MODE.CREATE_COMMENT_ON_COMMENT && (
+          {mode === COMMENT_MODE.CREATE_REPLY_ON_COMMENT && (
             <PostComment
-              mode={MODE.CREATE_COMMENT_ON_COMMENT}
+              mode={mode}
               onClose={onClose}
+              tweet={tweet}
+              comment={comment as any}
+              onCommentMutation={onCommentMutation}
             />
-          )} */}
+          )}
+
+          {mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT && (
+            <PostComment
+              mode={mode}
+              onClose={onClose}
+              tweet={tweet}
+              comment={comment as any}
+            />
+          )}
         </div>
       </>
       <X

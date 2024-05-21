@@ -54,6 +54,59 @@ export const getTweetCommentsQuery = graphql(/* GraphQL */ `
             username
             profileImageURL
           }
+
+          commentsCount
+          parentComment {
+            id
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const getCommentsOfCommentQuery = graphql(/* GraphQL */ `
+  query GetCommentsOfComment($commentId: String!) {
+    getCommentsOfComment(commentId: $commentId) {
+      id
+      content
+      createdAt
+      updatedAt
+      author {
+        firstName
+        lastName
+        username
+        profileImageURL
+      }
+
+      likesCount
+      isCommentLikedBySessionUser
+
+      parentComment {
+        id
+      }
+
+      repliedTo {
+        id
+        author {
+          username
+        }
+      }
+    }
+  }
+`);
+
+export const getRepliedToComment = graphql(/* GraphQL */ `
+  query getRepliedToComment($commentId: String!, $tweetId: String!) {
+    getComment(commentId: $commentId, tweetId: $tweetId) {
+      repliedTo {
+        content
+        createdAt
+        author {
+          firstName
+          lastName
+          username
+          profileImageURL
         }
       }
     }

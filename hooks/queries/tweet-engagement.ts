@@ -1,6 +1,8 @@
 import {
+  getCommentsOfCommentQuery,
   getDetailedLikedByQuery,
   getLikedByQuery,
+  getRepliedToComment,
   getTweetCommentsQuery,
   getTweetEngagementQuery,
 } from "@/graphql/queries/tweet-engagement";
@@ -67,4 +69,32 @@ export const useTweetComments = (tweetId: string) => {
   }, [tweetId]);
 
   return data?.getTweet?.tweetEngagement;
+};
+
+export const useCommentReplies = (commentId: string) => {
+  const { data } = useQuery({
+    queryKey: ["comment-replies", commentId],
+    queryFn: () =>
+      graphqlClient.request(getCommentsOfCommentQuery, { commentId }),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({
+        queryKey: ["comment-replies", commentId],
+      });
+    };
+  }, [commentId]);
+
+  return data?.getCommentsOfComment;
+};
+
+export const useRepliedToComment = (commentId: string, tweetId: string) => {
+  const { data } = useQuery({
+    queryKey: ["replied-to-comment", tweetId, commentId],
+    queryFn: () =>
+      graphqlClient.request(getRepliedToComment, { tweetId, commentId }),
+  });
+
+  return data?.getComment?.repliedTo;
 };
