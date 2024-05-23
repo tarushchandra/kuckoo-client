@@ -1,14 +1,13 @@
 "use client";
 import { TweetEngagement as TweetEnagementType, User } from "@/gql/graphql";
 import dayjs from "dayjs";
-import { FilePenLine, Heart, MessageCircle, Send, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Send } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
-import DeleteTweetModal from "./delete-tweet-modal";
 import Link from "next/link";
-import PostTweetModal, { MODE } from "./post-tweet-modal";
 import TweetEngagement from "./tweet-engagement";
+import TweetEngagementForTweetCard from "./tweet-engagement";
 
 dayjs.extend(relativeTime);
 
@@ -70,7 +69,11 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
           />
         </Link>
         <div className="flex flex-col gap-2 w-full">
-          <Link href={`/tweet/${id}`} className="flex flex-col gap-[0.1rem]">
+          <Link
+            href={`/tweet/${id}`}
+            scroll={false}
+            className="flex flex-col gap-[0.1rem]"
+          >
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
                 <Link
@@ -109,7 +112,7 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
               )}
             </div>
           </Link>
-          <TweetEngagement
+          <TweetEngagementForTweetCard
             tweet={{
               ...tweet,
               createdAt: formattedCreatedAt,

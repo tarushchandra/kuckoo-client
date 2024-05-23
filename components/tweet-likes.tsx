@@ -15,7 +15,10 @@ export default function TweetLikes({ tweetId }: MutualTweetLikersProps) {
   const tweetEngagement = useTweetsLikedBy(tweetId);
   const [isLikedByModalOpen, setIsLikedByModalOpen] = useState(false);
 
-  if (tweetEngagement === undefined) return <Skeleton className="w-72 h-5" />;
+  // if (tweetEngagement === undefined) return <div />;
+
+  if (tweetEngagement === undefined) return <Skeleton className="w-32 h-4" />;
+
   if (!tweetEngagement || tweetEngagement?.likes?.length === 0)
     return <h1 className="text-sm font-semibold text-zinc-500">No likes</h1>;
 

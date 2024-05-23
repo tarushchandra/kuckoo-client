@@ -69,7 +69,7 @@ export default function CommentCard(props: CommentCardProps) {
   return (
     <>
       <div className="flex py-4 gap-2 items-start border-b border-zinc-800 w-full">
-        <Link href={`/profile/${author?.username}`} className="">
+        <Link href={`/profile/${author?.username}`}>
           <Image
             src={author?.profileImageURL!}
             alt="session-user-image"
@@ -79,7 +79,7 @@ export default function CommentCard(props: CommentCardProps) {
           />
         </Link>
         <div className="text-sm flex flex-col w-full">
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <div className="flex gap-2 items-center">
               <Link
                 href={`/profile/${author?.username}`}
@@ -91,14 +91,14 @@ export default function CommentCard(props: CommentCardProps) {
                 <span>@{author?.username}</span>
                 <div className="bg-zinc-500 w-1 h-1 rounded-full" />
                 <span>{formattedCommentCreatedAt}</span>
-                <>
+                {/* <>
                   {comment.createdAt !== comment.updatedAt && (
                     <>
                       <div className="bg-zinc-500 w-1 h-1 rounded-full" />
                       <h2>edited</h2>
                     </>
                   )}
-                </>
+                </> */}
               </div>
             </div>
             <>

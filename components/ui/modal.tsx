@@ -1,4 +1,5 @@
 "use client";
+import mergeClasses from "@/utils/mergeClasses";
 import React, { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -14,9 +15,17 @@ interface ModalProps {
   children: React.ReactNode;
   wrapperId: string;
   onClose: () => void;
+  modalClassName?: string;
+  bgClassName?: string;
 }
 
-export default function Modal({ children, wrapperId, onClose }: ModalProps) {
+export default function Modal({
+  children,
+  wrapperId,
+  onClose,
+  modalClassName,
+  bgClassName,
+}: ModalProps) {
   const [wrapperElement, setWrapperElement] = useState<HTMLElement>();
 
   useLayoutEffect(() => {
@@ -36,9 +45,17 @@ export default function Modal({ children, wrapperId, onClose }: ModalProps) {
     <>
       <div
         onClick={onClose}
-        className="fixed left-0 top-0 w-screen h-screen bg-black opacity-[0.93] z-50"
+        className={mergeClasses(
+          "fixed left-0 top-0 w-screen h-screen bg-black opacity-[0.85] z-50",
+          bgClassName
+        )}
       />
-      <div className="fixed left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 z-[1000] rounded-lg bg-black border border-zinc-800">
+      <div
+        className={mergeClasses(
+          "fixed left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 z-[500] rounded-lg bg-black border border-zinc-800",
+          modalClassName
+        )}
+      >
         {children}
       </div>
     </>,

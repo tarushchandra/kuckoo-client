@@ -13,7 +13,7 @@ export default function TweetComments({ tweet }: { tweet: Tweet }) {
   // console.log("comments -", tweetEngagement?.comments);
 
   return (
-    <div className="border-t border-zinc-800">
+    <div className="border-t border-zinc-800 overflow-y-auto">
       <CreateComment
         tweet={tweet}
         tweetEngagement={tweetEngagement as any}
@@ -23,11 +23,11 @@ export default function TweetComments({ tweet }: { tweet: Tweet }) {
 
       <div className="px-4">
         {tweetEngagement === undefined ? (
-          Array.from({ length: 8 }, (_, index) => (
+          Array.from({ length: 7 }, (_, index) => (
             <CommentCardLoading key={index} />
           ))
         ) : (
-          <>
+          <div className="">
             {tweetEngagement?.comments &&
             tweetEngagement.comments.length !== 0 ? (
               tweetEngagement.comments.map((comment: any) => (
@@ -40,7 +40,7 @@ export default function TweetComments({ tweet }: { tweet: Tweet }) {
             ) : (
               <h1 className="text-center pt-2 font-semibold">No comments</h1>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>

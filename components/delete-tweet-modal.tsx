@@ -17,6 +17,8 @@ export default function DeleteTweetModal(props: DeleteTweetModalProps) {
     <Modal
       wrapperId="delete-tweet-modal"
       onClose={() => setIsDeleteTweetModalOpen(false)}
+      modalClassName="z-[1000]"
+      bgClassName="z-[500]"
     >
       <div className="p-8 flex flex-col gap-4">
         <div>

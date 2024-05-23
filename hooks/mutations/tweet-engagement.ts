@@ -23,7 +23,7 @@ interface OptimisticUpdaters {
   setCommentsCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const useLikeTweet = (fns: OptimisticUpdaters) => {
+export const useLikeTweet = (fns?: OptimisticUpdaters) => {
   const path = usePathname();
 
   return useMutation({
@@ -32,7 +32,7 @@ export const useLikeTweet = (fns: OptimisticUpdaters) => {
     onSuccess: (variables, params) =>
       queryClient.invalidateQueries({ queryKey: ["liked-by", params.tweetId] }),
     onMutate: async (variables) => {
-      if (path.includes("tweet")) {
+      if (!fns) {
         await queryClient.cancelQueries({
           queryKey: ["tweet-engagement", variables.tweetId],
         });
@@ -74,7 +74,7 @@ export const useLikeTweet = (fns: OptimisticUpdaters) => {
       setLikesCount((x) => x + 1);
     },
     onError: (err, params, context: any) => {
-      if (path.includes("tweet")) {
+      if (!fns) {
         queryClient.setQueryData(
           ["tweet-engagement", params.tweetId],
           context.previousTweetEngagement
@@ -94,7 +94,7 @@ export const useLikeTweet = (fns: OptimisticUpdaters) => {
   });
 };
 
-export const useDislikeTweet = (fns: OptimisticUpdaters) => {
+export const useDislikeTweet = (fns?: OptimisticUpdaters) => {
   const path = usePathname();
 
   return useMutation({
@@ -103,7 +103,7 @@ export const useDislikeTweet = (fns: OptimisticUpdaters) => {
     onSuccess: (data, params) =>
       queryClient.invalidateQueries({ queryKey: ["liked-by", params.tweetId] }),
     onMutate: async (variables) => {
-      if (path.includes("tweet")) {
+      if (!fns) {
         await queryClient.cancelQueries({
           queryKey: ["tweet-engagement", variables.tweetId],
         });
@@ -135,7 +135,7 @@ export const useDislikeTweet = (fns: OptimisticUpdaters) => {
       setLikesCount((x) => x - 1);
     },
     onError: (err, params, context: any) => {
-      if (path.includes("tweet")) {
+      if (!fns) {
         queryClient.setQueryData(
           ["tweet-engagement", params.tweetId],
           context.previousTweetEngagement

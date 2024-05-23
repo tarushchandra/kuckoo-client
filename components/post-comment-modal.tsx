@@ -28,7 +28,12 @@ export default function PostCommentModal(props: PostCommentModalProps) {
     props;
 
   return (
-    <Modal wrapperId="post-comment-modal" onClose={onClose}>
+    <Modal
+      wrapperId="post-comment-modal"
+      onClose={onClose}
+      modalClassName="z-[1000]"
+      bgClassName="z-[500]"
+    >
       <>
         <div className="p-6 w-[35rem]">
           {mode === COMMENT_MODE.CREATE_COMMENT_ON_TWEET && (

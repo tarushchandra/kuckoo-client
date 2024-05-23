@@ -7,13 +7,13 @@ import { useEffect } from "react";
 
 export const useUserTweets = (username: string) => {
   const { data } = useQuery({
-    queryKey: ["tweets", username],
+    queryKey: ["user-tweets", username],
     queryFn: () => graphqlClient.request(getUserTweetsQuery, { username }),
   });
 
   useEffect(() => {
     return () => {
-      queryClient.removeQueries({ queryKey: ["tweets", username] });
+      queryClient.invalidateQueries({ queryKey: ["user-tweets", username] });
     };
   }, [username]);
 
@@ -22,13 +22,15 @@ export const useUserTweets = (username: string) => {
 
 export const useTweetsFeed = (sessionUsername: string) => {
   const { data } = useQuery({
-    queryKey: ["tweets", sessionUsername],
+    queryKey: ["tweets-feed", sessionUsername],
     queryFn: () => graphqlClient.request(getTweetsFeedQuery),
   });
 
   useEffect(() => {
     return () => {
-      queryClient.removeQueries({ queryKey: ["tweets", sessionUsername] });
+      queryClient.invalidateQueries({
+        queryKey: ["tweets-feed", sessionUsername],
+      });
     };
   }, [sessionUsername]);
 

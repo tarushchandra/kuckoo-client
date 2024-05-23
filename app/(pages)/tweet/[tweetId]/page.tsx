@@ -1,7 +1,9 @@
 import TweetComments from "@/components/tweet-comments";
 import EditOrDeleteTweetButtons from "@/components/edit-delete-tweet-buttons";
 import Header from "@/components/header";
-import TweetEngagement from "@/components/tweet-engagement";
+import TweetEngagement, {
+  TweetEngagementForModal,
+} from "@/components/tweet-engagement";
 import { getTweet } from "@/services/tweet";
 import dayjs from "dayjs";
 import { ArrowLeft } from "lucide-react";
@@ -35,6 +37,8 @@ export default async function TweetPage(props: TweetPageProps) {
   const formattedUpdatedDate = tweetUpdatedAt.format("MMMM D, YYYY");
   const formattedUpdatedTime = tweetUpdatedAt.format("h:mm A");
   const formattedCreatedDateFromNow = tweetCreatedAt.fromNow();
+
+  // console.log("tweet page");
 
   return (
     <>
@@ -100,7 +104,7 @@ export default async function TweetPage(props: TweetPageProps) {
             </div>
           )}
         </>
-        <TweetEngagement
+        <TweetEngagementForModal
           tweet={{ ...tweet, createdAt: formattedCreatedDateFromNow }}
         />
       </div>

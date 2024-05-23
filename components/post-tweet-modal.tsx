@@ -17,7 +17,12 @@ export default function PostTweetModal(props: PostTweetModalProps) {
   const { onClose, mode, tweet } = props;
 
   return (
-    <Modal wrapperId="post-tweet-modal" onClose={onClose}>
+    <Modal
+      wrapperId="post-tweet-modal"
+      onClose={onClose}
+      modalClassName="z-[1000]"
+      bgClassName="z-[500]"
+    >
       <div className="p-6">
         {mode === MODE.CREATE_TWEET && (
           <>

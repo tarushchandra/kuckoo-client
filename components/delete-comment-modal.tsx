@@ -19,7 +19,12 @@ export default function DeleteCommentModal(props: DeleteTweetModalProps) {
   const deleteCommentMutation = useDeleteComment();
 
   return (
-    <Modal wrapperId="delete-tweet-modal" onClose={onClose}>
+    <Modal
+      wrapperId="delete-tweet-modal"
+      onClose={onClose}
+      modalClassName="z-[1000]"
+      bgClassName="z-[500]"
+    >
       <div className="p-6 flex flex-col gap-4 w-[35rem]">
         <div className="flex py-4 gap-2 items-start border-b border-zinc-800">
           <Image

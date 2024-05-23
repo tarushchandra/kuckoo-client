@@ -13,7 +13,12 @@ export default function TweetLikesModal({ tweetId, onClose }: TweetLikesModal) {
   const users = useDetailedTweetsLikedBy(tweetId);
 
   return (
-    <Modal wrapperId="liked-by-modal" onClose={onClose}>
+    <Modal
+      wrapperId="liked-by-modal"
+      onClose={onClose}
+      modalClassName="z-[1000]"
+      bgClassName="z-[500]"
+    >
       <div className="w-[25rem] h-[22rem] pt-4 flex flex-col gap-2">
         <h1 className="text-md font-semibold text-center">Likes</h1>
         <div className="overflow-y-auto h-full border-t border-zinc-800 p-2">
