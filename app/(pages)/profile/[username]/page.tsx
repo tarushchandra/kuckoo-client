@@ -2,7 +2,7 @@ import FeedCard from "@/components/tweet-card";
 import Header from "@/components/header";
 import MutualFollowers from "@/components/mutual-followers";
 import SocialButtons from "@/components/social-buttons";
-import TweetsFeed from "@/components/tweets-feed";
+import TweetsFeed from "@/components/tweets";
 import { getUser } from "@/services/user";
 import { CalendarDays } from "lucide-react";
 import { unstable_noStore as noStore } from "next/cache";
@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import dayjs from "dayjs";
+import UserTweets from "@/components/user-tweets";
 
 export interface ProfilePageProps {
   params: {
@@ -25,9 +26,6 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const dateJoined = dayjs(Number(user.createdAt));
   const formattedDate = dateJoined.format("MMMM D, YYYY");
 
-  // console.log("user -", user);
-  // console.log("dateJoined -", formattedDate);
-
   return (
     <>
       <Header className="px-4 py-2">
@@ -35,9 +33,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
           <h1 className="text-lg font-semibold">
             {user?.firstName} {user?.lastName}
           </h1>
-          <h2 className="text-sm text-zinc-500">
-            {user.tweets?.length} Tweets
-          </h2>
+          <h2 className="text-sm text-zinc-500">{user.tweetsCount} Tweets</h2>
         </div>
       </Header>
       <div className="relative">
@@ -92,7 +88,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
             <MutualFollowers myUsername={username} />
           </div>
         </div>
-        <TweetsFeed targetUser={{ ...user, username }} />
+        <UserTweets user={{ ...user, username }} />
       </div>
     </>
   );

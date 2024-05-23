@@ -16,9 +16,7 @@ export const getUserQuery = graphql(/* GraphQL */ `
       followersCount
       followingsCount
       createdAt
-      tweets {
-        id
-      }
+      tweetsCount
     }
   }
 `);

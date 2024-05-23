@@ -38,7 +38,7 @@ const documents = {
     "\n  query GetTweet($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      content\n      id\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n    }\n  }\n": types.GetTweetDocument,
     "\n  query GetTweetsFeed {\n    getTweetsFeed {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n      }\n    }\n  }\n": types.GetTweetsFeedDocument,
     "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n": types.GetCustomUserTokenQueryDocument,
-    "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweets {\n        id\n      }\n    }\n  }\n": types.GetUserQueryDocument,
+    "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweetsCount\n    }\n  }\n": types.GetUserQueryDocument,
     "\n  query GetSessionUserQuery {\n    getSessionUser {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetSessionUserQueryDocument,
     "\n  query GetAllUsersQuery {\n    getAllUsers {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n      followers {\n        username\n      }\n    }\n  }\n": types.GetAllUsersQueryDocument,
     "\n  query IsUsernameExistQuery($username: String!) {\n    isUsernameExist(username: $username)\n  }\n": types.IsUsernameExistQueryDocument,
@@ -168,7 +168,7 @@ export function graphql(source: "\n  query getCustomUserTokenQuery($googleToken:
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweets {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweets {\n        id\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweetsCount\n    }\n  }\n"): (typeof documents)["\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweetsCount\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
