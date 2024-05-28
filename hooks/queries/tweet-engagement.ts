@@ -19,7 +19,7 @@ export const useTweetEngagement = (tweetId: string) => {
 
   useEffect(() => {
     return () => {
-      queryClient.invalidateQueries({
+      queryClient.removeQueries({
         queryKey: ["tweet-engagement", tweetId],
       });
     };
@@ -66,7 +66,7 @@ export const useTweetComments = (tweetId: string) => {
 
   useEffect(() => {
     return () => {
-      queryClient.invalidateQueries({ queryKey: ["tweet-comments", tweetId] });
+      queryClient.removeQueries({ queryKey: ["tweet-comments", tweetId] });
     };
   }, [tweetId]);
 

@@ -5,12 +5,22 @@ import Image from "next/image";
 import { BsTwitter } from "react-icons/bs";
 import { AiOutlineEllipsis } from "react-icons/ai";
 import { useAuth } from "@/hooks/auth";
-import Skeleton from "./ui/skeleton";
-import { selectAuth, selectUser } from "@/lib/redux/features/auth/authSlice";
-import { Bell, Bookmark, Home, Mail, Search, User } from "lucide-react";
+import { selectUser } from "@/lib/redux/features/auth/authSlice";
+import {
+  Bell,
+  Bookmark,
+  Home,
+  Mail,
+  Search,
+  User,
+  MailOpen,
+} from "lucide-react";
 import Link from "next/link";
 import PostTweetModal, { MODE } from "./post-tweet-modal";
 import SignOutModal from "./signout-modal";
+import Badge from "./ui/badge";
+import { useUnseenNotificationsCount } from "@/hooks/queries/notification";
+import { usePathname } from "next/navigation";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -18,41 +28,10 @@ interface SideBarMenuI {
   link: string;
 }
 
-export const sidebarMenuItems: SideBarMenuI[] = [
-  {
-    title: "Home",
-    icon: <Home />,
-    link: "/home",
-  },
-  {
-    title: "Search",
-    icon: <Search />,
-    link: "/search",
-  },
-  {
-    title: "Messages",
-    icon: <Mail />,
-    link: "/messages",
-  },
-  {
-    title: "Notifications",
-    icon: <Bell />,
-    link: "/notifications",
-  },
-  {
-    title: "Bookmarks",
-    icon: <Bookmark />,
-    link: "/bookmarks",
-  },
-  {
-    title: "Profile",
-    icon: <User />,
-    link: "/profile",
-  },
-];
-
 const SideBar: React.FC = () => {
   const { data: sessionUser } = useAuth(selectUser);
+  const unseenNotificationsCount = useUnseenNotificationsCount();
+  const path = usePathname();
 
   const [isCreateTweetModalOpen, setIsCreateTweetModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
@@ -68,22 +47,128 @@ const SideBar: React.FC = () => {
           </div>
           <div className="flex flex-col gap-6 mr-10">
             <div className="flex flex-col gap-2">
-              {sidebarMenuItems.map((item) => {
-                return (
-                  <Link
-                    key={item.title}
-                    href={
-                      item.link === "/profile"
-                        ? `/profile/${sessionUser?.username}`
-                        : item.link
-                    }
-                    className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
-                  >
-                    <span>{item.icon}</span>
-                    <span className="text-xl">{item.title}</span>
-                  </Link>
-                );
-              })}
+              <Link
+                href="/home"
+                className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
+              >
+                {path.includes("home") ? (
+                  <>
+                    <Home strokeWidth={3} absoluteStrokeWidth={false} />
+                    <h2 className="text-xl font-semibold">Home</h2>
+                  </>
+                ) : (
+                  <>
+                    <Home />
+                    <h2 className="text-xl">Home</h2>
+                  </>
+                )}
+              </Link>
+              <Link
+                href="/search"
+                className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
+              >
+                {path.includes("search") ? (
+                  <>
+                    <Search strokeWidth={3} />
+                    <h2 className="text-xl font-semibold">Search</h2>
+                  </>
+                ) : (
+                  <>
+                    <Search />
+                    <h2 className="text-xl">Search</h2>
+                  </>
+                )}
+              </Link>
+              <Link
+                href="/messages"
+                className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
+              >
+                {path.includes("messages") ? (
+                  <>
+                    <div className="relative">
+                      <Mail strokeWidth={3} />
+                      {/* <Badge className="-mt-[0.5rem] -mr-[0.3rem]">5</Badge> */}
+                    </div>
+                    <h2 className="text-xl font-semibold">Messages</h2>
+                  </>
+                ) : (
+                  <>
+                    <div className="relative">
+                      <Mail />
+                      {/* <Badge className="-mt-[0.5rem] -mr-[0.3rem]">5</Badge> */}
+                    </div>
+                    <h2 className="text-xl">Messages</h2>
+                  </>
+                )}
+              </Link>
+              <Link
+                href="/notifications"
+                className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
+              >
+                {path.includes("notifications") ? (
+                  <>
+                    <div className="relative">
+                      <Bell className="fill-white" />
+                      <>
+                        {unseenNotificationsCount &&
+                        unseenNotificationsCount > 0 ? (
+                          <Badge className="-mt-[0.5rem] -mr-[0.2rem]">
+                            {unseenNotificationsCount}
+                          </Badge>
+                        ) : null}
+                      </>
+                    </div>
+                    <h2 className="text-xl font-semibold">Notifications</h2>
+                  </>
+                ) : (
+                  <>
+                    <div className="relative">
+                      <Bell />
+                      <>
+                        {unseenNotificationsCount &&
+                        unseenNotificationsCount > 0 ? (
+                          <Badge className="-mt-[0.5rem] -mr-[0.2rem]">
+                            {unseenNotificationsCount}
+                          </Badge>
+                        ) : null}
+                      </>
+                    </div>
+                    <h2 className="text-xl">Notifications</h2>
+                  </>
+                )}
+              </Link>
+              <Link
+                href="/bookmarks"
+                className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
+              >
+                {path.includes("bookmarks") ? (
+                  <>
+                    <Bookmark className="fill-white" />
+                    <h2 className="text-xl font-semibold">Bookmarks</h2>
+                  </>
+                ) : (
+                  <>
+                    <Bookmark />
+                    <h2 className="text-xl">Bookmarks</h2>
+                  </>
+                )}
+              </Link>
+              <Link
+                href={`/profile/${sessionUser?.username}`}
+                className="flex justify-start items-center gap-3 px-4 py-3 w-fit transition-all rounded-full cursor-pointer hover:bg-zinc-900"
+              >
+                {path.includes("profile") ? (
+                  <>
+                    <User className="fill-white" />
+                    <h2 className="text-xl font-semibold">Profile</h2>
+                  </>
+                ) : (
+                  <>
+                    <User />
+                    <h2 className="text-xl">Profile</h2>
+                  </>
+                )}
+              </Link>
             </div>
             <button
               onClick={() => setIsCreateTweetModalOpen(true)}

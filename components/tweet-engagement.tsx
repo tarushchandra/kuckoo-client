@@ -196,7 +196,7 @@ interface TweetEngagementForTweetCardProps {
 export default function TweetEngagementForTweetCard(
   props: TweetEngagementForTweetCardProps
 ) {
-  console.log("tweet engagement props -", props);
+  // console.log("tweet engagement props -", props);
 
   const { tweet } = props;
   const tweetEngagement = tweet.tweetEngagement;
@@ -258,7 +258,7 @@ interface TweetEngagementForModalProps {
 }
 
 export function TweetEngagementForModal(props: TweetEngagementForModalProps) {
-  console.log("tweet engagement props -", props);
+  // console.log("tweet engagement props -", props);
   const { tweet } = props;
   const tweetEngagement = useTweetEngagement(tweet.id);
 
@@ -321,7 +321,7 @@ function TweetEngagement(props: TweetEngagementProps) {
     },
   };
 
-  console.log("tweetEngagement -", tweetEngagement);
+  // console.log("tweetEngagement -", tweetEngagement);
 
   return (
     <>

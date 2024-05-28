@@ -13,7 +13,7 @@ export const useUserTweets = (username: string) => {
 
   useEffect(() => {
     return () => {
-      queryClient.invalidateQueries({ queryKey: ["user-tweets", username] });
+      queryClient.removeQueries({ queryKey: ["user-tweets", username] });
     };
   }, [username]);
 
@@ -28,7 +28,7 @@ export const useTweetsFeed = (sessionUsername: string) => {
 
   useEffect(() => {
     return () => {
-      queryClient.invalidateQueries({
+      queryClient.removeQueries({
         queryKey: ["tweets-feed", sessionUsername],
       });
     };

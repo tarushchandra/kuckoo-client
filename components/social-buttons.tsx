@@ -6,7 +6,6 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import mergeClasses from "@/utils/mergeClasses";
 import { useIsFollowing } from "@/hooks/queries/user";
-import Skeleton from "./ui/skeleton";
 import {
   useFollowUser,
   useRemoveFollower,

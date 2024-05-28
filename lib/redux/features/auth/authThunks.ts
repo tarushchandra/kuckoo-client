@@ -2,7 +2,7 @@ import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
 import { User } from "@/gql/graphql";
 import { getCustomUserTokenQuery } from "@/graphql/queries/user";
-import { IsignInAction } from "@/hooks/auth/types";
+import { IsignInAction } from "@/hooks/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import { getSessionUser } from "@/services/user";

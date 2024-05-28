@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 import { getSessionUser } from "@/services/user";
 import { signInFormType } from "@/app/(auth)/sign-in/page";
 
-interface IsignInAction {
+export interface IsignInAction {
   user?: signInFormType;
   googleToken?: string;
 }
