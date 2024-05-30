@@ -7,6 +7,7 @@ export const getTweetEngagementQuery = graphql(/* GraphQL */ `
         likesCount
         isTweetLikedBySessionUser
         commentsCount
+        isTweetBookmarkedBySessionUser
       }
     }
   }
@@ -108,6 +109,33 @@ export const getRepliedToComment = graphql(/* GraphQL */ `
           username
           profileImageURL
         }
+      }
+    }
+  }
+`);
+
+// -----------------------------------------------------------
+
+export const getBookmarksQuery = graphql(/* GraphQL */ `
+  query GetBookmarksQuery {
+    getBookmarks {
+      id
+      content
+      imageURL
+      createdAt
+      updatedAt
+      author {
+        id
+        firstName
+        lastName
+        username
+        profileImageURL
+      }
+      tweetEngagement {
+        likesCount
+        isTweetLikedBySessionUser
+        commentsCount
+        isTweetBookmarkedBySessionUser
       }
     }
   }

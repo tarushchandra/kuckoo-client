@@ -22,6 +22,8 @@ const documents = {
     "\n  mutation LikeComment($commentId: String!) {\n    likeComment(commentId: $commentId)\n  }\n": types.LikeCommentDocument,
     "\n  mutation DislikeComment($commentId: String!) {\n    dislikeComment(commentId: $commentId)\n  }\n": types.DislikeCommentDocument,
     "\n  mutation CreateReply(\n    $tweetId: String!\n    $commentId: String!\n    $content: String!\n  ) {\n    createReply(tweetId: $tweetId, commentId: $commentId, content: $content)\n  }\n": types.CreateReplyDocument,
+    "\n  mutation CreateBookmark($tweetId: String!) {\n    createBookmark(tweetId: $tweetId)\n  }\n": types.CreateBookmarkDocument,
+    "\n  mutation RemoveBookmark($tweetId: String!) {\n    removeBookmark(tweetId: $tweetId)\n  }\n": types.RemoveBookmarkDocument,
     "\n  mutation CreateTweet($payload: TweetInput!) {\n    createTweet(payload: $payload)\n  }\n": types.CreateTweetDocument,
     "\n  mutation DeleteTweet($tweetId: ID!) {\n    deleteTweet(tweetId: $tweetId)\n  }\n": types.DeleteTweetDocument,
     "\n  mutation UpdateTweet($tweetId: ID!, $payload: TweetInput!) {\n    updateTweet(tweetId: $tweetId, payload: $payload)\n  }\n": types.UpdateTweetDocument,
@@ -31,15 +33,16 @@ const documents = {
     "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
     "\n  query GetUnseenNotificationsCountQuery {\n    getUnseenNotificationsCount\n  }\n": types.GetUnseenNotificationsCountQueryDocument,
     "\n  query GetAllNotificationsQuery {\n    getAllNotifications {\n      seenNotifications {\n        id\n        type\n        sender {\n          id\n          firstName\n          lastName\n          profileImageURL\n          username\n        }\n        createdAt\n        metaData {\n          tweet {\n            id\n            imageURL\n          }\n          comment {\n            content\n          }\n          repliedComment {\n            content\n          }\n        }\n      }\n\n      unseenNotifications {\n        id\n        type\n        sender {\n          id\n          firstName\n          lastName\n          profileImageURL\n          username\n        }\n        createdAt\n        metaData {\n          tweet {\n            id\n            imageURL\n          }\n          comment {\n            content\n          }\n          repliedComment {\n            content\n          }\n        }\n      }\n    }\n  }\n": types.GetAllNotificationsQueryDocument,
-    "\n  query GetTweetEnagagementQuery($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n      }\n    }\n  }\n": types.GetTweetEnagagementQueryDocument,
+    "\n  query GetTweetEnagagementQuery($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n": types.GetTweetEnagagementQueryDocument,
     "\n  query GetLikedByQuery($tweetId: String!) {\n    getTweetEngagement(tweetId: $tweetId) {\n      likes {\n        username\n        profileImageURL\n      }\n    }\n  }\n": types.GetLikedByQueryDocument,
     "\n  query GetDetailedLikedByQuery($tweetId: String!) {\n    getTweetEngagement(tweetId: $tweetId) {\n      likes {\n        username\n        profileImageURL\n        firstName\n        lastName\n        id\n      }\n    }\n  }\n": types.GetDetailedLikedByQueryDocument,
     "\n  query GetTweetCommentsQuery($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      tweetEngagement {\n        comments {\n          id\n          content\n          createdAt\n          updatedAt\n          likesCount\n          isCommentLikedBySessionUser\n          author {\n            firstName\n            lastName\n            username\n            profileImageURL\n          }\n\n          commentsCount\n          parentComment {\n            id\n          }\n        }\n      }\n    }\n  }\n": types.GetTweetCommentsQueryDocument,
     "\n  query GetCommentsOfComment($commentId: String!) {\n    getCommentsOfComment(commentId: $commentId) {\n      id\n      content\n      createdAt\n      updatedAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n\n      likesCount\n      isCommentLikedBySessionUser\n\n      parentComment {\n        id\n      }\n\n      repliedTo {\n        id\n        author {\n          username\n        }\n      }\n    }\n  }\n": types.GetCommentsOfCommentDocument,
     "\n  query getRepliedToComment($commentId: String!, $tweetId: String!) {\n    getComment(commentId: $commentId, tweetId: $tweetId) {\n      repliedTo {\n        content\n        createdAt\n        author {\n          firstName\n          lastName\n          username\n          profileImageURL\n        }\n      }\n    }\n  }\n": types.GetRepliedToCommentDocument,
+    "\n  query GetBookmarksQuery {\n    getBookmarks {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n": types.GetBookmarksQueryDocument,
     "\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n": types.GetSignedUrlForUploadingImageQueryDocument,
     "\n  query GetTweet($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      content\n      id\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n    }\n  }\n": types.GetTweetDocument,
-    "\n  query GetTweetsFeed {\n    getTweetsFeed {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n      }\n    }\n  }\n": types.GetTweetsFeedDocument,
+    "\n  query GetTweetsFeed {\n    getTweetsFeed {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n": types.GetTweetsFeedDocument,
     "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n": types.GetCustomUserTokenQueryDocument,
     "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweetsCount\n    }\n  }\n": types.GetUserQueryDocument,
     "\n  query GetSessionUserQuery {\n    getSessionUser {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetSessionUserQueryDocument,
@@ -107,6 +110,14 @@ export function graphql(source: "\n  mutation CreateReply(\n    $tweetId: String
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  mutation CreateBookmark($tweetId: String!) {\n    createBookmark(tweetId: $tweetId)\n  }\n"): (typeof documents)["\n  mutation CreateBookmark($tweetId: String!) {\n    createBookmark(tweetId: $tweetId)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation RemoveBookmark($tweetId: String!) {\n    removeBookmark(tweetId: $tweetId)\n  }\n"): (typeof documents)["\n  mutation RemoveBookmark($tweetId: String!) {\n    removeBookmark(tweetId: $tweetId)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  mutation CreateTweet($payload: TweetInput!) {\n    createTweet(payload: $payload)\n  }\n"): (typeof documents)["\n  mutation CreateTweet($payload: TweetInput!) {\n    createTweet(payload: $payload)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -143,7 +154,7 @@ export function graphql(source: "\n  query GetAllNotificationsQuery {\n    getAl
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetTweetEnagagementQuery($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetTweetEnagagementQuery($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetTweetEnagagementQuery($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetTweetEnagagementQuery($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -167,6 +178,10 @@ export function graphql(source: "\n  query getRepliedToComment($commentId: Strin
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query GetBookmarksQuery {\n    getBookmarks {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetBookmarksQuery {\n    getBookmarks {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n"): (typeof documents)["\n  query getSignedURLForUploadingImageQuery($payload: imageUploadInput!) {\n    getSignedURLForUploadingImage(payload: $payload)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -175,7 +190,7 @@ export function graphql(source: "\n  query GetTweet($tweetId: String!) {\n    ge
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetTweetsFeed {\n    getTweetsFeed {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetTweetsFeed {\n    getTweetsFeed {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetTweetsFeed {\n    getTweetsFeed {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetTweetsFeed {\n    getTweetsFeed {\n      id\n      content\n      imageURL\n      createdAt\n      updatedAt\n      author {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

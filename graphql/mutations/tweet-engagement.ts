@@ -51,3 +51,17 @@ export const createCommentReplyMutation = graphql(/* GraphQL */ `
     createReply(tweetId: $tweetId, commentId: $commentId, content: $content)
   }
 `);
+
+// -------------------------------------------------------------
+
+export const createBookmarkMutation = graphql(/* GraphQL */ `
+  mutation CreateBookmark($tweetId: String!) {
+    createBookmark(tweetId: $tweetId)
+  }
+`);
+
+export const removeBookmarkMutation = graphql(/* GraphQL */ `
+  mutation RemoveBookmark($tweetId: String!) {
+    removeBookmark(tweetId: $tweetId)
+  }
+`);

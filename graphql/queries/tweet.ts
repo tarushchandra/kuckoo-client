@@ -43,6 +43,7 @@ export const getTweetsFeedQuery = graphql(/* GraphQL */ `
         likesCount
         isTweetLikedBySessionUser
         commentsCount
+        isTweetBookmarkedBySessionUser
       }
     }
   }

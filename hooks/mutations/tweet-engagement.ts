@@ -1,5 +1,6 @@
 import { TweetEngagement } from "@/gql/graphql";
 import {
+  createBookmarkMutation,
   createCommentMutation,
   createCommentReplyMutation,
   deleteCommentMutation,
@@ -8,6 +9,7 @@ import {
   editCommentMutation,
   likeCommentMutation,
   likeTweetMutation,
+  removeBookmarkMutation,
 } from "@/graphql/mutations/tweet-engagement";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
@@ -391,6 +393,139 @@ export const useCreateCommentReply = ({
       onClose && onClose();
       onCommentMutation && onCommentMutation.onSuccess();
       toast.success("Replied successfully!");
+    },
+  });
+};
+
+// -------------------------------------------------------------
+
+interface bookmarksOptimisticUpdaters {
+  createBookmark: () => void;
+  removeBookmark: () => void;
+}
+
+export const useCreateBookmark = (fns?: bookmarksOptimisticUpdaters) => {
+  return useMutation({
+    mutationFn: (variables: { tweetId: string }) =>
+      graphqlClient.request(createBookmarkMutation, {
+        tweetId: variables.tweetId,
+      }),
+    onMutate: async (variables) => {
+      if (!fns) {
+        await queryClient.cancelQueries({
+          queryKey: ["tweet-engagement", variables.tweetId],
+        });
+
+        const previousTweetEngagement = queryClient.getQueryData([
+          "tweet-engagement",
+          variables.tweetId,
+        ]);
+
+        queryClient.setQueryData(
+          ["tweet-engagement", variables.tweetId],
+          (prev: any) => {
+            if (!prev.getTweet.tweetEngagement) {
+              return {
+                getTweet: {
+                  tweetEngagement: {
+                    isTweetBookmarkedBySessionUser: true,
+                  },
+                },
+              };
+            }
+
+            return {
+              getTweet: {
+                tweetEngagement: {
+                  ...prev.getTweet.tweetEngagement,
+                  isTweetBookmarkedBySessionUser: true,
+                },
+              },
+            };
+          }
+        );
+        return { previousTweetEngagement };
+      }
+
+      fns?.createBookmark();
+    },
+    onError: (err, params, context: any) => {
+      if (!fns) {
+        queryClient.setQueryData(
+          ["tweet-engagement", params.tweetId],
+          context.previousTweetEngagement
+        );
+        return;
+      }
+
+      fns?.removeBookmark();
+    },
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["tweet-engagement", variables.tweetId],
+      });
+    },
+  });
+};
+
+export const useRemoveBookmark = (fns?: bookmarksOptimisticUpdaters) => {
+  return useMutation({
+    mutationFn: (variables: { tweetId: string }) =>
+      graphqlClient.request(removeBookmarkMutation, {
+        tweetId: variables.tweetId,
+      }),
+    onMutate: async (variables) => {
+      if (!fns) {
+        await queryClient.cancelQueries({
+          queryKey: ["tweet-engagement", variables.tweetId],
+        });
+
+        const previousTweetEngagement = queryClient.getQueryData([
+          "tweet-engagement",
+          variables.tweetId,
+        ]);
+
+        queryClient.setQueryData(
+          ["tweet-engagement", variables.tweetId],
+          (prev: any) => {
+            if (!prev.getTweet.tweetEngagement) {
+              return {
+                getTweet: {
+                  tweetEngagement: {
+                    isTweetBookmarkedBySessionUser: false,
+                  },
+                },
+              };
+            }
+            return {
+              getTweet: {
+                tweetEngagement: {
+                  ...prev.getTweet.tweetEngagement,
+                  isTweetBookmarkedBySessionUser: false,
+                },
+              },
+            };
+          }
+        );
+
+        return { previousTweetEngagement };
+      }
+      fns?.removeBookmark();
+    },
+    onError: (err, params, context: any) => {
+      if (!fns) {
+        queryClient.setQueryData(
+          ["tweet-engagement", params.tweetId],
+          context.previousTweetEngagement
+        );
+        return;
+      }
+      fns?.createBookmark();
+    },
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["tweet-engagement", variables.tweetId],
+      });
     },
   });
 };

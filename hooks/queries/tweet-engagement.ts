@@ -1,4 +1,5 @@
 import {
+  getBookmarksQuery,
   getCommentsOfCommentQuery,
   getDetailedLikedByQuery,
   getLikedByQuery,
@@ -99,4 +100,21 @@ export const useRepliedToComment = (commentId: string, tweetId: string) => {
   });
 
   return data?.getComment?.repliedTo;
+};
+
+// --------------------------------------------------------------
+
+export const useBookmarks = () => {
+  const { data } = useQuery({
+    queryKey: ["bookmarks"],
+    queryFn: () => graphqlClient.request(getBookmarksQuery),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ["bookmarks"] });
+    };
+  }, []);
+
+  return data?.getBookmarks;
 };
