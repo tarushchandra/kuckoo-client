@@ -14,7 +14,7 @@ const Header: React.FC<WrapperProps> = ({ children, className }) => {
       <div />
       <div
         className={mergeClasses(
-          "border-y border-t-0 sticky top-0 border-zinc-800 bg-gradient-to-b from-black to-transparent backdrop-blur-md",
+          "sticky top-0 border-b border-zinc-800 bg-gradient-to-b from-black to-transparent backdrop-blur-md",
           className
         )}
       >
