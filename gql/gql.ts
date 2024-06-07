@@ -13,6 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload)\n  }\n": types.CreateMessageMutationDocument,
     "\n  mutation setNotificationsAsSeenMutation {\n    setNotificationsAsSeen\n  }\n": types.SetNotificationsAsSeenMutationDocument,
     "\n  mutation LikeTweetMutation($tweetId: String!) {\n    likeTweet(tweetId: $tweetId)\n  }\n": types.LikeTweetMutationDocument,
     "\n  mutation DislikeTweetMutation($tweetId: String!) {\n    dislikeTweet(tweetId: $tweetId)\n  }\n": types.DislikeTweetMutationDocument,
@@ -31,8 +32,8 @@ const documents = {
     "\n  mutation FollowUserMutation($to: ID!) {\n    followUser(to: $to)\n  }\n": types.FollowUserMutationDocument,
     "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n": types.UnfollowUserMutationDocument,
     "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
-    "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatsQueryDocument,
-    "\n  query getChatMessagesQuery($chatId: String!) {\n    getChatMessages(chatId: $chatId) {\n      date\n      messages {\n        id\n        content\n        sender {\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatMessagesQueryDocument,
+    "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatsQueryDocument,
+    "\n  query getChatMessagesQuery($chatId: String!) {\n    getChatMessages(chatId: $chatId) {\n      date\n      messages {\n        id\n        content\n        sender {\n          id\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatMessagesQueryDocument,
     "\n  query GetUnseenNotificationsCountQuery {\n    getUnseenNotificationsCount\n  }\n": types.GetUnseenNotificationsCountQueryDocument,
     "\n  query GetAllNotificationsQuery {\n    getAllNotifications {\n      seenNotifications {\n        id\n        type\n        sender {\n          id\n          firstName\n          lastName\n          profileImageURL\n          username\n        }\n        createdAt\n        metaData {\n          tweet {\n            id\n            imageURL\n          }\n          comment {\n            content\n          }\n          repliedComment {\n            content\n          }\n        }\n      }\n\n      unseenNotifications {\n        id\n        type\n        sender {\n          id\n          firstName\n          lastName\n          profileImageURL\n          username\n        }\n        createdAt\n        metaData {\n          tweet {\n            id\n            imageURL\n          }\n          comment {\n            content\n          }\n          repliedComment {\n            content\n          }\n        }\n      }\n    }\n  }\n": types.GetAllNotificationsQueryDocument,
     "\n  query GetTweetEnagagementQuery($tweetId: String!) {\n    getTweet(tweetId: $tweetId) {\n      tweetEngagement {\n        likesCount\n        isTweetLikedBySessionUser\n        commentsCount\n        isTweetBookmarkedBySessionUser\n      }\n    }\n  }\n": types.GetTweetEnagagementQueryDocument,
@@ -73,6 +74,10 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload)\n  }\n"): (typeof documents)["\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -148,11 +153,11 @@ export function graphql(source: "\n  mutation RemoveFollower($userId: ID!) {\n  
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query getChatMessagesQuery($chatId: String!) {\n    getChatMessages(chatId: $chatId) {\n      date\n      messages {\n        id\n        content\n        sender {\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query getChatMessagesQuery($chatId: String!) {\n    getChatMessages(chatId: $chatId) {\n      date\n      messages {\n        id\n        content\n        sender {\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query getChatMessagesQuery($chatId: String!) {\n    getChatMessages(chatId: $chatId) {\n      date\n      messages {\n        id\n        content\n        sender {\n          id\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query getChatMessagesQuery($chatId: String!) {\n    getChatMessages(chatId: $chatId) {\n      date\n      messages {\n        id\n        content\n        sender {\n          id\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

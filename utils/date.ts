@@ -5,12 +5,17 @@ import isYesterday from "dayjs/plugin/isYesterday";
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
 
+export const getModifiedDateInNumbers = (createdAt: string) => {
+  const createdAtDate = dayjs(Number(createdAt));
+  return createdAtDate.format("DD/MM/YY");
+};
+
 export const getModifiedDate = (createdAt: string) => {
   const createdAtDate = dayjs(Number(createdAt));
 
   if (createdAtDate.isToday()) return "Today";
   if (createdAtDate.isYesterday()) return "Yesterday";
-  return createdAtDate.format("ddd, D MMM YYYY");
+  return getModifiedDateInNumbers(createdAt);
 };
 
 export const getModifiedDateForChatCard = (createdAt: string) => {

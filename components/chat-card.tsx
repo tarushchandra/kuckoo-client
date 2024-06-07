@@ -27,32 +27,53 @@ export default function ChatCard(props: ChatCardProps) {
     return latestMessage?.content?.length! > 23
       ? latestMessage?.content?.slice(0, 23) + "..."
       : latestMessage?.content;
-  }, [chat.id]);
+  }, [chat.latestMessage?.content]);
 
   const modifiedDate = getModifiedDateForChatCard(latestMessage?.createdAt!);
 
   return (
     <div
       className={mergeClasses(
-        "flex px-4 py-3 gap-2 cursor-pointer border-b transition-all border-zinc-800 hover:bg-zinc-950",
+        "flex items-center px-4 py-3 gap-2 cursor-pointer border-b transition-all border-zinc-800 hover:bg-zinc-950",
         selectedChat &&
           selectedChat.id === chat.id &&
           "bg-zinc-900 hover:bg-zinc-900"
       )}
     >
       <div>
-        <Image
-          src={chat.members![0]?.profileImageURL!}
-          alt="chat-user-image"
-          width={50}
-          height={50}
-          className="rounded-full"
-        />
+        {isGroupChat ? (
+          <div className="relative w-[40px] h-[40px]">
+            <Image
+              src={chat.members![0]?.profileImageURL!}
+              alt="chat-user-image"
+              width={30}
+              height={30}
+              className="rounded-full absolute top-0 left-0"
+            />
+            <Image
+              src={chat.members![1]?.profileImageURL!}
+              alt="chat-user-image"
+              width={30}
+              height={30}
+              className="rounded-full absolute bottom-0 right-0"
+            />
+          </div>
+        ) : (
+          <Image
+            src={chat.members![0]?.profileImageURL!}
+            alt="chat-user-image"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+        )}
       </div>
-      <div className="w-full">
+      <div className="flex-1">
         <div className="flex gap-2 items-center justify-between">
           <h2 className="font-semibold text-sm">
-            {chatMember?.firstName} {chatMember?.lastName}
+            {isGroupChat
+              ? name
+              : chatMember?.firstName + " " + chatMember?.lastName}
           </h2>
           <h2 className="text-xs font-medium text-zinc-500">{modifiedDate}</h2>
         </div>

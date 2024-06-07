@@ -27,9 +27,9 @@ export const useChatMessages = (chatId: string) => {
 
   useEffect(() => {
     return () => {
-      queryClient.removeQueries({ queryKey: ["chat-messages", chatId] });
+      queryClient.invalidateQueries({ queryKey: ["chat-messages", chatId] });
     };
-  }, []);
+  }, [chatId]);
 
   return data?.getChatMessages;
 };

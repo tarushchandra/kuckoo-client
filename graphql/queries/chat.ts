@@ -6,6 +6,13 @@ export const getChatsQuery = graphql(/* GraphQL */ `
       id
       name
       isGroupChat
+      createdAt
+      creator {
+        firstName
+        lastName
+        username
+        profileImageURL
+      }
       members {
         firstName
         lastName
@@ -32,6 +39,7 @@ export const getChatMessagesQuery = graphql(/* GraphQL */ `
         id
         content
         sender {
+          id
           username
           profileImageURL
         }
