@@ -1,4 +1,8 @@
-import { getChatMessagesQuery, getChatsQuery } from "@/graphql/queries/chat";
+import {
+  getChatMembersQuery,
+  getChatMessagesQuery,
+  getChatsQuery,
+} from "@/graphql/queries/chat";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
 import { useQuery } from "@tanstack/react-query";
@@ -32,4 +36,19 @@ export const useChatMessages = (chatId: string) => {
   }, [chatId]);
 
   return data?.getChatMessages;
+};
+
+export const useChatMembers = (chatId: string) => {
+  const { data } = useQuery({
+    queryKey: ["chat-members", chatId],
+    queryFn: () => graphqlClient.request(getChatMembersQuery, { chatId }),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({ queryKey: ["chat-members", chatId] });
+    };
+  }, [chatId]);
+
+  return data?.getChatMembers;
 };

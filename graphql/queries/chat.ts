@@ -6,6 +6,7 @@ export const getChatsQuery = graphql(/* GraphQL */ `
       id
       name
       isGroupChat
+      totalMembersCount
       createdAt
       creator {
         firstName
@@ -45,6 +46,20 @@ export const getChatMessagesQuery = graphql(/* GraphQL */ `
         }
         createdAt
       }
+    }
+  }
+`);
+
+export const getChatMembersQuery = graphql(/* GraphQL */ `
+  query getChatMembersQuery($chatId: String!) {
+    getChatMembers(chatId: $chatId) {
+      user {
+        firstName
+        lastName
+        username
+        profileImageURL
+      }
+      role
     }
   }
 `);

@@ -10,6 +10,8 @@ import { getModifiedDate, getModifiedDateForChatCard } from "@/utils/date";
 
 dayjs.extend(relativeTime);
 
+// bg-[#1D9BF0]
+
 interface ChatCardProps {
   chat: Chat;
   selectedChat: Chat;
@@ -18,7 +20,15 @@ interface ChatCardProps {
 export default function ChatCard(props: ChatCardProps) {
   const { chat, selectedChat } = props;
   const { data: sessionUser } = useAuth(selectUser);
-  const { isGroupChat, latestMessage, members, name } = chat;
+  const {
+    isGroupChat,
+    latestMessage,
+    members,
+    name,
+    totalMembersCount,
+    creator,
+    createdAt,
+  } = chat;
 
   let chatMember = null;
   if (!isGroupChat) chatMember = members![0];
@@ -29,7 +39,9 @@ export default function ChatCard(props: ChatCardProps) {
       : latestMessage?.content;
   }, [chat.latestMessage?.content]);
 
-  const modifiedDate = getModifiedDateForChatCard(latestMessage?.createdAt!);
+  const modifiedDate = latestMessage
+    ? getModifiedDateForChatCard(latestMessage?.createdAt!)
+    : getModifiedDateForChatCard(chat.createdAt!);
 
   return (
     <div
@@ -40,10 +52,13 @@ export default function ChatCard(props: ChatCardProps) {
           "bg-zinc-900 hover:bg-zinc-900"
       )}
     >
-      <div>
+      <>
         {isGroupChat ? (
           <div className="relative w-[40px] h-[40px]">
             <Image
+              title={
+                chat.members![0]?.firstName + " " + chat.members![0]?.lastName
+              }
               src={chat.members![0]?.profileImageURL!}
               alt="chat-user-image"
               width={30}
@@ -51,26 +66,36 @@ export default function ChatCard(props: ChatCardProps) {
               className="rounded-full absolute top-0 left-0"
             />
             <Image
+              title={
+                chat.members![1]?.firstName + " " + chat.members![1]?.lastName
+              }
               src={chat.members![1]?.profileImageURL!}
               alt="chat-user-image"
               width={30}
               height={30}
-              className="rounded-full absolute bottom-0 right-0"
+              className="rounded-full absolute bottom-0 left-[50%] -translate-x-1/2 border border-zinc-500"
             />
+            {totalMembersCount! > 3 && (
+              <div className="border border-zinc-500 flex justify-center items-center text-xs font-bold w-[30px] h-[30px] rounded-full absolute top-0 right-0 bg-white text-black opacity-80">
+                +{totalMembersCount! - 3}
+              </div>
+            )}
           </div>
         ) : (
-          <Image
-            src={chat.members![0]?.profileImageURL!}
-            alt="chat-user-image"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
+          <div>
+            <Image
+              src={chat.members![0]?.profileImageURL!}
+              alt="chat-user-image"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+          </div>
         )}
-      </div>
+      </>
       <div className="flex-1">
         <div className="flex gap-2 items-center justify-between">
-          <h2 className="font-semibold text-sm">
+          <h2 className="font-bold text-sm">
             {isGroupChat
               ? name
               : chatMember?.firstName + " " + chatMember?.lastName}
@@ -78,13 +103,24 @@ export default function ChatCard(props: ChatCardProps) {
           <h2 className="text-xs font-medium text-zinc-500">{modifiedDate}</h2>
         </div>
         <div className="text-sm text-zinc-400 flex gap-2">
-          <h3>
-            {latestMessage?.sender?.username === sessionUser?.username
-              ? "You"
-              : latestMessage?.sender?.firstName}
-            :
-          </h3>
-          <h3 title={latestMessage?.content!}>{modifiedContent}</h3>
+          {latestMessage ? (
+            <>
+              <h3>
+                {latestMessage?.sender?.username === sessionUser?.username
+                  ? "You"
+                  : latestMessage?.sender?.firstName}
+                :
+              </h3>
+              <h3 title={latestMessage?.content!}>{modifiedContent}</h3>
+            </>
+          ) : (
+            <h3>
+              {creator?.username === sessionUser?.username
+                ? "You"
+                : creator?.firstName}{" "}
+              created this group
+            </h3>
+          )}
         </div>
       </div>
     </div>
