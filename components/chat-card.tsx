@@ -82,13 +82,13 @@ export default function ChatCard(props: ChatCardProps) {
             )}
           </div>
         ) : (
-          <div>
+          <div className="w-[40px] h-[40px]">
             <Image
               src={chat.members![0]?.profileImageURL!}
               alt="chat-user-image"
               width={40}
               height={40}
-              className="rounded-full"
+              className="rounded-full object-cover h-full w-full"
             />
           </div>
         )}
@@ -113,12 +113,19 @@ export default function ChatCard(props: ChatCardProps) {
               </h3>
               <h3 title={latestMessage?.content!}>{modifiedContent}</h3>
             </>
-          ) : (
+          ) : isGroupChat ? (
             <h3>
               {creator?.username === sessionUser?.username
                 ? "You"
                 : creator?.firstName}{" "}
               created this group
+            </h3>
+          ) : (
+            <h3>
+              {creator?.username === sessionUser?.username
+                ? "You"
+                : creator?.firstName}{" "}
+              started this conversation
             </h3>
           )}
         </div>

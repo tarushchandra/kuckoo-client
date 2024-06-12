@@ -50,6 +50,19 @@ export const getAllUsersQuery = graphql(/* GraphQL */ `
   }
 `);
 
+export const getUsersQuery = graphql(/* GraphQL */ `
+  query GetUsersQuery($searchText: String!) {
+    getUsers(searchText: $searchText) {
+      id
+      firstName
+      lastName
+      username
+      profileImageURL
+      email
+    }
+  }
+`);
+
 export const isUsernameExistQuery = graphql(/* GraphQL */ `
   query IsUsernameExistQuery($username: String!) {
     isUsernameExist(username: $username)

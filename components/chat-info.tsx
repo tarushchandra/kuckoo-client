@@ -17,20 +17,20 @@ export default function ChatInfo({ chat }: { chat: Chat }) {
 
   if (!chatMembers)
     return (
-      <div className="flex justify-center items-center h-full w-1/2">
+      <div className="z-20 absolute right-0 bg-black border-l border-zinc-800 flex justify-center items-center h-full w-1/2">
         <h2 className="text-sm text-zinc-500 animate-pulse">Loading...</h2>
       </div>
     );
 
   return (
-    <div className="bg-black h-full flex flex-col absolute right-0  border-l border-zinc-800 w-1/2">
-      <h2 className="text-md py-2 text-center font-semibold bg-black border-b border-zinc-800">
+    <div className="bg-black h-full flex flex-col z-20 absolute right-0 border-l border-zinc-800 w-1/2">
+      <h2 className="text-md py-4 text-center font-semibold bg-black border-b border-zinc-800">
         Chat Info
       </h2>
       <>
         {chat.isGroupChat && (
-          <div className="px-4 py-2 flex justify-between items-center border-b border-zinc-800">
-            <div className="font-semibold flex gap-2 items-center">
+          <div className="px-4 py-4 flex justify-between items-center border-b border-zinc-800">
+            <div className="font-semibold text-sm flex gap-2 items-center">
               <h3 className="">Name:</h3>
               <>
                 {isRenameChatNameInputOpen ? (
@@ -69,20 +69,23 @@ export default function ChatInfo({ chat }: { chat: Chat }) {
           </div>
         )}
       </>
-      <div
-        className={mergeClasses(
-          "border-b border-zinc-800 overflow-y-auto",
-          chatMembers && chatMembers.length > 4 && "h-64"
-        )}
-      >
-        <div className="pt-2 flex flex-col gap-1 ">
-          <h3 className="px-4 text-sm font-semibold  ">
-            {chat.totalMembersCount} Members
-          </h3>
-          <div className="flex flex-col py-1 text-sm">
+      <div className={mergeClasses("flex flex-col h-full justify-between")}>
+        <div className="h-full pt-4 flex flex-col gap-1 overflow-y-auto">
+          <div className="px-4 font-semibold text-sm flex justify-between items-center">
+            <h3>{chat.totalMembersCount} Members</h3>
+            {chat.isGroupChat && (
+              <button className="bg-[#1D9BF0] px-2 py-1 rounded-md">
+                Add Members
+              </button>
+            )}
+          </div>
+          <div className="flex flex-col py-2 text-sm">
             {chatMembers?.map((member) => {
               return (
-                <div className="px-4 flex justify-between items-center py-2 cursor-pointer hover:bg-zinc-900">
+                <div
+                  key={member?.user?.username}
+                  className="px-4 flex justify-between items-center py-3 cursor-pointer hover:bg-zinc-900"
+                >
                   <div className="flex gap-2 items-center">
                     <div>
                       <Image
@@ -107,19 +110,19 @@ export default function ChatInfo({ chat }: { chat: Chat }) {
                     </div>
                   </div>
                   {chat.isGroupChat && (
-                    <div className="flex items-center gap-2">
+                    <div className="relative flex flex-col items-end  gap-2">
                       {member?.role === ChatMemberRole.Admin && (
-                        <div className="flex justify-center">
-                          <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-200 text-black  ">
-                            Admin
-                          </h2>
-                        </div>
+                        <h2 className="text-xs font-semibold px-2 py-1 rounded-md bg-zinc-200 text-black  ">
+                          Admin
+                        </h2>
                       )}
-                      <Menu
-                        size={15}
-                        strokeWidth={3}
-                        className="text-zinc-500 cursor-pointer active:scale-[0.95]"
-                      />
+                      {member?.role !== ChatMemberRole.Admin && (
+                        <Menu
+                          size={15}
+                          strokeWidth={3}
+                          className="text-zinc-500 cursor-pointer active:scale-[0.95]"
+                        />
+                      )}
                     </div>
                   )}
                 </div>
@@ -127,8 +130,23 @@ export default function ChatInfo({ chat }: { chat: Chat }) {
             })}
           </div>
         </div>
+        <div className="border-t border-zinc-800 text-sm px-4 py-8 flex flex-col gap-4 justify-center items-center">
+          {chat.isGroupChat ? (
+            <button className="bg-red-600 text-white  px-4 py-2 font-bold rounded-full transition-all hover:bg-red-700">
+              Leave Group
+            </button>
+          ) : (
+            <>
+              <button className="bg-red-600 text-white  px-4 py-2 font-bold rounded-full transition-all hover:bg-red-700">
+                Block {chatMembers![1]?.user?.firstName}
+              </button>
+              <button className="bg-red-600 text-white  px-4 py-2 font-bold rounded-full transition-all hover:bg-red-700">
+                Delete Chat
+              </button>
+            </>
+          )}
+        </div>
       </div>
-      <div></div>
     </div>
   );
 }

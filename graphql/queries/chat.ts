@@ -25,8 +25,23 @@ export const getChatsQuery = graphql(/* GraphQL */ `
         sender {
           firstName
           username
+          profileImageURL
         }
         createdAt
+      }
+    }
+  }
+`);
+
+export const getChatQuery = graphql(/* GraphQL */ `
+  query GetChatQuery($targetUserId: String!) {
+    getChat(targetUserId: $targetUserId) {
+      id
+      createdAt
+      creator {
+        firstName
+        lastName
+        username
       }
     }
   }

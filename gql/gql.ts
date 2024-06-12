@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload)\n  }\n": types.CreateMessageMutationDocument,
+    "\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload) {\n      id\n    }\n  }\n": types.CreateMessageMutationDocument,
     "\n  mutation setNotificationsAsSeenMutation {\n    setNotificationsAsSeen\n  }\n": types.SetNotificationsAsSeenMutationDocument,
     "\n  mutation LikeTweetMutation($tweetId: String!) {\n    likeTweet(tweetId: $tweetId)\n  }\n": types.LikeTweetMutationDocument,
     "\n  mutation DislikeTweetMutation($tweetId: String!) {\n    dislikeTweet(tweetId: $tweetId)\n  }\n": types.DislikeTweetMutationDocument,
@@ -32,7 +32,8 @@ const documents = {
     "\n  mutation FollowUserMutation($to: ID!) {\n    followUser(to: $to)\n  }\n": types.FollowUserMutationDocument,
     "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n": types.UnfollowUserMutationDocument,
     "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
-    "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      totalMembersCount\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatsQueryDocument,
+    "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      totalMembersCount\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatsQueryDocument,
+    "\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n    }\n  }\n": types.GetChatQueryDocument,
     "\n  query getChatMessagesQuery($chatId: String!) {\n    getChatMessages(chatId: $chatId) {\n      date\n      messages {\n        id\n        content\n        sender {\n          id\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatMessagesQueryDocument,
     "\n  query getChatMembersQuery($chatId: String!) {\n    getChatMembers(chatId: $chatId) {\n      user {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      role\n    }\n  }\n": types.GetChatMembersQueryDocument,
     "\n  query GetUnseenNotificationsCountQuery {\n    getUnseenNotificationsCount\n  }\n": types.GetUnseenNotificationsCountQueryDocument,
@@ -51,6 +52,7 @@ const documents = {
     "\n  query GetUserQuery($username: String) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweetsCount\n    }\n  }\n": types.GetUserQueryDocument,
     "\n  query GetSessionUserQuery {\n    getSessionUser {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetSessionUserQueryDocument,
     "\n  query GetAllUsersQuery {\n    getAllUsers {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n      followers {\n        username\n      }\n    }\n  }\n": types.GetAllUsersQueryDocument,
+    "\n  query GetUsersQuery($searchText: String!) {\n    getUsers(searchText: $searchText) {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetUsersQueryDocument,
     "\n  query IsUsernameExistQuery($username: String!) {\n    isUsernameExist(username: $username)\n  }\n": types.IsUsernameExistQueryDocument,
     "\n  query IsEmailExistQuery($email: String!) {\n    isEmailExist(email: $email)\n  }\n": types.IsEmailExistQueryDocument,
     "\n  query GetFollowersQuery($username: String) {\n    getUser(username: $username) {\n      followers {\n        id\n        firstName\n        lastName\n        username\n        email\n        profileImageURL\n      }\n    }\n  }\n": types.GetFollowersQueryDocument,
@@ -78,7 +80,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload)\n  }\n"): (typeof documents)["\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload)\n  }\n"];
+export function graphql(source: "\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload) {\n      id\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -154,7 +156,11 @@ export function graphql(source: "\n  mutation RemoveFollower($userId: ID!) {\n  
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      totalMembersCount\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      totalMembersCount\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      totalMembersCount\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      totalMembersCount\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -227,6 +233,10 @@ export function graphql(source: "\n  query GetSessionUserQuery {\n    getSession
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetAllUsersQuery {\n    getAllUsers {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n      followers {\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetAllUsersQuery {\n    getAllUsers {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n      followers {\n        username\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetUsersQuery($searchText: String!) {\n    getUsers(searchText: $searchText) {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n"): (typeof documents)["\n  query GetUsersQuery($searchText: String!) {\n    getUsers(searchText: $searchText) {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

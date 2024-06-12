@@ -4,6 +4,7 @@ import ChatMessage from "./chat-message";
 import { getModifiedDate, getModifiedDateInNumbers } from "@/utils/date";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
+import { useState } from "react";
 
 interface ChatMessagesProps {
   chat: Chat;
@@ -12,8 +13,13 @@ interface ChatMessagesProps {
 export default function ChatMessages(props: ChatMessagesProps) {
   const { chat } = props;
   const { data: sessionUser } = useAuth(selectUser);
-  const allGroupedMessages = useChatMessages(chat?.id!);
+  const allGroupedMessages = useChatMessages(chat);
   const chatCreatedAtDate = getModifiedDateInNumbers(chat.createdAt!);
+
+  // console.log("ChatMessages component, chat -", chat);
+  // console.log("allGroupMessages -", allGroupedMessages);
+
+  if (!chat.id) return <div className="h-full" />;
 
   return (
     <div className="h-full overflow-y-auto flex flex-col-reverse gap-3 p-4 ">
@@ -26,7 +32,10 @@ export default function ChatMessages(props: ChatMessagesProps) {
               );
 
               return (
-                <>
+                <div
+                  key={groupedMessages?.date}
+                  className="flex flex-col-reverse"
+                >
                   <div className="flex flex-col-reverse gap-4">
                     {groupedMessages?.messages.map((message: any) => (
                       <ChatMessage message={message} />
@@ -37,7 +46,7 @@ export default function ChatMessages(props: ChatMessagesProps) {
                       {modifiedDate}
                     </h2>
                   </div>
-                </>
+                </div>
               );
             })}
           </div>

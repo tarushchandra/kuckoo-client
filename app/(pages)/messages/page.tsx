@@ -4,20 +4,34 @@ import { useChats } from "@/hooks/queries/chat";
 import Header from "@/components/header";
 import ChatCard from "@/components/chat-card";
 import { Chat as ChatType } from "@/gql/graphql";
-import { Mails } from "lucide-react";
+import { Mails, MessageSquarePlus, MessagesSquare, Users } from "lucide-react";
 import Chat from "@/components/chat";
 import UserCardLoading from "@/components/ui/user-card-loading";
+import NewChatModal from "@/components/new-chat-modal";
 
 interface MessagesPageProps {}
 
 export default function MessagesPage() {
   const chats = useChats();
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
+  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
+
+  console.log("chats -", chats);
 
   return (
     <>
       <div className="col-span-5 border-l border-zinc-800 overflow-y-hidden">
-        <Header className="p-4 text-xl font-semibold">Chats</Header>
+        <Header className="p-4 text-xl font-semibold flex justify-between items-center">
+          <h1>Chats</h1>
+          <div className="flex gap-4">
+            <div title="New Chat" onClick={() => setIsNewChatModalOpen(true)}>
+              <MessagesSquare size={25} className="cursor-pointer" />
+            </div>
+            <div title="New Group">
+              <Users size={25} className="cursor-pointer " />
+            </div>
+          </div>
+        </Header>
         <>
           {chats ? (
             <div className="h-full overflow-y-auto">
@@ -44,7 +58,7 @@ export default function MessagesPage() {
 
       <div className="col-span-12 flex flex-col overflow-y-hidden border-x border-zinc-800 ">
         {selectedChat ? (
-          <Chat chat={selectedChat} />
+          <Chat chat={selectedChat} setSelectedChat={setSelectedChat} />
         ) : (
           <div className="flex flex-col gap-2 justify-center items-center h-full">
             <div className="flex flex-col gap-1 items-center">
@@ -59,6 +73,15 @@ export default function MessagesPage() {
           </div>
         )}
       </div>
+
+      <>
+        {isNewChatModalOpen && (
+          <NewChatModal
+            onClose={() => setIsNewChatModalOpen(false)}
+            setSelectedChat={setSelectedChat}
+          />
+        )}
+      </>
     </>
   );
 }

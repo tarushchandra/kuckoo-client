@@ -20,9 +20,11 @@ export default function PagesLayout({
   if (path.includes("messages"))
     return (
       <AuthRoute>
-        <div className="grid grid-cols-18 h-screen w-[65%] mx-auto">
-          <SideBar className="col-span-1" />
-          {children}
+        <div className=" overflow-y-scroll">
+          <div className="grid grid-cols-18 h-screen w-[65%] mx-auto">
+            <SideBar className="col-span-1" />
+            {children}
+          </div>
         </div>
       </AuthRoute>
     );

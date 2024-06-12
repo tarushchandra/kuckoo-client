@@ -10,8 +10,14 @@ import { useSendMessage } from "@/hooks/mutations/chat";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import ChatInfo from "./chat-info";
+import { AiFillInfoCircle, AiOutlineInfoCircle } from "react-icons/ai";
 
-export default function Chat({ chat }: { chat: ChatType }) {
+interface ChatProps {
+  chat: ChatType;
+  setSelectedChat: React.Dispatch<React.SetStateAction<ChatType | null>>;
+}
+
+export default function Chat({ chat, setSelectedChat }: ChatProps) {
   const { data: sessionUser } = useAuth(selectUser);
   const [message, setMessage] = useState("");
   const [isChatInfoTabOpen, setIsChatInfoTabOpen] = useState(false);
@@ -19,13 +25,17 @@ export default function Chat({ chat }: { chat: ChatType }) {
   const sendMessageMutation = useSendMessage({
     onSuccess: () => setMessage(""),
     onError: () => setMessage(message),
+    setSelectedChat: setSelectedChat,
   });
 
-  console.log("chat rendered");
-  //   console.log("chat component re-rendered, message -", message);
+  // console.log("chat -", chat);
+
+  // console.log("members- ", chat.members);
+  // console.log("chat rendered");
+  // console.log("chat component re-rendered, message -", message);
 
   useEffect(() => {
-    setIsChatInfoTabOpen(false);
+    isChatInfoTabOpen && setIsChatInfoTabOpen(false);
   }, [chat.id]);
 
   //   useEffect(() => {
@@ -39,12 +49,12 @@ export default function Chat({ chat }: { chat: ChatType }) {
 
     await sendMessageMutation.mutateAsync({
       payload: {
-        chatId: chat.id,
+        chatId: chat.id ?? null,
         content: message,
         targetUserIds: [chat.members![0]?.id!],
       },
       message: {
-        id: chat.id,
+        id: chat.id ?? "default-message-id",
         content: message,
         createdAt: String(Date.now()),
         sender: {
@@ -61,6 +71,7 @@ export default function Chat({ chat }: { chat: ChatType }) {
           sender: {
             firstName: sessionUser?.firstName!,
             username: sessionUser?.username!,
+            profileImageURL: sessionUser?.profileImageURL!,
           } as any,
         },
       },
@@ -131,11 +142,24 @@ export default function Chat({ chat }: { chat: ChatType }) {
               )}
             </div>
           </div>
-          <Info
-            onClick={() => setIsChatInfoTabOpen((x) => !x)}
-            size={22}
-            className="cursor-pointer"
-          />
+
+          <>
+            {chat.id && (
+              <>
+                {isChatInfoTabOpen ? (
+                  <AiFillInfoCircle
+                    onClick={() => setIsChatInfoTabOpen(false)}
+                    className="w-6 h-6 cursor-pointer"
+                  />
+                ) : (
+                  <AiOutlineInfoCircle
+                    onClick={() => setIsChatInfoTabOpen(true)}
+                    className="w-6 h-6 cursor-pointer"
+                  />
+                )}
+              </>
+            )}
+          </>
         </div>
       </Header>
 
