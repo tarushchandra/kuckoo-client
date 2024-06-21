@@ -73,10 +73,10 @@ export default function ChatCard(props: ChatCardProps) {
               alt="chat-user-image"
               width={30}
               height={30}
-              className="rounded-full absolute bottom-0 left-[50%] -translate-x-1/2 border border-zinc-500"
+              className="rounded-full absolute bottom-0 left-[50%] -translate-x-1/2 border border-zinc-800"
             />
             {totalMembersCount! > 3 && (
-              <div className="border border-zinc-500 flex justify-center items-center text-xs font-bold w-[30px] h-[30px] rounded-full absolute top-0 right-0 bg-white text-black opacity-80">
+              <div className="border border-zinc-800 flex justify-center items-center text-xs font-bold w-[30px] h-[30px] rounded-full absolute top-0 right-0 bg-white text-black opacity-80">
                 +{totalMembersCount! - 3}
               </div>
             )}

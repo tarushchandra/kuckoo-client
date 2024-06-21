@@ -1,9 +1,14 @@
 import { Chat, CreateMessagePayload, Message } from "@/gql/graphql";
-import { createMessageMutation } from "@/graphql/mutations/chat";
-import { getChatMessagesQuery } from "@/graphql/queries/chat";
+import {
+  addMembersToGroupMutation,
+  createGroupMutation,
+  createMessageMutation,
+  renameGroupMutation,
+} from "@/graphql/mutations/chat";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
 import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 interface SendMessage {
   payload: CreateMessagePayload;
@@ -27,42 +32,43 @@ export const useSendMessage = (onMessageMutation: onMessageMutation) => {
       console.log("variables -", variables);
 
       await queryClient.cancelQueries({
-        queryKey: ["chat-messages", variables.payload.chatId],
+        queryKey: ["chat-history", variables.payload.chatId],
       });
       await queryClient.cancelQueries({ queryKey: ["chats"] });
 
       const previousChats: any = queryClient.getQueryData(["chats"]);
-      let previousChatMessages: any = null;
+      let previousChatHistory: any = null;
       // console.log("previousChats -", previousChats);
 
       if (variables.payload.chatId) {
-        previousChatMessages = queryClient.getQueryData([
-          "chat-messages",
+        previousChatHistory = queryClient.getQueryData([
+          "chat-history",
           variables.payload.chatId,
         ]);
-        // console.log("previousChatMessages -", previousChatMessages);
+        console.log("previousChatHistory -", previousChatHistory);
 
         queryClient.setQueryData(
-          ["chat-messages", variables.payload.chatId],
+          ["chat-history", variables.payload.chatId],
           (prev: any) => {
             // console.log("prev -", prev);
 
             const messageCreatedDate = new Date(
               Number(variables.message.createdAt)
             ).toDateString();
-            // console.log("messageCreatedDate -", messageCreatedDate);
+            console.log("messageCreatedDate -", messageCreatedDate);
 
-            const groupedMessages = prev.getChatMessages.find(
+            const currentChatHistory = prev.getChatHistory.find(
               (x: any) => x.date === messageCreatedDate
             );
 
-            if (!groupedMessages) {
-              prev.getChatMessages.unshift({
+            if (!currentChatHistory) {
+              prev.getChatHistory.unshift({
                 date: messageCreatedDate,
                 messages: [variables.message],
+                activities: [],
               });
             } else {
-              groupedMessages.messages.unshift(variables.message);
+              currentChatHistory.messages.unshift(variables.message);
             }
           }
         );
@@ -101,15 +107,15 @@ export const useSendMessage = (onMessageMutation: onMessageMutation) => {
       });
 
       onMessageMutation.onSuccess();
-      return { previousChatMessages, previousChats };
+      return { previousChatHistory, previousChats };
     },
     onError: (err, variables, context: any) => {
-      if (context.previousChatMessages)
+      if (context.previousChatHistory)
         queryClient.setQueryData(
-          ["chat-messages", variables.payload.chatId],
-          context.previousChatMessages
+          ["chat-history", variables.payload.chatId],
+          context.previousChatHistory
         );
-      queryClient.setQueryData(["chats"], context.previousChatMessages);
+      queryClient.setQueryData(["chats"], context.previousChats);
       onMessageMutation.onError();
     },
     onSettled: async (data, error, variables) => {
@@ -129,8 +135,60 @@ export const useSendMessage = (onMessageMutation: onMessageMutation) => {
         });
       else
         await queryClient.invalidateQueries({
-          queryKey: ["chat-messages", variables.payload.chatId],
+          queryKey: ["chat-history", variables.payload.chatId],
         });
     },
+  });
+};
+
+export const useCreateGroup = () => {
+  return useMutation({
+    mutationFn: (variables: { name: string; targetUserIds: string[] }) =>
+      graphqlClient.request(createGroupMutation, {
+        name: variables.name,
+        targetUserIds: variables.targetUserIds,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["chats"] });
+    },
+    onError: async (error: any) => {},
+  });
+};
+
+export const useAddMembersToGroup = (
+  setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>
+) => {
+  return useMutation({
+    mutationFn: (variables: { chatId: string; targetUserIds: string[] }) =>
+      graphqlClient.request(addMembersToGroupMutation, {
+        chatId: variables.chatId,
+        targetUserIds: variables.targetUserIds,
+      }),
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["chat-members", variables.chatId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["chats"],
+      });
+
+      const currentChats: any = queryClient.getQueryData(["chats"]);
+      const mutatedChat = currentChats.getChats.filter(
+        (x: any) => x.id === variables.chatId
+      );
+
+      setSelectedChat(mutatedChat[0]);
+    },
+    onError: async (error: any) => {},
+  });
+};
+
+export const useRenameGroup = () => {
+  return useMutation({
+    mutationFn: (variables: { chatId: string; name: string }) =>
+      graphqlClient.request(renameGroupMutation, {
+        chatId: variables.chatId,
+        name: variables.name,
+      }),
   });
 };

@@ -1,49 +1,52 @@
-import { Chat } from "@/gql/graphql";
-import { useChatMessages } from "@/hooks/queries/chat";
+import { Chat, ChatActivityType } from "@/gql/graphql";
+import { useChatHistory } from "@/hooks/queries/chat";
 import ChatMessage from "./chat-message";
 import { getModifiedDate, getModifiedDateInNumbers } from "@/utils/date";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import { useState } from "react";
+import { User } from "lucide-react";
+import ChatActivity from "./chat-activity";
 
 interface ChatMessagesProps {
   chat: Chat;
 }
 
-export default function ChatMessages(props: ChatMessagesProps) {
+export default function ChatHistory(props: ChatMessagesProps) {
   const { chat } = props;
   const { data: sessionUser } = useAuth(selectUser);
-  const allGroupedMessages = useChatMessages(chat);
+  const chatHistory = useChatHistory(chat);
   const chatCreatedAtDate = getModifiedDateInNumbers(chat.createdAt!);
 
   // console.log("ChatMessages component, chat -", chat);
-  // console.log("allGroupMessages -", allGroupedMessages);
+  console.log("chatHistory -", chatHistory);
 
   if (!chat.id) return <div className="h-full" />;
 
   return (
     <div className="h-full overflow-y-auto flex flex-col-reverse gap-3 p-4 ">
-      {allGroupedMessages ? (
+      {chatHistory ? (
         <>
           <div className="flex flex-col-reverse gap-3">
-            {allGroupedMessages.map((groupedMessages) => {
-              const modifiedDate = getModifiedDate(
-                groupedMessages?.messages[0]?.createdAt!
-              );
-
+            {chatHistory.map((chatHistoryItem) => {
               return (
                 <div
-                  key={groupedMessages?.date}
-                  className="flex flex-col-reverse"
+                  key={chatHistoryItem?.date}
+                  className="flex flex-col-reverse gap-3"
                 >
                   <div className="flex flex-col-reverse gap-4">
-                    {groupedMessages?.messages.map((message: any) => (
-                      <ChatMessage message={message} />
+                    {chatHistoryItem?.messages!.map((message: any) => (
+                      <ChatMessage message={message} chat={chat} />
+                    ))}
+                  </div>
+                  <div className="flex flex-col-reverse gap-4">
+                    {chatHistoryItem?.activities!.map((activity: any) => (
+                      <ChatActivity activity={activity} />
                     ))}
                   </div>
                   <div className="flex justify-center">
                     <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-200 text-black  ">
-                      {modifiedDate}
+                      {chatHistoryItem?.date}
                     </h2>
                   </div>
                 </div>

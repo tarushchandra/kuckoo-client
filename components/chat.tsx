@@ -2,7 +2,7 @@
 import { Info, SendHorizontal } from "lucide-react";
 import Header from "./header";
 import Image from "next/image";
-import ChatMessages from "./chat-messages";
+import ChatMessages from "./chat-history";
 import { Chat as ChatType } from "@/gql/graphql";
 import { useEffect, useLayoutEffect, useState } from "react";
 import mergeClasses from "@/utils/mergeClasses";
@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import ChatInfo from "./chat-info";
 import { AiFillInfoCircle, AiOutlineInfoCircle } from "react-icons/ai";
+import ChatHistory from "./chat-history";
 
 interface ChatProps {
   chat: ChatType;
@@ -171,7 +172,7 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
             isChatInfoTabOpen && "bg-black opacity-20"
           )}
         >
-          <ChatMessages chat={chat} />
+          <ChatHistory chat={chat} />
 
           <div className="sticky bottom-0 flex p-4 border-t border-zinc-800 bg-gradient-to-t from-black to-transparent backdrop-blur-md">
             <input
@@ -196,7 +197,9 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
           </div>
         </div>
 
-        {isChatInfoTabOpen && <ChatInfo chat={chat} />}
+        {isChatInfoTabOpen && (
+          <ChatInfo chat={chat} setSelectedChat={setSelectedChat} />
+        )}
       </div>
     </>
   );

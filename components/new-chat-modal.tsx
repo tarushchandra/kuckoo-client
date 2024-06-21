@@ -6,9 +6,10 @@ import { useAllUsers } from "@/hooks/queries/user";
 import Link from "next/link";
 import Image from "next/image";
 import { getChat } from "@/services/chat";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Chat as ChatType, User } from "@/gql/graphql";
 import { getUsers } from "@/services/user";
+import { useSearchUsers } from "@/hooks/services/user";
 
 interface NewChatModal {
   onClose: () => void;
@@ -17,27 +18,14 @@ interface NewChatModal {
 
 export default function NewChatModal(props: NewChatModal) {
   const { onClose, setSelectedChat } = props;
-  const [users, setUsers] = useState<User[]>([]);
   const [searchText, setSearchText] = useState("");
-  const [isUsersLoading, setIsUsersLoading] = useState(false);
+  const { users, isUsersLoading } = useSearchUsers(getUsers, searchText);
   const [isChatCreatedLoading, setIsChatCreatedLoading] = useState(false);
 
-  console.log("searchText -", searchText);
-  console.log("users -", users);
-
-  const handleFetchUsers = async (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-
-    setIsUsersLoading(true);
-    const users = await getUsers(searchText);
-    setIsUsersLoading(false);
-
-    setUsers(users);
-  };
+  // console.log("searchText -", searchText);
+  // console.log("users -", users);
 
   const handleSendMessage = async (targetUser: User) => {
-    if (isChatCreatedLoading) return;
-
     setIsChatCreatedLoading(true);
     const chat = await getChat(targetUser.id);
     setIsChatCreatedLoading(false);
@@ -67,17 +55,18 @@ export default function NewChatModal(props: NewChatModal) {
           <input
             type="text"
             value={searchText}
-            onChange={(e) => handleFetchUsers(e)}
+            onChange={(e) => setSearchText(e.target.value)}
             placeholder="Search users..."
             className="w-full rounded-md text-sm bg-zinc-950 px-2 py-1 border border-zinc-800 focus:outline-none"
           />
         </div>
         <div className="overflow-y-auto h-full border-t py-2 border-zinc-800">
-          {!isUsersLoading
-            ? users.map((user: any) => (
+          {!isUsersLoading ? (
+            users.length > 0 ? (
+              users.map((user: any) => (
                 <div
                   key={user.id}
-                  className="flex justify-between items-center px-4 py-3 hover:bg-zinc-900"
+                  className="flex justify-between items-center px-4 py-3 hover:bg-zinc-950"
                 >
                   <Link href={`/profile/${user.username}`}>
                     <div className="flex gap-2 items-center">
@@ -109,15 +98,22 @@ export default function NewChatModal(props: NewChatModal) {
                   </button>
                 </div>
               ))
-            : Array.from({ length: 5 }, (_, index) => (
-                <UserCardLoading
-                  key={index}
-                  className="px-4 py-3"
-                  skeletonClassName="bg-zinc-900"
-                  nameClassName="w-32"
-                  userNameClassName="w-24"
-                />
-              ))}
+            ) : (
+              <h1 className="text-center font-semibold text-sm">
+                No Users found
+              </h1>
+            )
+          ) : (
+            Array.from({ length: 4 }, (_, index) => (
+              <UserCardLoading
+                key={index}
+                className="px-4 py-3"
+                skeletonClassName="bg-zinc-900"
+                nameClassName="w-32"
+                userNameClassName="w-24"
+              />
+            ))
+          )}
         </div>
       </div>
       <X

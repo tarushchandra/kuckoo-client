@@ -47,9 +47,9 @@ export const getChatQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export const getChatMessagesQuery = graphql(/* GraphQL */ `
-  query getChatMessagesQuery($chatId: String!) {
-    getChatMessages(chatId: $chatId) {
+export const getChatHistoryQuery = graphql(/* GraphQL */ `
+  query getChatHistoryQuery($chatId: String!) {
+    getChatHistory(chatId: $chatId) {
       date
       messages {
         id
@@ -58,6 +58,21 @@ export const getChatMessagesQuery = graphql(/* GraphQL */ `
           id
           username
           profileImageURL
+        }
+        createdAt
+      }
+      activities {
+        id
+        type
+        user {
+          firstName
+          lastName
+          username
+        }
+        targetUser {
+          firstName
+          lastName
+          username
         }
         createdAt
       }
@@ -75,6 +90,18 @@ export const getChatMembersQuery = graphql(/* GraphQL */ `
         profileImageURL
       }
       role
+    }
+  }
+`);
+
+export const getAvailableMembersQuery = graphql(/* GraphQL */ `
+  query getAvailableMembersQuery($chatId: String!, $searchText: String!) {
+    getAvailableMembers(chatId: $chatId, searchText: $searchText) {
+      id
+      firstName
+      lastName
+      username
+      profileImageURL
     }
   }
 `);

@@ -8,6 +8,7 @@ import { Mails, MessageSquarePlus, MessagesSquare, Users } from "lucide-react";
 import Chat from "@/components/chat";
 import UserCardLoading from "@/components/ui/user-card-loading";
 import NewChatModal from "@/components/new-chat-modal";
+import NewGroupModal from "@/components/new-group-modal";
 
 interface MessagesPageProps {}
 
@@ -15,6 +16,7 @@ export default function MessagesPage() {
   const chats = useChats();
   const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
+  const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false);
 
   console.log("chats -", chats);
 
@@ -27,7 +29,7 @@ export default function MessagesPage() {
             <div title="New Chat" onClick={() => setIsNewChatModalOpen(true)}>
               <MessagesSquare size={25} className="cursor-pointer" />
             </div>
-            <div title="New Group">
+            <div title="New Group" onClick={() => setIsNewGroupModalOpen(true)}>
               <Users size={25} className="cursor-pointer " />
             </div>
           </div>
@@ -80,6 +82,10 @@ export default function MessagesPage() {
             onClose={() => setIsNewChatModalOpen(false)}
             setSelectedChat={setSelectedChat}
           />
+        )}
+
+        {isNewGroupModalOpen && (
+          <NewGroupModal onClose={() => setIsNewGroupModalOpen(false)} />
         )}
       </>
     </>

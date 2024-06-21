@@ -29,6 +29,29 @@ export type Chat = {
   totalMembersCount?: Maybe<Scalars['Int']['output']>;
 };
 
+export type ChatActivity = {
+  __typename?: 'ChatActivity';
+  chat?: Maybe<Chat>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  targetUser?: Maybe<User>;
+  type?: Maybe<ChatActivityType>;
+  user?: Maybe<User>;
+};
+
+export enum ChatActivityType {
+  MadeAdmin = 'MADE_ADMIN',
+  MemberAdded = 'MEMBER_ADDED',
+  MemberRemoved = 'MEMBER_REMOVED'
+}
+
+export type ChatHistory = {
+  __typename?: 'ChatHistory';
+  activities?: Maybe<Array<Maybe<ChatActivity>>>;
+  date: Scalars['String']['output'];
+  messages?: Maybe<Array<Maybe<Message>>>;
+};
+
 export enum ChatMemberRole {
   Admin = 'ADMIN',
   Member = 'MEMBER'
@@ -58,13 +81,7 @@ export type Comment = {
 export type CreateMessagePayload = {
   chatId?: InputMaybe<Scalars['String']['input']>;
   content: Scalars['String']['input'];
-  targetUserIds: Array<InputMaybe<Scalars['String']['input']>>;
-};
-
-export type GroupedMessages = {
-  __typename?: 'GroupedMessages';
-  date: Scalars['String']['output'];
-  messages: Array<Maybe<Message>>;
+  targetUserIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type Message = {
@@ -84,7 +101,7 @@ export type MetaData = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addUsersToGroup: Scalars['Boolean']['output'];
+  addMembersToGroup: Scalars['Boolean']['output'];
   createBookmark: Scalars['Boolean']['output'];
   createComment: Scalars['Boolean']['output'];
   createGroup: Scalars['Boolean']['output'];
@@ -101,6 +118,7 @@ export type Mutation = {
   likeTweet?: Maybe<Scalars['Boolean']['output']>;
   removeBookmark: Scalars['Boolean']['output'];
   removeFollower?: Maybe<Scalars['Boolean']['output']>;
+  renameGroup: Scalars['Boolean']['output'];
   setNotificationsAsSeen: Scalars['Boolean']['output'];
   unfollowUser?: Maybe<Scalars['Boolean']['output']>;
   updateComment: Scalars['Boolean']['output'];
@@ -108,7 +126,7 @@ export type Mutation = {
 };
 
 
-export type MutationAddUsersToGroupArgs = {
+export type MutationAddMembersToGroupArgs = {
   chatId: Scalars['String']['input'];
   targetUserIds: Array<InputMaybe<Scalars['String']['input']>>;
 };
@@ -199,6 +217,12 @@ export type MutationRemoveFollowerArgs = {
 };
 
 
+export type MutationRenameGroupArgs = {
+  chatId: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+
 export type MutationUnfollowUserArgs = {
   to: Scalars['ID']['input'];
 };
@@ -245,10 +269,11 @@ export type Query = {
   getAllNotifications: Notifications;
   getAllTweets?: Maybe<Array<Maybe<Tweet>>>;
   getAllUsers?: Maybe<Array<Maybe<User>>>;
+  getAvailableMembers: Array<Maybe<User>>;
   getBookmarks?: Maybe<Array<Maybe<Tweet>>>;
   getChat?: Maybe<Chat>;
+  getChatHistory?: Maybe<Array<Maybe<ChatHistory>>>;
   getChatMembers: Array<Maybe<ChatMembership>>;
-  getChatMessages: Array<Maybe<GroupedMessages>>;
   getChats?: Maybe<Array<Maybe<Chat>>>;
   getComment?: Maybe<Comment>;
   getCommentsOfComment?: Maybe<Array<Maybe<Comment>>>;
@@ -270,17 +295,23 @@ export type Query = {
 };
 
 
+export type QueryGetAvailableMembersArgs = {
+  chatId: Scalars['String']['input'];
+  searchText: Scalars['String']['input'];
+};
+
+
 export type QueryGetChatArgs = {
   targetUserId: Scalars['String']['input'];
 };
 
 
-export type QueryGetChatMembersArgs = {
+export type QueryGetChatHistoryArgs = {
   chatId: Scalars['String']['input'];
 };
 
 
-export type QueryGetChatMessagesArgs = {
+export type QueryGetChatMembersArgs = {
   chatId: Scalars['String']['input'];
 };
 
@@ -420,6 +451,30 @@ export type CreateMessageMutationMutationVariables = Exact<{
 
 
 export type CreateMessageMutationMutation = { __typename?: 'Mutation', createMessage?: { __typename?: 'Chat', id: string } | null };
+
+export type CreateGroupMutationMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+  targetUserIds: Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CreateGroupMutationMutation = { __typename?: 'Mutation', createGroup: boolean };
+
+export type AddMembersToGroupMutationVariables = Exact<{
+  chatId: Scalars['String']['input'];
+  targetUserIds: Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type AddMembersToGroupMutation = { __typename?: 'Mutation', addMembersToGroup: boolean };
+
+export type RenameGroupMutationMutationVariables = Exact<{
+  chatId: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type RenameGroupMutationMutation = { __typename?: 'Mutation', renameGroup: boolean };
 
 export type SetNotificationsAsSeenMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -563,12 +618,12 @@ export type GetChatQueryQueryVariables = Exact<{
 
 export type GetChatQueryQuery = { __typename?: 'Query', getChat?: { __typename?: 'Chat', id: string, createdAt?: string | null, creator?: { __typename?: 'User', firstName: string, lastName?: string | null, username: string } | null } | null };
 
-export type GetChatMessagesQueryQueryVariables = Exact<{
+export type GetChatHistoryQueryQueryVariables = Exact<{
   chatId: Scalars['String']['input'];
 }>;
 
 
-export type GetChatMessagesQueryQuery = { __typename?: 'Query', getChatMessages: Array<{ __typename?: 'GroupedMessages', date: string, messages: Array<{ __typename?: 'Message', id?: string | null, content?: string | null, createdAt?: string | null, sender?: { __typename?: 'User', id: string, username: string, profileImageURL?: string | null } | null } | null> } | null> };
+export type GetChatHistoryQueryQuery = { __typename?: 'Query', getChatHistory?: Array<{ __typename?: 'ChatHistory', date: string, messages?: Array<{ __typename?: 'Message', id?: string | null, content?: string | null, createdAt?: string | null, sender?: { __typename?: 'User', id: string, username: string, profileImageURL?: string | null } | null } | null> | null, activities?: Array<{ __typename?: 'ChatActivity', id: string, type?: ChatActivityType | null, createdAt?: string | null, user?: { __typename?: 'User', firstName: string, lastName?: string | null, username: string } | null, targetUser?: { __typename?: 'User', firstName: string, lastName?: string | null, username: string } | null } | null> | null } | null> | null };
 
 export type GetChatMembersQueryQueryVariables = Exact<{
   chatId: Scalars['String']['input'];
@@ -576,6 +631,14 @@ export type GetChatMembersQueryQueryVariables = Exact<{
 
 
 export type GetChatMembersQueryQuery = { __typename?: 'Query', getChatMembers: Array<{ __typename?: 'ChatMembership', role?: ChatMemberRole | null, user?: { __typename?: 'User', firstName: string, lastName?: string | null, username: string, profileImageURL?: string | null } | null } | null> };
+
+export type GetAvailableMembersQueryQueryVariables = Exact<{
+  chatId: Scalars['String']['input'];
+  searchText: Scalars['String']['input'];
+}>;
+
+
+export type GetAvailableMembersQueryQuery = { __typename?: 'Query', getAvailableMembers: Array<{ __typename?: 'User', id: string, firstName: string, lastName?: string | null, username: string, profileImageURL?: string | null } | null> };
 
 export type GetUnseenNotificationsCountQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -742,6 +805,9 @@ export type GetUserTweetsQueryQuery = { __typename?: 'Query', getUser?: { __type
 
 
 export const CreateMessageMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateMessageMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"payload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateMessagePayload"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"payload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"payload"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateMessageMutationMutation, CreateMessageMutationMutationVariables>;
+export const CreateGroupMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateGroupMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetUserIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createGroup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"targetUserIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetUserIds"}}}]}]}}]} as unknown as DocumentNode<CreateGroupMutationMutation, CreateGroupMutationMutationVariables>;
+export const AddMembersToGroupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddMembersToGroup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetUserIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addMembersToGroup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"chatId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}}},{"kind":"Argument","name":{"kind":"Name","value":"targetUserIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetUserIds"}}}]}]}}]} as unknown as DocumentNode<AddMembersToGroupMutation, AddMembersToGroupMutationVariables>;
+export const RenameGroupMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RenameGroupMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"renameGroup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"chatId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}]}}]} as unknown as DocumentNode<RenameGroupMutationMutation, RenameGroupMutationMutationVariables>;
 export const SetNotificationsAsSeenMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"setNotificationsAsSeenMutation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setNotificationsAsSeen"}}]}}]} as unknown as DocumentNode<SetNotificationsAsSeenMutationMutation, SetNotificationsAsSeenMutationMutationVariables>;
 export const LikeTweetMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LikeTweetMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tweetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"likeTweet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tweetId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tweetId"}}}]}]}}]} as unknown as DocumentNode<LikeTweetMutationMutation, LikeTweetMutationMutationVariables>;
 export const DislikeTweetMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DislikeTweetMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tweetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dislikeTweet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tweetId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tweetId"}}}]}]}}]} as unknown as DocumentNode<DislikeTweetMutationMutation, DislikeTweetMutationMutationVariables>;
@@ -762,8 +828,9 @@ export const UnfollowUserMutationDocument = {"kind":"Document","definitions":[{"
 export const RemoveFollowerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RemoveFollower"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeFollower"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}]}]}}]} as unknown as DocumentNode<RemoveFollowerMutation, RemoveFollowerMutationVariables>;
 export const GetChatsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetChatsQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getChats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"isGroupChat"}},{"kind":"Field","name":{"kind":"Name","value":"totalMembersCount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"creator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"members"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"latestMessage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<GetChatsQueryQuery, GetChatsQueryQueryVariables>;
 export const GetChatQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetChatQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetUserId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getChat"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"targetUserId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetUserId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"creator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<GetChatQueryQuery, GetChatQueryQueryVariables>;
-export const GetChatMessagesQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getChatMessagesQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getChatMessages"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"chatId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"messages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<GetChatMessagesQueryQuery, GetChatMessagesQueryQueryVariables>;
+export const GetChatHistoryQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getChatHistoryQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getChatHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"chatId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"messages"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"activities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}},{"kind":"Field","name":{"kind":"Name","value":"targetUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<GetChatHistoryQueryQuery, GetChatHistoryQueryQueryVariables>;
 export const GetChatMembersQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getChatMembersQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getChatMembers"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"chatId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]} as unknown as DocumentNode<GetChatMembersQueryQuery, GetChatMembersQueryQueryVariables>;
+export const GetAvailableMembersQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getAvailableMembersQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getAvailableMembers"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"chatId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}}},{"kind":"Argument","name":{"kind":"Name","value":"searchText"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}}]}}]}}]} as unknown as DocumentNode<GetAvailableMembersQueryQuery, GetAvailableMembersQueryQueryVariables>;
 export const GetUnseenNotificationsCountQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUnseenNotificationsCountQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUnseenNotificationsCount"}}]}}]} as unknown as DocumentNode<GetUnseenNotificationsCountQueryQuery, GetUnseenNotificationsCountQueryQueryVariables>;
 export const GetAllNotificationsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAllNotificationsQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getAllNotifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"seenNotifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"metaData"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tweet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"imageURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}}]}},{"kind":"Field","name":{"kind":"Name","value":"repliedComment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"unseenNotifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"profileImageURL"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"metaData"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tweet"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"imageURL"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}}]}},{"kind":"Field","name":{"kind":"Name","value":"repliedComment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetAllNotificationsQueryQuery, GetAllNotificationsQueryQueryVariables>;
 export const GetTweetEnagagementQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTweetEnagagementQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tweetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTweet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tweetId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tweetId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tweetEngagement"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"likesCount"}},{"kind":"Field","name":{"kind":"Name","value":"isTweetLikedBySessionUser"}},{"kind":"Field","name":{"kind":"Name","value":"commentsCount"}},{"kind":"Field","name":{"kind":"Name","value":"isTweetBookmarkedBySessionUser"}}]}}]}}]}}]} as unknown as DocumentNode<GetTweetEnagagementQueryQuery, GetTweetEnagagementQueryQueryVariables>;
