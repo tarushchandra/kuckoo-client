@@ -1,8 +1,18 @@
-import { ChatActivity as chatActivity, ChatActivityType } from "@/gql/graphql";
+import {
+  Chat,
+  ChatActivity as chatActivity,
+  ChatActivityType,
+} from "@/gql/graphql";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
 
-export default function ChatActivity({ activity }: { activity: chatActivity }) {
+export default function ChatActivity({
+  activity,
+  chat,
+}: {
+  activity: chatActivity;
+  chat: Chat;
+}) {
   const { data: sessionUser } = useAuth(selectUser);
   const { type, user, targetUser } = activity;
 
@@ -20,7 +30,8 @@ export default function ChatActivity({ activity }: { activity: chatActivity }) {
             {activity?.targetUser?.username === sessionUser?.username
               ? "You"
               : targetUser?.firstName + " " + targetUser?.lastName}
-          </span>
+          </span>{" "}
+          <span>to the group</span>
         </h2>
       )}
 
@@ -36,24 +47,65 @@ export default function ChatActivity({ activity }: { activity: chatActivity }) {
             {activity?.targetUser?.username === sessionUser?.username
               ? "You"
               : targetUser?.firstName + " " + targetUser?.lastName}
-          </span>
+          </span>{" "}
+          <span>from the group</span>
         </h2>
       )}
 
-      {type === ChatActivityType.MadeAdmin && (
+      {type === ChatActivityType.AdminAdded && (
         <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-800 text-zinc-200 ">
           <span>
             {activity?.user?.username === sessionUser?.username
               ? "You"
               : user?.firstName + " " + user?.lastName}
           </span>{" "}
-          <span>made</span>{" "}
+          <span>added</span>{" "}
           <span>
             {activity?.targetUser?.username === sessionUser?.username
               ? "You"
               : targetUser?.firstName + " " + targetUser?.lastName}
-          </span>
-          <span>an admin</span>
+          </span>{" "}
+          <span>as an admin</span>
+        </h2>
+      )}
+
+      {type === ChatActivityType.AdminRemoved && (
+        <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-800 text-zinc-200 ">
+          <span>
+            {activity?.user?.username === sessionUser?.username
+              ? "You"
+              : user?.firstName + " " + user?.lastName}
+          </span>{" "}
+          <span>removed</span>{" "}
+          <span>
+            {activity?.targetUser?.username === sessionUser?.username
+              ? "You"
+              : targetUser?.firstName + " " + targetUser?.lastName}
+          </span>{" "}
+          <span>as an admin</span>
+        </h2>
+      )}
+
+      {type === ChatActivityType.MemberLeft && (
+        <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-800 text-zinc-200 ">
+          <span>
+            {activity?.user?.username === sessionUser?.username
+              ? "You"
+              : user?.firstName + " " + user?.lastName}
+          </span>{" "}
+          <span>left the group</span>
+        </h2>
+      )}
+
+      {type === ChatActivityType.ChatRenamed && (
+        <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-800 text-zinc-200 ">
+          <span>
+            {activity?.user?.username === sessionUser?.username
+              ? "You"
+              : user?.firstName + " " + user?.lastName}
+          </span>{" "}
+          <span>renamed the group as</span>{" "}
+          <span>{`\"${activity.metaData?.chatName}\"`}</span>
         </h2>
       )}
     </div>

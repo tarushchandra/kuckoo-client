@@ -64,6 +64,9 @@ export const getChatHistoryQuery = graphql(/* GraphQL */ `
       activities {
         id
         type
+        metaData {
+          chatName
+        }
         user {
           firstName
           lastName
@@ -84,6 +87,7 @@ export const getChatMembersQuery = graphql(/* GraphQL */ `
   query getChatMembersQuery($chatId: String!) {
     getChatMembers(chatId: $chatId) {
       user {
+        id
         firstName
         lastName
         username

@@ -18,7 +18,6 @@ export default function ChatHistory(props: ChatMessagesProps) {
   const chatHistory = useChatHistory(chat);
   const chatCreatedAtDate = getModifiedDateInNumbers(chat.createdAt!);
 
-  // console.log("ChatMessages component, chat -", chat);
   console.log("chatHistory -", chatHistory);
 
   if (!chat.id) return <div className="h-full" />;
@@ -29,22 +28,26 @@ export default function ChatHistory(props: ChatMessagesProps) {
         <>
           <div className="flex flex-col-reverse gap-3">
             {chatHistory.map((chatHistoryItem) => {
+              const modifiedChatHistoryItem = [
+                ...chatHistoryItem?.messages!,
+                ...chatHistoryItem?.activities!,
+              ].sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt));
+
               return (
                 <div
                   key={chatHistoryItem?.date}
                   className="flex flex-col-reverse gap-3"
                 >
-                  <div className="flex flex-col-reverse gap-4">
-                    {chatHistoryItem?.messages!.map((message: any) => (
-                      <ChatMessage message={message} chat={chat} />
-                    ))}
+                  <div className="flex flex-col-reverse gap-3">
+                    {modifiedChatHistoryItem.map((item: any) =>
+                      item.type ? (
+                        <ChatActivity activity={item} chat={chat} />
+                      ) : (
+                        <ChatMessage message={item} chat={chat} />
+                      )
+                    )}
                   </div>
-                  <div className="flex flex-col-reverse gap-4">
-                    {chatHistoryItem?.activities!.map((activity: any) => (
-                      <ChatActivity activity={activity} />
-                    ))}
-                  </div>
-                  <div className="flex justify-center">
+                  <div className="flex justify-center mt-2">
                     <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-200 text-black  ">
                       {chatHistoryItem?.date}
                     </h2>

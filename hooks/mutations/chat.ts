@@ -1,8 +1,12 @@
 import { Chat, CreateMessagePayload, Message } from "@/gql/graphql";
 import {
+  addGroupAdminMutation,
   addMembersToGroupMutation,
   createGroupMutation,
   createMessageMutation,
+  leaveGroupMutation,
+  removeGroupAdminMutation,
+  removeMemberFromGroupMutation,
   renameGroupMutation,
 } from "@/graphql/mutations/chat";
 import { graphqlClient } from "@/lib/clients/graphql";
@@ -155,6 +159,20 @@ export const useCreateGroup = () => {
   });
 };
 
+export const useRenameGroup = () => {
+  return useMutation({
+    mutationFn: (variables: { chatId: string; name: string }) =>
+      graphqlClient.request(renameGroupMutation, {
+        chatId: variables.chatId,
+        name: variables.name,
+      }),
+    onSuccess: (data, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: ["chat-history", variables.chatId],
+      }),
+  });
+};
+
 export const useAddMembersToGroup = (
   setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>
 ) => {
@@ -166,10 +184,13 @@ export const useAddMembersToGroup = (
       }),
     onSuccess: async (data, variables) => {
       await queryClient.invalidateQueries({
+        queryKey: ["chats"],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["chat-members", variables.chatId],
       });
-      await queryClient.invalidateQueries({
-        queryKey: ["chats"],
+      queryClient.invalidateQueries({
+        queryKey: ["chat-history", variables.chatId],
       });
 
       const currentChats: any = queryClient.getQueryData(["chats"]);
@@ -183,12 +204,89 @@ export const useAddMembersToGroup = (
   });
 };
 
-export const useRenameGroup = () => {
+export const useRemoveMemberFromGroup = () => {
   return useMutation({
-    mutationFn: (variables: { chatId: string; name: string }) =>
-      graphqlClient.request(renameGroupMutation, {
+    mutationFn: (variables: { chatId: string; targetUserId: string }) =>
+      graphqlClient.request(removeMemberFromGroupMutation, {
         chatId: variables.chatId,
-        name: variables.name,
+        targetUserId: variables.targetUserId,
       }),
+
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["chat-history", variables.chatId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["chat-members", variables.chatId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["chats"],
+      });
+    },
+  });
+};
+
+export const useAddGroupAdmin = () => {
+  return useMutation({
+    mutationFn: (variables: { chatId: string; targetUserId: string }) =>
+      graphqlClient.request(addGroupAdminMutation, {
+        chatId: variables.chatId,
+        targetUserId: variables.targetUserId,
+      }),
+
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["chat-history", variables.chatId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["chat-members", variables.chatId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["chats"],
+      });
+    },
+  });
+};
+
+export const useRemoveGroupAdmin = () => {
+  return useMutation({
+    mutationFn: (variables: { chatId: string; targetUserId: string }) =>
+      graphqlClient.request(removeGroupAdminMutation, {
+        chatId: variables.chatId,
+        targetUserId: variables.targetUserId,
+      }),
+
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["chat-history", variables.chatId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["chat-members", variables.chatId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["chats"],
+      });
+    },
+  });
+};
+
+export const useLeaveGroup = () => {
+  return useMutation({
+    mutationFn: (variables: { chatId: string; targetUserId: string }) =>
+      graphqlClient.request(leaveGroupMutation, {
+        chatId: variables.chatId,
+      }),
+
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["chat-history", variables.chatId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["chat-members", variables.chatId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["chats"],
+      });
+    },
   });
 };

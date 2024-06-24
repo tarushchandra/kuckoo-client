@@ -1,4 +1,4 @@
-import { Chat, ChatMemberRole } from "@/gql/graphql";
+import { Chat, ChatMemberRole, ChatMembership } from "@/gql/graphql";
 import { useAuth } from "@/hooks/auth";
 import { useChatMembers } from "@/hooks/queries/chat";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
@@ -9,6 +9,7 @@ import { useState } from "react";
 import AddMembersModal from "./add-members-modal";
 import { useRenameGroup } from "@/hooks/mutations/chat";
 import { queryClient } from "@/lib/clients/query";
+import ChatMemberOptionsModal from "./chat-member-options-modal";
 
 interface ChatInfoProps {
   chat: Chat;
@@ -23,7 +24,12 @@ export default function ChatInfo(props: ChatInfoProps) {
   const [isAddMembersModalOpen, setIsAddMembersModalOpen] = useState(false);
   const [isRenameChatNameInputOpen, setIsRenameChatNameInputOpen] =
     useState(false);
+  const [isChatMemberOptionsModalOpen, setIsChatMemberOptionsModalOpen] =
+    useState(false);
+
   const [chatName, setChatName] = useState(chat.name!);
+  const [selectedChatMember, setSelectedChatMember] =
+    useState<ChatMembership | null>(null);
 
   const renameGroupMutation = useRenameGroup();
 
@@ -89,8 +95,9 @@ export default function ChatInfo(props: ChatInfoProps) {
                       disabled={renameGroupMutation.isPending}
                       onClick={handleRenameGroup}
                       className={mergeClasses(
-                        "text-sm font-semibold bg-zinc-200 text-black px-2 py-1 rounded-md",
-                        renameGroupMutation.isPending && "cursor-wait"
+                        "text-sm font-semibold bg-zinc-200 text-black px-2 py-1 rounded-md transition-all",
+                        renameGroupMutation.isPending &&
+                          "text-zinc-900 disabled:bg-zinc-400 cursor-wait"
                       )}
                     >
                       Save
@@ -124,7 +131,7 @@ export default function ChatInfo(props: ChatInfoProps) {
               {chatMembers?.map((member) => {
                 return (
                   <div
-                    key={member?.user?.username}
+                    key={member?.user?.id}
                     className="px-4 flex justify-between items-center py-3 cursor-pointer hover:bg-zinc-900"
                   >
                     <div className="flex gap-2 items-center">
@@ -151,19 +158,24 @@ export default function ChatInfo(props: ChatInfoProps) {
                       </div>
                     </div>
                     {chat.isGroupChat && (
-                      <div className="relative flex flex-col items-end  gap-2">
+                      <div className="relative flex flex-col items-end gap-2">
                         {member?.role === ChatMemberRole.Admin && (
                           <h2 className="text-xs font-semibold px-2 py-1 rounded-md bg-zinc-200 text-black  ">
                             Admin
                           </h2>
                         )}
-                        {member?.role !== ChatMemberRole.Admin && (
-                          <Menu
-                            size={15}
-                            strokeWidth={3}
-                            className="text-zinc-500 cursor-pointer active:scale-[0.95]"
-                          />
-                        )}
+                        {member?.user?.username !== sessionUser?.username &&
+                          chatMembers[0]?.role === ChatMemberRole.Admin && (
+                            <Menu
+                              onClick={() => {
+                                setIsChatMemberOptionsModalOpen(true);
+                                setSelectedChatMember(member as any);
+                              }}
+                              size={15}
+                              strokeWidth={3}
+                              className="text-zinc-500 cursor-pointer active:scale-[0.95]"
+                            />
+                          )}
                       </div>
                     )}
                   </div>
@@ -195,6 +207,14 @@ export default function ChatInfo(props: ChatInfoProps) {
           onClose={() => setIsAddMembersModalOpen(false)}
           chat={chat}
           setSelectedChat={setSelectedChat}
+        />
+      )}
+
+      {isChatMemberOptionsModalOpen && (
+        <ChatMemberOptionsModal
+          onClose={() => setIsChatMemberOptionsModalOpen(false)}
+          chatMember={selectedChatMember!}
+          chat={chat}
         />
       )}
     </>
