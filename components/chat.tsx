@@ -29,7 +29,7 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
     setSelectedChat: setSelectedChat,
   });
 
-  // console.log("chat -", chat);
+  console.log("chat -", chat);
 
   // console.log("members- ", chat.members);
   // console.log("chat rendered");
@@ -75,6 +75,7 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
             profileImageURL: sessionUser?.profileImageURL!,
           } as any,
         },
+        unseenMessagesCount: 0,
       },
     });
     setMessage("");
@@ -172,7 +173,7 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
             isChatInfoTabOpen && "bg-black opacity-20"
           )}
         >
-          <ChatHistory chat={chat} />
+          <ChatHistory chat={chat} setSelectedChat={setSelectedChat} />
 
           <div className="sticky bottom-0 flex p-4 border-t border-zinc-800 bg-gradient-to-t from-black to-transparent backdrop-blur-md">
             <input

@@ -4,6 +4,8 @@ import {
   getChatHistoryQuery,
   getChatMembersQuery,
   getChatsQuery,
+  getPeopleWithMessageSeenQuery,
+  getUnseenChatsCountQuery,
 } from "@/graphql/queries/chat";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
@@ -56,7 +58,11 @@ export const useChatHistory = (chat: Chat) => {
       const chatHistoryItem = [
         {
           date: new Date(chat.createdAt!).toDateString(),
-          messages: [chat.latestMessage],
+          messages: {
+            unseenMessages: [chat.latestMessage],
+            seenMessages: [],
+            sessionUserMessages: [],
+          },
           activities: [],
         },
       ] as ChatHistory[];
@@ -91,4 +97,30 @@ export const useAvailableMembers = (chatId: string, searchText: string) => {
   });
 
   return data?.getAvailableMembers;
+};
+
+export const useUnseenChatsCount = () => {
+  const { data } = useQuery({
+    queryKey: ["unseen-chats-count"],
+    queryFn: () => graphqlClient.request(getUnseenChatsCountQuery),
+  });
+  return data?.getUnseenChatsCount;
+};
+
+export const usePeopleWithMessageSeen = (messageId: string) => {
+  const { data } = useQuery({
+    queryKey: ["people-who-seen-the-message", messageId],
+    queryFn: () =>
+      graphqlClient.request(getPeopleWithMessageSeenQuery, { messageId }),
+  });
+
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({
+        queryKey: ["people-who-seen-the-message", messageId],
+      });
+    };
+  }, [messageId]);
+
+  return data?.getPeopleWithMessageSeen;
 };

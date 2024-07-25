@@ -95,24 +95,46 @@ export default function ChatCard(props: ChatCardProps) {
       </>
       <div className="flex-1">
         <div className="flex gap-2 items-center justify-between">
-          <h2 className="font-bold text-sm">
+          <h2 className="font-bold text-sm text-white">
             {isGroupChat
               ? name
               : chatMember?.firstName + " " + chatMember?.lastName}
           </h2>
-          <h2 className="text-xs font-medium text-zinc-500">{modifiedDate}</h2>
+          <h2
+            className={mergeClasses(
+              "text-xs font-medium text-zinc-500",
+              chat.unseenMessagesCount! > 0 && "text-[#1D9BF0] font-bold"
+            )}
+          >
+            {modifiedDate}
+          </h2>
         </div>
         <div className="text-sm text-zinc-400 flex gap-2">
           {latestMessage ? (
-            <>
-              <h3>
-                {latestMessage?.sender?.username === sessionUser?.username
-                  ? "You"
-                  : latestMessage?.sender?.firstName}
-                :
-              </h3>
-              <h3 title={latestMessage?.content!}>{modifiedContent}</h3>
-            </>
+            <div className="flex justify-between items-center w-full">
+              <div
+                className={mergeClasses(
+                  chat.unseenMessagesCount! > 0 && "text-white font-medium"
+                )}
+              >
+                <span>
+                  {latestMessage?.sender?.username === sessionUser?.username
+                    ? "You"
+                    : latestMessage?.sender?.firstName}
+                  :
+                </span>{" "}
+                <span className="" title={latestMessage?.content!}>
+                  {modifiedContent}
+                </span>
+              </div>
+              <>
+                {chat.unseenMessagesCount! > 0 && (
+                  <div className="bg-[#1D9BF0] w-4 h-4 p-[0.6rem] rounded-full text-white text-xs font-bold flex justify-center items-center">
+                    {chat.unseenMessagesCount}
+                  </div>
+                )}
+              </>
+            </div>
           ) : isGroupChat ? (
             <h3>
               {creator?.username === sessionUser?.username

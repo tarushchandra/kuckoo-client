@@ -4,6 +4,9 @@ export const createMessageMutation = graphql(/* GraphQL */ `
   mutation CreateMessageMutation($payload: CreateMessagePayload!) {
     createMessage(payload: $payload) {
       id
+      chat {
+        id
+      }
     }
   }
 `);
@@ -47,5 +50,11 @@ export const addGroupAdminMutation = graphql(/* GraphQL */ `
 export const removeGroupAdminMutation = graphql(/* GraphQL */ `
   mutation RemoveGroupAdmin($chatId: String!, $targetUserId: String!) {
     removeGroupAdmin(chatId: $chatId, targetUserId: $targetUserId)
+  }
+`);
+
+export const setMessagesAsSeenMutation = graphql(/* GraphQL */ `
+  mutation SeenBy($chatId: String!, $messageIds: [String]!) {
+    seenBy(chatId: $chatId, messageIds: $messageIds)
   }
 `);

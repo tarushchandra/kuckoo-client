@@ -8,6 +8,7 @@ import {
   removeGroupAdminMutation,
   removeMemberFromGroupMutation,
   renameGroupMutation,
+  setMessagesAsSeenMutation,
 } from "@/graphql/mutations/chat";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
@@ -42,7 +43,8 @@ export const useSendMessage = (onMessageMutation: onMessageMutation) => {
 
       const previousChats: any = queryClient.getQueryData(["chats"]);
       let previousChatHistory: any = null;
-      // console.log("previousChats -", previousChats);
+
+      console.log("previousChats -", previousChats);
 
       if (variables.payload.chatId) {
         previousChatHistory = queryClient.getQueryData([
@@ -59,7 +61,7 @@ export const useSendMessage = (onMessageMutation: onMessageMutation) => {
             const messageCreatedDate = new Date(
               Number(variables.message.createdAt)
             ).toDateString();
-            console.log("messageCreatedDate -", messageCreatedDate);
+            // console.log("messageCreatedDate -", messageCreatedDate);
 
             const currentChatHistory = prev.getChatHistory.find(
               (x: any) => x.date === messageCreatedDate
@@ -68,11 +70,17 @@ export const useSendMessage = (onMessageMutation: onMessageMutation) => {
             if (!currentChatHistory) {
               prev.getChatHistory.unshift({
                 date: messageCreatedDate,
-                messages: [variables.message],
+                messages: {
+                  unseenMessages: [variables.message],
+                  seenMessages: [],
+                  sessionUserMessages: [],
+                },
                 activities: [],
               });
             } else {
-              currentChatHistory.messages.unshift(variables.message);
+              currentChatHistory.messages.unseenMessages.unshift(
+                variables.message
+              );
             }
           }
         );
@@ -122,25 +130,60 @@ export const useSendMessage = (onMessageMutation: onMessageMutation) => {
       queryClient.setQueryData(["chats"], context.previousChats);
       onMessageMutation.onError();
     },
-    onSettled: async (data, error, variables) => {
+    onSettled: (data, error, variables) => {
       console.log("data -", data);
 
-      await queryClient.invalidateQueries({
-        queryKey: ["chats"],
-      });
-
-      if (data?.createMessage)
+      if (data?.createMessage?.chat)
         onMessageMutation.setSelectedChat((prev: any) => {
           console.log("previous selectedChat -", prev);
           return {
             ...prev,
-            id: data.createMessage?.id!,
+            id: data.createMessage?.chat?.id!,
           };
         });
-      else
-        await queryClient.invalidateQueries({
-          queryKey: ["chat-history", variables.payload.chatId],
-        });
+      else {
+        // queryClient.invalidateQueries({
+        //   queryKey: ["chat-history", variables.payload.chatId],
+        // });
+
+        queryClient.setQueryData(
+          ["chat-history", variables.payload.chatId],
+          (prev: any) => {
+            const firstChatHistoryItem = prev.getChatHistory[0];
+            const remainingChatHistoryItems = prev.getChatHistory.slice(1);
+
+            return {
+              getChatHistory: [
+                {
+                  ...firstChatHistoryItem,
+                  messages: {
+                    ...firstChatHistoryItem.messages,
+                    unseenMessages: [],
+                    seenMessages: [
+                      ...firstChatHistoryItem.messages.unseenMessages.slice(1),
+                      ...firstChatHistoryItem.messages.seenMessages,
+                    ],
+                    sessionUserMessages: [
+                      firstChatHistoryItem.messages.unseenMessages[0].sender
+                        .username === variables.message.sender?.username && {
+                        ...firstChatHistoryItem.messages.unseenMessages[0],
+                        seenBy: [],
+                        id: data?.createMessage!.id,
+                      },
+                      ...firstChatHistoryItem.messages.sessionUserMessages,
+                    ],
+                  },
+                },
+                ...remainingChatHistoryItems,
+              ],
+            };
+          }
+        );
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["chats"],
+      });
     },
   });
 };
@@ -287,6 +330,55 @@ export const useLeaveGroup = () => {
       await queryClient.invalidateQueries({
         queryKey: ["chats"],
       });
+    },
+  });
+};
+
+export const useSetMessagesAsSeen = () => {
+  return useMutation({
+    mutationFn: (variables: { chatId: string; messageIds: string[] }) =>
+      graphqlClient.request(setMessagesAsSeenMutation, {
+        chatId: variables.chatId,
+        messageIds: variables.messageIds,
+      }),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["unseen-chats-count"] });
+      await queryClient.cancelQueries({ queryKey: ["chats"] });
+
+      const previousUnseenChatsCount = queryClient.getQueryData([
+        "unseen-chats-count",
+      ]);
+      const previousChats = queryClient.getQueryData(["chats"]);
+
+      queryClient.setQueryData(["unseen-chats-count"], (prev: any) => {
+        return { getUnseenChatsCount: prev.getUnseenChatsCount - 1 };
+      });
+
+      queryClient.setQueryData(["chats"], (prev: any) => {
+        const previousChats = prev.getChats;
+
+        const currentChats = previousChats.map((chat: any) => {
+          if (chat.id === variables.chatId) {
+            return { ...chat, unseenMessagesCount: 0 };
+          }
+          return chat;
+        });
+
+        return { getChats: currentChats };
+      });
+
+      return { previousUnseenChatsCount, previousChats };
+    },
+    onError: (err, variables, context: any) => {
+      queryClient.setQueryData(
+        ["unseen-chats-count"],
+        context.previousUnseenChatsCount
+      );
+      queryClient.setQueryData(["chats"], context.previousChats);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+      queryClient.invalidateQueries({ queryKey: ["unseen-chats-count"] });
     },
   });
 };

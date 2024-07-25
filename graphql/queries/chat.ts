@@ -15,6 +15,7 @@ export const getChatsQuery = graphql(/* GraphQL */ `
         profileImageURL
       }
       members {
+        id
         firstName
         lastName
         username
@@ -29,6 +30,7 @@ export const getChatsQuery = graphql(/* GraphQL */ `
         }
         createdAt
       }
+      unseenMessagesCount
     }
   }
 `);
@@ -52,14 +54,39 @@ export const getChatHistoryQuery = graphql(/* GraphQL */ `
     getChatHistory(chatId: $chatId) {
       date
       messages {
-        id
-        content
-        sender {
+        unseenMessages {
           id
-          username
-          profileImageURL
+          content
+          sender {
+            id
+            username
+            profileImageURL
+          }
+          createdAt
         }
-        createdAt
+        seenMessages {
+          id
+          content
+          sender {
+            id
+            username
+            profileImageURL
+          }
+          createdAt
+        }
+        sessionUserMessages {
+          id
+          content
+          sender {
+            id
+            username
+            profileImageURL
+          }
+          createdAt
+          seenBy {
+            id
+          }
+        }
       }
       activities {
         id
@@ -101,6 +128,24 @@ export const getChatMembersQuery = graphql(/* GraphQL */ `
 export const getAvailableMembersQuery = graphql(/* GraphQL */ `
   query getAvailableMembersQuery($chatId: String!, $searchText: String!) {
     getAvailableMembers(chatId: $chatId, searchText: $searchText) {
+      id
+      firstName
+      lastName
+      username
+      profileImageURL
+    }
+  }
+`);
+
+export const getUnseenChatsCountQuery = graphql(/* GraphQL */ `
+  query GetUnseenChatsCountQuery {
+    getUnseenChatsCount
+  }
+`);
+
+export const getPeopleWithMessageSeenQuery = graphql(/* GraphQL */ `
+  query GetPeopleWithMessageSeen($messageId: String!) {
+    getPeopleWithMessageSeen(messageId: $messageId) {
       id
       firstName
       lastName

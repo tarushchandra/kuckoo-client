@@ -22,6 +22,11 @@ import Badge from "./ui/badge";
 import { useUnseenNotificationsCount } from "@/hooks/queries/notification";
 import { usePathname } from "next/navigation";
 import mergeClasses from "@/utils/mergeClasses";
+import { useUnseenChatsCount } from "@/hooks/queries/chat";
+import { IoMdMail } from "react-icons/io";
+import { IoHomeOutline } from "react-icons/io5";
+import { GoHomeFill } from "react-icons/go";
+import { MdHomeFilled } from "react-icons/md";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -31,8 +36,9 @@ interface SideBarMenuI {
 
 export default function SideBar({ className }: { className: string }) {
   const { data: sessionUser } = useAuth(selectUser);
-  const unseenNotificationsCount = useUnseenNotificationsCount();
   const path = usePathname();
+  const unseenNotificationsCount = useUnseenNotificationsCount();
+  const unseenChatsCount = useUnseenChatsCount();
 
   const [isCreateTweetModalOpen, setIsCreateTweetModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
@@ -56,11 +62,13 @@ export default function SideBar({ className }: { className: string }) {
                   {path.includes("home") ? (
                     <>
                       <Home strokeWidth={3} absoluteStrokeWidth={false} />
+                      {/* <MdHomeFilled className="text-[1.5rem]" /> */}
                       <h2 className="text-xl font-bold">Home</h2>
                     </>
                   ) : (
                     <>
                       <Home />
+                      {/* <IoHomeOutline strokeWidth={10} className="text-2xl" /> */}
                       {!path.includes("messages") && (
                         <h2 className="text-xl">Home</h2>
                       )}
@@ -96,15 +104,28 @@ export default function SideBar({ className }: { className: string }) {
                   {path.includes("messages") ? (
                     <>
                       <div className="relative">
-                        <Mail strokeWidth={3} />
-                        {/* <Badge className="-mt-[0.5rem] -mr-[0.3rem]">5</Badge> */}
+                        {/* <Mail strokeWidth={3} /> */}
+                        <IoMdMail className="text-[1.5rem]" />
+                        <>
+                          {unseenChatsCount && unseenChatsCount > 0 ? (
+                            <Badge className="-mt-[0.5rem] -mr-[0.3rem]">
+                              {unseenChatsCount}
+                            </Badge>
+                          ) : null}
+                        </>
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="relative">
                         <Mail />
-                        {/* <Badge className="-mt-[0.5rem] -mr-[0.3rem]">5</Badge> */}
+                        <>
+                          {unseenChatsCount && unseenChatsCount > 0 ? (
+                            <Badge className="-mt-[0.5rem] -mr-[0.3rem]">
+                              {unseenChatsCount}
+                            </Badge>
+                          ) : null}
+                        </>
                       </div>
                       <h2 className="text-xl">Messages</h2>
                     </>
