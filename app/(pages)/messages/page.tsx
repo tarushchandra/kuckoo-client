@@ -1,6 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import { useChats } from "@/hooks/queries/chat";
+import React, { useEffect, useState } from "react";
 import Header from "@/components/header";
 import ChatCard from "@/components/chat-card";
 import { Chat as ChatType } from "@/gql/graphql";
@@ -9,12 +8,21 @@ import Chat from "@/components/chat";
 import UserCardLoading from "@/components/ui/user-card-loading";
 import NewChatModal from "@/components/new-chat-modal";
 import NewGroupModal from "@/components/new-group-modal";
+import { queryClient } from "@/lib/clients/query";
+import { graphqlClient } from "@/lib/clients/graphql";
+import { getChatsQuery } from "@/graphql/queries/chat";
+import { useDispatch } from "react-redux";
+import { addChats, selectChat } from "@/lib/redux/features/chat/chatSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { useChats } from "@/hooks/services/chat";
 
 interface MessagesPageProps {}
 
 export default function MessagesPage() {
   const chats = useChats();
-  const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
+  const dispatch = useAppDispatch();
+  const selectedChat = useAppSelector((store) => store.chat.selectedChat);
+
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
   const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false);
 
@@ -35,11 +43,11 @@ export default function MessagesPage() {
           </div>
         </Header>
         <>
-          {chats ? (
+          {chats.length > 0 ? (
             <div className="h-full overflow-y-auto">
               {chats.map((chat: any) => (
-                <div key={chat.id} onClick={() => setSelectedChat(chat)}>
-                  <ChatCard chat={chat} selectedChat={selectedChat!} />
+                <div key={chat.id} onClick={() => dispatch(selectChat(chat))}>
+                  <ChatCard chat={chat} />
                 </div>
               ))}
             </div>
@@ -60,7 +68,7 @@ export default function MessagesPage() {
 
       <div className="col-span-12 flex flex-col overflow-y-hidden border-x border-zinc-800 ">
         {selectedChat ? (
-          <Chat chat={selectedChat} setSelectedChat={setSelectedChat} />
+          <Chat key={selectedChat.id} />
         ) : (
           <div className="flex flex-col gap-2 justify-center items-center h-full">
             <div className="flex flex-col gap-1 items-center">
@@ -76,7 +84,7 @@ export default function MessagesPage() {
         )}
       </div>
 
-      <>
+      {/* <>
         {isNewChatModalOpen && (
           <NewChatModal
             onClose={() => setIsNewChatModalOpen(false)}
@@ -87,7 +95,7 @@ export default function MessagesPage() {
         {isNewGroupModalOpen && (
           <NewGroupModal onClose={() => setIsNewGroupModalOpen(false)} />
         )}
-      </>
+      </> */}
     </>
   );
 }

@@ -4,16 +4,13 @@ import {
   ChatActivityType,
 } from "@/gql/graphql";
 import { useAuth } from "@/hooks/auth";
+import { useAppSelector } from "@/hooks/redux";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
 
-export default function ChatActivity({
-  activity,
-  chat,
-}: {
-  activity: chatActivity;
-  chat: Chat;
-}) {
+export default function ChatActivity({ activity }: { activity: chatActivity }) {
   const { data: sessionUser } = useAuth(selectUser);
+  const selectedChat = useAppSelector((store) => store.chat.selectedChat);
+
   const { type, user, targetUser } = activity;
 
   return (

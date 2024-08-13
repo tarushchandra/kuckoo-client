@@ -376,9 +376,9 @@ export const useSetMessagesAsSeen = () => {
       );
       queryClient.setQueryData(["chats"], context.previousChats);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["chats"] });
-      queryClient.invalidateQueries({ queryKey: ["unseen-chats-count"] });
-    },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["chats"] });
+    //   queryClient.invalidateQueries({ queryKey: ["unseen-chats-count"] });
+    // },
   });
 };

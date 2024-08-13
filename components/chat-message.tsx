@@ -6,17 +6,14 @@ import dayjs from "dayjs";
 import { Chat, Message } from "@/gql/graphql";
 import { useState } from "react";
 import MessageSeenByModal from "./message-seen-by-modal";
+import { useAppSelector } from "@/hooks/redux";
 
-export default function ChatMessage({
-  message,
-  chat,
-  setSelectedChat,
-}: {
-  message: Message;
-  chat: Chat;
-  setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>;
-}) {
+export default function ChatMessage({ message }: { message: Message }) {
   const { data: sessionUser } = useAuth(selectUser);
+  const selectedChat = useAppSelector((store) => store.chat.selectedChat);
+
+  console.log("message -", message);
+
   const [isMessageSeenByModalOpen, setIsMessageSeenByModalOpen] =
     useState(false);
 
@@ -55,7 +52,7 @@ export default function ChatMessage({
             )}
           >
             <>
-              {chat.isGroupChat &&
+              {selectedChat!.isGroupChat &&
                 message.sender?.username !== sessionUser?.username && (
                   <h2 className="text-xs font-semibold text-zinc-500">
                     @{message.sender?.username}
@@ -64,6 +61,16 @@ export default function ChatMessage({
             </>
             <h2>{message?.content}</h2>
           </div>
+
+          {/* <div className="flex gap-1 items-center text-xs font-medium text-zinc-500">
+            <h2>{time}</h2>
+          </div> */}
+
+          {/* <div className="flex gap-1 items-center text-xs font-medium text-zinc-500">
+            <h2>{time}</h2>
+            {message.seenBy?.length! > 0 && <h2>Seen</h2>}
+          </div> */}
+
           <div className="flex gap-1 items-center text-xs font-medium text-zinc-500">
             {(message.sender?.username !== sessionUser?.username ||
               message.seenBy) && <h2>{time}</h2>}
@@ -72,7 +79,7 @@ export default function ChatMessage({
               <>
                 {message.seenBy ? (
                   <>
-                    {chat.isGroupChat ? (
+                    {selectedChat!.isGroupChat ? (
                       <>
                         {message.seenBy.length > 0 && (
                           <>
@@ -83,7 +90,7 @@ export default function ChatMessage({
                             >
                               <span>Seen by</span>{" "}
                               <span>
-                                {chat.totalMembersCount! - 1 ===
+                                {selectedChat!.totalMembersCount! - 1 ===
                                 message.seenBy.length ? (
                                   "everyone"
                                 ) : (
@@ -103,7 +110,8 @@ export default function ChatMessage({
                       </>
                     ) : (
                       message.seenBy.length > 0 &&
-                      message.seenBy![0]!.id === chat.members![0]!.id! && (
+                      message.seenBy![0]!.id ===
+                        selectedChat!.members![0]!.id! && (
                         <>
                           <div className="bg-zinc-500 w-1 h-1 rounded-full" />
                           <h2>Seen</h2>
@@ -120,13 +128,13 @@ export default function ChatMessage({
         </div>
       </div>
 
-      {isMessageSeenByModalOpen && (
+      {/* {isMessageSeenByModalOpen && (
         <MessageSeenByModal
           messageId={message.id!}
           onClose={() => setIsMessageSeenByModalOpen(false)}
           setSelectedChat={setSelectedChat}
         />
-      )}
+      )} */}
     </>
   );
 }

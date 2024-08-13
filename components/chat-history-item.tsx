@@ -4,26 +4,34 @@ import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import { useMemo } from "react";
 import ChatMessage from "./chat-message";
 import ChatActivity from "./chat-activity";
+import { useAppSelector } from "@/hooks/redux";
 
 interface ChatHistoryItemProps {
   chatHistoryItem: ChatHistory;
-  chat: Chat;
-  setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>;
 }
 
 export default function ChatHistoryItem(props: ChatHistoryItemProps) {
-  const { chatHistoryItem, chat, setSelectedChat } = props;
+  const { chatHistoryItem } = props;
+  const selectedChat = useAppSelector((store) => store.chat.selectedChat);
   const { data: sessionUser } = useAuth(selectUser);
 
-  const modifiedChatHistoryItem = useMemo(
-    () =>
-      [
-        ...chatHistoryItem?.messages?.seenMessages!,
-        ...chatHistoryItem?.messages?.sessionUserMessages!,
-        ...chatHistoryItem?.activities!,
-      ].sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt)),
-    [chat.id, chatHistoryItem]
-  );
+  // const modifiedChatHistoryItem = useMemo(
+  //   () =>
+  //     [
+  //       ...chatHistoryItem?.messages?.seenMessages!,
+  //       ...chatHistoryItem?.messages?.sessionUserMessages!,
+  //       ...chatHistoryItem?.activities!,
+  //     ].sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt)),
+  //   [selectedChat!.id, chatHistoryItem]
+  // );
+
+  const modifiedChatHistoryItem = [
+    ...chatHistoryItem?.messages?.seenMessages!,
+    ...chatHistoryItem?.messages?.sessionUserMessages!,
+    ...chatHistoryItem?.activities!,
+  ].sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt));
+
+  // console.log("modifiedChatHistoryItem -", modifiedChatHistoryItem);
 
   return (
     <div key={chatHistoryItem?.date} className="flex flex-col-reverse gap-3">
@@ -32,8 +40,7 @@ export default function ChatHistoryItem(props: ChatHistoryItemProps) {
           {chatHistoryItem?.messages?.unseenMessages?.length! > 0 && (
             <div className="flex flex-col gap-3">
               <>
-                {chatHistoryItem?.messages?.unseenMessages![0]?.sender
-                  ?.username !== sessionUser?.username && (
+                {chatHistoryItem?.messages?.unseenMessages?.length! > 0 && (
                   <div className="flex justify-center">
                     <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-800 text-zinc-200 ">
                       <span>
@@ -52,12 +59,7 @@ export default function ChatHistoryItem(props: ChatHistoryItemProps) {
               <div className="flex flex-col-reverse gap-4">
                 {chatHistoryItem?.messages?.unseenMessages?.map(
                   (message: any) => (
-                    <ChatMessage
-                      key={message.id}
-                      message={message}
-                      chat={chat}
-                      setSelectedChat={setSelectedChat}
-                    />
+                    <ChatMessage key={message.id} message={message} />
                   )
                 )}
               </div>
@@ -67,14 +69,9 @@ export default function ChatHistoryItem(props: ChatHistoryItemProps) {
         <>
           {modifiedChatHistoryItem.map((item: any) =>
             item.type ? (
-              <ChatActivity key={item.id} activity={item} chat={chat} />
+              <ChatActivity key={item.id} activity={item} />
             ) : (
-              <ChatMessage
-                key={item.id}
-                message={item}
-                chat={chat}
-                setSelectedChat={setSelectedChat}
-              />
+              <ChatMessage key={item.id} message={item} />
             )
           )}
         </>

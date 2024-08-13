@@ -151,3 +151,9 @@ export const getUserTweetsQuery = graphql(/* GraphQL */ `
     }
   }
 `);
+
+export const getUserLastSeenQuery = graphql(/* GraphQL */ `
+  query getUserLastSeen($userId: String!) {
+    getUserLastSeen(userId: $userId)
+  }
+`);

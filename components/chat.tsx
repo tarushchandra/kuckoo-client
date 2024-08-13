@@ -4,7 +4,14 @@ import Header from "./header";
 import Image from "next/image";
 import ChatMessages from "./chat-history";
 import { Chat as ChatType } from "@/gql/graphql";
-import { useEffect, useLayoutEffect, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import mergeClasses from "@/utils/mergeClasses";
 import { useSendMessage } from "@/hooks/mutations/chat";
 import { useAuth } from "@/hooks/auth";
@@ -12,32 +19,85 @@ import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import ChatInfo from "./chat-info";
 import { AiFillInfoCircle, AiOutlineInfoCircle } from "react-icons/ai";
 import ChatHistory from "./chat-history";
+import { useSocket } from "@/context/socket";
+import { useSelector } from "react-redux";
+import { queryClient } from "@/lib/clients/query";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { addMessage } from "@/lib/redux/features/chat/chatSlice";
+import { getModifiedLastSeenDateForChat } from "@/utils/date";
+import { useUserLastSeenAt } from "@/hooks/services/chat";
+import { useThrottle } from "@/hooks/utils";
 
-interface ChatProps {
-  chat: ChatType;
-  setSelectedChat: React.Dispatch<React.SetStateAction<ChatType | null>>;
-}
+// const useThrottle = (func: () => void, delay: number) => {
+//   let isTimeoutPresent = false;
 
-export default function Chat({ chat, setSelectedChat }: ChatProps) {
+//   return () => {
+//     if (isTimeoutPresent) return;
+
+//     func();
+//     console.log("func called");
+
+//     setTimeout(() => {
+//       console.log("setTimeout cb called");
+
+//       isTimeoutPresent = false;
+//     }, delay);
+//     isTimeoutPresent = true;
+//   };
+// };
+
+// const useThrottle = () => {
+// return useCallback((func: () => void, delay: number) => {
+//   let isTimeoutPresent = false;
+
+//   return () => {
+//     if (isTimeoutPresent) return;
+
+//     func();
+//     setTimeout(() => {
+//       isTimeoutPresent = false;
+//     }, delay);
+//     isTimeoutPresent = true;
+//   };
+// }, []);
+// };
+
+export default function Chat() {
   const { data: sessionUser } = useAuth(selectUser);
+  const selectedChat = useAppSelector((store) => store.chat.selectedChat);
+  const onlineUser = useUserLastSeenAt(selectedChat!.members![0]?.id!);
+  const isUserTyping = useAppSelector(
+    (store) => store.chat.typingUsers[selectedChat?.id!]
+  );
+  const dispatch = useAppDispatch();
+  const { socket } = useSocket();
+
   const [message, setMessage] = useState("");
   const [isChatInfoTabOpen, setIsChatInfoTabOpen] = useState(false);
 
-  const sendMessageMutation = useSendMessage({
-    onSuccess: () => setMessage(""),
-    onError: () => setMessage(message),
-    setSelectedChat: setSelectedChat,
-  });
+  const lastSeenAt =
+    onlineUser?.isOnline === false
+      ? getModifiedLastSeenDateForChat(onlineUser?.lastSeenAt!)
+      : "";
 
-  console.log("chat -", chat);
-
-  // console.log("members- ", chat.members);
-  // console.log("chat rendered");
-  // console.log("chat component re-rendered, message -", message);
+  const throttledSendTypingEvent = useThrottle(
+    () =>
+      socket?.send(
+        JSON.stringify({
+          type: "USER_IS_TYPING",
+          chatId: selectedChat?.id,
+          user: {
+            id: sessionUser?.id,
+            firstName: sessionUser?.firstName,
+          },
+        })
+      ),
+    2800
+  );
 
   useEffect(() => {
     isChatInfoTabOpen && setIsChatInfoTabOpen(false);
-  }, [chat.id]);
+  }, [selectedChat!.id]);
 
   //   useEffect(() => {
   //     return () => {
@@ -45,41 +105,95 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
   //     };
   //   }, [chat.id]);
 
-  const handleSendMessage = async () => {
-    if (sendMessageMutation.isPending || !message) return;
+  // useEffect(() => {
+  //   if (!message) return;
 
-    await sendMessageMutation.mutateAsync({
-      payload: {
-        chatId: chat.id ?? null,
-        content: message,
-        targetUserIds: [chat.members![0]?.id!],
-      },
+  //   socket?.send(
+  //     JSON.stringify({
+  //       type: "USER_IS_TYPING",
+  //       chatId: selectedChat?.id,
+  //       user: {
+  //         firstName: sessionUser?.firstName,
+  //       },
+  //     })
+  //   );
+
+  //   const timer = setTimeout(() => {
+  //     socket?.send(
+  //       JSON.stringify({
+  //         type: "USER_HAS_STOPPED_TYPING",
+  //         chatId: selectedChat?.id,
+  //         user: {
+  //           firstName: sessionUser?.firstName,
+  //         },
+  //       })
+  //     );
+  //   }, 2500);
+
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [message]);
+
+  const handleSendMessage = async () => {
+    const messagePayload = {
+      type: "CHAT_MESSAGE",
+      chatId: selectedChat!.id ?? "default-message-id",
       message: {
-        id: chat.id ?? "default-message-id",
+        id: Math.random(),
         content: message,
-        createdAt: String(Date.now()),
         sender: {
           id: sessionUser?.id!,
           username: sessionUser?.username!,
+          firstName: sessionUser?.firstName!,
           profileImageURL: sessionUser?.profileImageURL!,
-        } as any,
-      },
-      selectedChat: {
-        ...chat,
-        latestMessage: {
-          content: message,
-          createdAt: String(Date.now()),
-          sender: {
-            firstName: sessionUser?.firstName!,
-            username: sessionUser?.username!,
-            profileImageURL: sessionUser?.profileImageURL!,
-          } as any,
         },
-        unseenMessagesCount: 0,
+        createdAt: String(Date.now()),
       },
-    });
+    };
+
+    socket?.send(JSON.stringify(messagePayload));
+    dispatch(addMessage({ messagePayload, sessionUser }));
     setMessage("");
   };
+
+  // const handleSendMessage = async () => {
+  // if (sendMessageMutation.isPending || !message) return;
+
+  // await sendMessageMutation.mutateAsync({
+  //   payload: {
+  //     chatId: chat.id ?? null,
+  //     content: message,
+  //     targetUserIds: [chat.members![0]?.id!],
+  //   },
+  //   message: {
+  //     id: chat.id ?? "default-message-id",
+  //     content: message,
+  //     createdAt: String(Date.now()),
+  //     sender: {
+  //       id: sessionUser?.id!,
+  //       username: sessionUser?.username!,
+  //       profileImageURL: sessionUser?.profileImageURL!,
+  //     } as any,
+  //   },
+  //   selectedChat: {
+  //     ...chat,
+  //     latestMessage: {
+  //       content: message,
+  //       createdAt: String(Date.now()),
+  //       sender: {
+  //         firstName: sessionUser?.firstName!,
+  //         username: sessionUser?.username!,
+  //         profileImageURL: sessionUser?.profileImageURL!,
+  //       } as any,
+  //     },
+  //     unseenMessagesCount: 0,
+  //   },
+  // });
+
+  // const messageCreatedAtDate = String(Date.now());
+
+  // };
 
   return (
     <>
@@ -87,15 +201,15 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center ">
             <div className="cursor-pointer">
-              {chat?.isGroupChat ? (
+              {selectedChat?.isGroupChat ? (
                 <div className="relative w-[40px] h-[40px]">
                   <Image
                     title={
-                      chat.members![0]?.firstName +
+                      selectedChat.members![0]?.firstName +
                       " " +
-                      chat.members![0]?.lastName
+                      selectedChat.members![0]?.lastName
                     }
-                    src={chat.members![0]?.profileImageURL!}
+                    src={selectedChat.members![0]?.profileImageURL!}
                     alt="chat-user-image"
                     width={30}
                     height={30}
@@ -103,50 +217,105 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
                   />
                   <Image
                     title={
-                      chat.members![1]?.firstName +
+                      selectedChat.members![1]?.firstName +
                       " " +
-                      chat.members![1]?.lastName
+                      selectedChat.members![1]?.lastName
                     }
-                    src={chat.members![1]?.profileImageURL!}
+                    src={selectedChat.members![1]?.profileImageURL!}
                     alt="chat-user-image"
                     width={30}
                     height={30}
                     className="rounded-full absolute bottom-0 left-[50%] -translate-x-1/2 border border-zinc-500"
                   />
-                  {chat.totalMembersCount! > 3 && (
+                  {selectedChat.totalMembersCount! > 3 && (
                     <div className="border border-zinc-500 flex justify-center items-center text-xs font-bold w-[30px] h-[30px] rounded-full absolute top-0 right-0 bg-white text-black opacity-80">
-                      +{chat.totalMembersCount! - 3}
+                      +{selectedChat.totalMembersCount! - 3}
                     </div>
                   )}
                 </div>
               ) : (
-                <Image
-                  src={chat.members![0]?.profileImageURL!}
-                  alt="chat-user-image"
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
+                <div className="w-[40px] h-[40px] relative">
+                  <Image
+                    src={selectedChat!.members![0]?.profileImageURL!}
+                    alt="chat-user-image"
+                    width={40}
+                    height={40}
+                    className="rounded-full object-cover h-full w-full"
+                  />{" "}
+                  {onlineUser?.isOnline && (
+                    <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-400 border border-zinc-800 rounded-full"></div>
+                  )}
+                </div>
               )}
             </div>
-            <div className="cursor-pointer">
-              {chat.isGroupChat ? (
-                <h2 className="font-semibold">{chat.name}</h2>
+
+            <div className="transition-all">
+              <>
+                {selectedChat?.isGroupChat ? (
+                  <h2 className="font-semibold">{selectedChat!.name}</h2>
+                ) : (
+                  <h2 className="font-semibold cursor-pointer">
+                    {selectedChat!.members![0]?.firstName}{" "}
+                    {selectedChat!.members![0]?.lastName}
+                  </h2>
+                )}
+              </>
+              <>
+                {isUserTyping ? (
+                  <h2 className="text-zinc-500 text-sm font-medium">
+                    {selectedChat?.isGroupChat!
+                      ? `${isUserTyping.user.firstName} is typing...`
+                      : "typing..."}
+                  </h2>
+                ) : (
+                  !selectedChat?.isGroupChat && (
+                    <h2 className="text-zinc-500 text-sm font-medium">
+                      {onlineUser
+                        ? onlineUser?.isOnline
+                          ? "online"
+                          : lastSeenAt
+                        : "click here to view profile"}
+                    </h2>
+                  )
+                )}
+              </>
+            </div>
+            {/* <div className="transition-all">
+              {selectedChat!.isGroupChat ? (
+                <h2 className="font-semibold">{selectedChat!.name}</h2>
               ) : (
                 <>
-                  <h2 className="font-semibold">
-                    {chat.members![0]?.firstName} {chat.members![0]?.lastName}
+                  <h2 className="font-semibold cursor-pointer">
+                    {selectedChat!.members![0]?.firstName}{" "}
+                    {selectedChat!.members![0]?.lastName}
                   </h2>
+
+                  {isUserTyping ? (
+                    <h2 className="text-zinc-500 text-sm font-medium">
+                      {selectedChat?.isGroupChat!
+                        ? `${isUserTyping.user.firstName} is typing...`
+                        : "typing..."}
+                    </h2>
+                  ) : (
+                    <h2 className="text-zinc-500 text-sm font-medium">
+                      {onlineUser
+                        ? onlineUser?.isOnline
+                          ? "online"
+                          : lastSeenAt
+                        : "click here to view profile"}
+                    </h2>
+                  )}
+
                   <h2 className="text-zinc-500 text-sm font-medium">
-                    @{chat.members![0]?.username}
+                    @{selectedChat!.members![0]?.username}
                   </h2>
                 </>
               )}
-            </div>
+            </div> */}
           </div>
 
           <>
-            {chat.id && (
+            {selectedChat!.id && (
               <>
                 {isChatInfoTabOpen ? (
                   <AiFillInfoCircle
@@ -173,11 +342,14 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
             isChatInfoTabOpen && "bg-black opacity-20"
           )}
         >
-          <ChatHistory chat={chat} setSelectedChat={setSelectedChat} />
+          <ChatHistory key={selectedChat!.id} />
 
           <div className="sticky bottom-0 flex p-4 border-t border-zinc-800 bg-gradient-to-t from-black to-transparent backdrop-blur-md">
             <input
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                throttledSendTypingEvent();
+              }}
               onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
               value={message}
               type="text"
@@ -198,9 +370,9 @@ export default function Chat({ chat, setSelectedChat }: ChatProps) {
           </div>
         </div>
 
-        {isChatInfoTabOpen && (
+        {/* {isChatInfoTabOpen && (
           <ChatInfo chat={chat} setSelectedChat={setSelectedChat} />
-        )}
+        )} */}
       </div>
     </>
   );

@@ -44,9 +44,9 @@ export const useChatHistory = (chat: Chat) => {
     if (chat.id === "default-chat-id") return;
     cacheRef.current = null;
 
-    return () => {
-      queryClient.invalidateQueries({ queryKey: ["chat-history", chat.id] });
-    };
+    // return () => {
+    //   queryClient.invalidateQueries({ queryKey: ["chat-history", chat.id] });
+    // };
   }, [chat.id]);
 
   if (cacheRef.current) {

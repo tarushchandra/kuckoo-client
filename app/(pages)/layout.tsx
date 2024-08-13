@@ -4,6 +4,7 @@ import SideBar from "@/components/side-bar";
 import { AuthRoute } from "@/providers/AuthProvider";
 import ExploreBar from "../../components/explore-bar";
 import { usePathname } from "next/navigation";
+import { SocketProvider } from "@/context/socket";
 
 // export const metadata: Metadata = {
 //   title: "Twitter | Home",
@@ -20,26 +21,30 @@ export default function PagesLayout({
   if (path.includes("messages"))
     return (
       <AuthRoute>
-        <div className=" overflow-y-scroll">
-          <div className="grid grid-cols-18 h-screen w-[65%] mx-auto">
-            <SideBar className="col-span-1" />
-            {children}
+        <SocketProvider>
+          <div className=" overflow-y-scroll">
+            <div className="grid grid-cols-18 h-screen w-[65%] mx-auto">
+              <SideBar className="col-span-1" />
+              {children}
+            </div>
           </div>
-        </div>
+        </SocketProvider>
       </AuthRoute>
     );
 
   return (
     <AuthRoute>
-      <div className="overflow-y-scroll">
-        <div className="grid grid-cols-20 h-screen w-[65%] mx-auto gap-4">
-          <SideBar className="col-span-5" />
-          <div className="col-span-10 flex flex-col border-x border-zinc-800">
-            {children}
+      <SocketProvider>
+        <div className="overflow-y-scroll">
+          <div className="grid grid-cols-20 h-screen w-[65%] mx-auto gap-4">
+            <SideBar className="col-span-5" />
+            <div className="col-span-10 flex flex-col border-x border-zinc-800">
+              {children}
+            </div>
+            <ExploreBar />
           </div>
-          <ExploreBar />
         </div>
-      </div>
+      </SocketProvider>
     </AuthRoute>
   );
 }

@@ -20,6 +20,7 @@ export const getChatsQuery = graphql(/* GraphQL */ `
         lastName
         username
         profileImageURL
+        lastSeenAt
       }
       latestMessage {
         content

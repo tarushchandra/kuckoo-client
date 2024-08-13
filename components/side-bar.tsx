@@ -1,32 +1,19 @@
 "use client";
-
 import React, { useState } from "react";
 import Image from "next/image";
 import { BsTwitter } from "react-icons/bs";
-import { AiOutlineEllipsis } from "react-icons/ai";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
-import {
-  Bell,
-  Bookmark,
-  Home,
-  Mail,
-  Search,
-  User,
-  MailOpen,
-} from "lucide-react";
+import { Bell, Bookmark, Home, Mail, Search, User } from "lucide-react";
 import Link from "next/link";
 import PostTweetModal, { MODE } from "./post-tweet-modal";
 import SignOutModal from "./signout-modal";
 import Badge from "./ui/badge";
 import { useUnseenNotificationsCount } from "@/hooks/queries/notification";
 import { usePathname } from "next/navigation";
-import mergeClasses from "@/utils/mergeClasses";
 import { useUnseenChatsCount } from "@/hooks/queries/chat";
 import { IoMdMail } from "react-icons/io";
-import { IoHomeOutline } from "react-icons/io5";
-import { GoHomeFill } from "react-icons/go";
-import { MdHomeFilled } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -39,6 +26,10 @@ export default function SideBar({ className }: { className: string }) {
   const path = usePathname();
   const unseenNotificationsCount = useUnseenNotificationsCount();
   const unseenChatsCount = useUnseenChatsCount();
+
+  // const realTimeChats= useSelector(
+  //   (store: any) => store.chats
+  // );
 
   const [isCreateTweetModalOpen, setIsCreateTweetModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
@@ -106,13 +97,15 @@ export default function SideBar({ className }: { className: string }) {
                       <div className="relative">
                         {/* <Mail strokeWidth={3} /> */}
                         <IoMdMail className="text-[1.5rem]" />
-                        <>
-                          {unseenChatsCount && unseenChatsCount > 0 ? (
+                        {/* <>
+                          {(unseenChatsCount && unseenChatsCount > 0) ||
+                          Object.keys(realTimeUnseenChats).length > 0 ? (
                             <Badge className="-mt-[0.5rem] -mr-[0.3rem]">
-                              {unseenChatsCount}
+                              {unseenChatsCount ||
+                                Object.keys(realTimeUnseenChats).length}
                             </Badge>
                           ) : null}
-                        </>
+                        </> */}
                       </div>
                     </>
                   ) : (

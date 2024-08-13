@@ -4,9 +4,12 @@ import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import Image from "next/image";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import mergeClasses from "@/utils/mergeClasses";
 import { getModifiedDate, getModifiedDateForChatCard } from "@/utils/date";
+import { useSocket } from "@/context/socket";
+import { useSelector } from "react-redux";
+import { useAppSelector } from "@/hooks/redux";
 
 dayjs.extend(relativeTime);
 
@@ -14,12 +17,11 @@ dayjs.extend(relativeTime);
 
 interface ChatCardProps {
   chat: Chat;
-  selectedChat: Chat;
 }
 
 export default function ChatCard(props: ChatCardProps) {
-  const { chat, selectedChat } = props;
-  const { data: sessionUser } = useAuth(selectUser);
+  const { chat } = props;
+  const selectedChat = useAppSelector((store) => store.chat.selectedChat);
   const {
     isGroupChat,
     latestMessage,
@@ -30,18 +32,37 @@ export default function ChatCard(props: ChatCardProps) {
     createdAt,
   } = chat;
 
+  // console.log("chat -", chat);
+  // console.log("selectedChat -", selectedChat);
+
+  const { data: sessionUser } = useAuth(selectUser);
+  const onlineUser = useAppSelector(
+    (store: any) => store.onlineUsers[members![0]!.id]
+  );
+  const isUserTyping = useAppSelector(
+    (store) => store.chat.typingUsers[chat.id]
+  );
+
+  console.log("isUserTyping -", isUserTyping);
+
+  // const realTimeChat = useSelector((store: any) => store.chats[chat.id]);
+
+  // const isOnline = onlineUsers[members![0]!.id];
+  // console.log("isOnline -", isOnline);
+
+  // console.log(`${chat.id} realTimeUnseenMessages -`, realTimeUnseenMessages);
+
   let chatMember = null;
   if (!isGroupChat) chatMember = members![0];
 
-  const modifiedContent = useMemo(() => {
-    return latestMessage?.content?.length! > 23
-      ? latestMessage?.content?.slice(0, 23) + "..."
-      : latestMessage?.content;
+  const modifiedLatestMessage = useMemo(() => {
+    const content = latestMessage?.content;
+    return content!?.length > 23 ? content?.slice(0, 23) + "..." : content;
   }, [chat.latestMessage?.content]);
 
-  const modifiedDate = latestMessage
+  const modifiedCreatedAtDate = latestMessage
     ? getModifiedDateForChatCard(latestMessage?.createdAt!)
-    : getModifiedDateForChatCard(chat.createdAt!);
+    : getModifiedDateForChatCard(chat?.createdAt!);
 
   return (
     <div
@@ -82,14 +103,17 @@ export default function ChatCard(props: ChatCardProps) {
             )}
           </div>
         ) : (
-          <div className="w-[40px] h-[40px]">
+          <div className="w-[40px] h-[40px] relative">
             <Image
               src={chat.members![0]?.profileImageURL!}
               alt="chat-user-image"
               width={40}
               height={40}
               className="rounded-full object-cover h-full w-full"
-            />
+            />{" "}
+            {onlineUser?.isOnline && (
+              <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-400 border border-zinc-800 rounded-full"></div>
+            )}
           </div>
         )}
       </>
@@ -106,27 +130,37 @@ export default function ChatCard(props: ChatCardProps) {
               chat.unseenMessagesCount! > 0 && "text-[#1D9BF0] font-bold"
             )}
           >
-            {modifiedDate}
+            {modifiedCreatedAtDate}
           </h2>
         </div>
         <div className="text-sm text-zinc-400 flex gap-2">
           {latestMessage ? (
             <div className="flex justify-between items-center w-full">
-              <div
-                className={mergeClasses(
-                  chat.unseenMessagesCount! > 0 && "text-white font-medium"
+              <>
+                {isUserTyping ? (
+                  <h2 className="text-[#1D9BF0] font-semibold">
+                    {chat.isGroupChat
+                      ? `${isUserTyping.user.firstName} is typing...`
+                      : "typing..."}
+                  </h2>
+                ) : (
+                  <div
+                    className={mergeClasses(
+                      chat.unseenMessagesCount! > 0 && "text-white font-medium"
+                    )}
+                  >
+                    <span>
+                      {latestMessage?.sender?.username === sessionUser?.username
+                        ? "You"
+                        : latestMessage?.sender?.firstName}
+                      :
+                    </span>{" "}
+                    <span title={latestMessage?.content!}>
+                      {modifiedLatestMessage}
+                    </span>
+                  </div>
                 )}
-              >
-                <span>
-                  {latestMessage?.sender?.username === sessionUser?.username
-                    ? "You"
-                    : latestMessage?.sender?.firstName}
-                  :
-                </span>{" "}
-                <span className="" title={latestMessage?.content!}>
-                  {modifiedContent}
-                </span>
-              </div>
+              </>
               <>
                 {chat.unseenMessagesCount! > 0 && (
                   <div className="bg-[#1D9BF0] w-4 h-4 p-[0.6rem] rounded-full text-white text-xs font-bold flex justify-center items-center">
