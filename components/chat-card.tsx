@@ -43,7 +43,7 @@ export default function ChatCard(props: ChatCardProps) {
     (store) => store.chat.typingUsers[chat.id]
   );
 
-  console.log("isUserTyping -", isUserTyping);
+  // console.log("isUserTyping -", isUserTyping);
 
   // const realTimeChat = useSelector((store: any) => store.chats[chat.id]);
 

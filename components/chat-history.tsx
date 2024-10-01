@@ -43,22 +43,10 @@ function ChatHistory() {
 
   // ----------------------------------------------------------------------------------------
 
-  // useEffect(() => {
-  //   console.log("chatHistoryObj in useEffect CB -", chatHistoryObj);
-
-  //   if (selectedChat!.unseenMessagesCount === 0 || !chatHistory) return;
-  //   dispatch(setChatAsSeen());
-
-  //   return () => {
-  //     console.log("chatHistoryObj in useEffect clean up -", chatHistoryObj);
-
-  //     if (chatHistory[0].messages?.unseenMessages?.length === 0) return;
-  //     dispatch(setUnseenMessagesAsSeen({ chatId: selectedChat?.id }));
-  //   };
-  // }, [selectedChat?.id]);
-
   useEffect(() => {
-    if (selectedChat!.unseenMessagesCount === 0 || !chatHistory) return;
+    if (selectedChat!.unseenMessagesCount === 0) return;
+    if (!chatHistory || chatHistory.length === 0) return;
+
     dispatch(setChatAsSeen());
 
     const totalUnseenMessages = chatHistory.reduce(
@@ -70,6 +58,7 @@ function ChatHistory() {
       },
       []
     );
+
     socket?.send(
       JSON.stringify({
         type: "CHAT_MESSAGES_ARE_SEEN_BY_THE_RECIPIENT",

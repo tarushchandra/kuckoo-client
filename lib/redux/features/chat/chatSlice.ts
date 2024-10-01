@@ -91,20 +91,6 @@ export const chatsSlice = createSlice({
             message?.seenBy!.push(payload.seenBy);
           });
         }
-
-        // payload.messages.forEach((messageContent: string) => {
-        //   for (const chatHistoryItem of chatHistory.data) {
-        //     const sessionUserMessages =
-        //       chatHistoryItem.messages?.sessionUserMessages!;
-
-        //     for (const sessionUserMessage of sessionUserMessages) {
-        //       if (messageContent !== sessionUserMessage?.content) return;
-        //       if (!sessionUserMessage.seenBy)
-        //         sessionUserMessage.seenBy = [{ ...payload.seenBy }];
-        //       else sessionUserMessage.seenBy.push(payload.seenBy);
-        //     }
-        //   }
-        // });
       }
     },
 
@@ -121,6 +107,54 @@ export const chatsSlice = createSlice({
           }
         });
       });
+    },
+
+    replaceTemporaryMessageIdWithActualMessageId: (state, action) => {
+      const {
+        chatId,
+        temporaryMessageId,
+        actualMessageId,
+        sessionUser,
+        sender,
+      } = action.payload;
+
+      const chatHistory = state.chatHistories[chatId];
+      const unseenMessages = chatHistory.data[0].messages?.unseenMessages!;
+      const seenMessages = chatHistory.data[0].messages?.seenMessages!;
+      const sessionUserMessages =
+        chatHistory.data[0].messages?.sessionUserMessages!;
+
+      if (sender.id === sessionUser.id) {
+        for (const sessionUserMessage of sessionUserMessages) {
+          if (
+            typeof sessionUserMessage?.id === "number" &&
+            sessionUserMessage.id === temporaryMessageId
+          ) {
+            sessionUserMessage.id = actualMessageId;
+            return;
+          }
+        }
+      } else {
+        for (const unseenMessage of unseenMessages) {
+          if (
+            typeof unseenMessage?.id === "number" &&
+            unseenMessage.id === temporaryMessageId
+          ) {
+            unseenMessage.id = actualMessageId;
+            return;
+          }
+        }
+
+        for (const seenMessage of seenMessages) {
+          if (
+            typeof seenMessage?.id === "number" &&
+            seenMessage.id === temporaryMessageId
+          ) {
+            seenMessage.id = actualMessageId;
+            return;
+          }
+        }
+      }
     },
 
     addMessage: (state, action) => {
@@ -260,15 +294,27 @@ export const chatsSlice = createSlice({
           arg: { chatId, recentChatHistory },
         } = action.meta;
 
-        const fetchedChatHistory = action.payload;
+        let fetchedChatHistory = action.payload;
         const chatHistoryObj = state.chatHistories[chatId];
 
-        if (recentChatHistory)
+        if (recentChatHistory) {
+          fetchedChatHistory = fetchedChatHistory?.filter(
+            (fetchedChatHistoryItem) => {
+              const fetchedUnseenMessages =
+                fetchedChatHistoryItem?.messages?.unseenMessages!;
+
+              recentChatHistory.forEach((recentChatHistoryItem) => {
+                const recentUnseenMessages =
+                  recentChatHistoryItem?.messages?.unseenMessages!;
+              });
+            }
+          );
+
           chatHistoryObj.data = [
             ...recentChatHistory!,
             ...fetchedChatHistory!,
           ] as any;
-        else chatHistoryObj.data = fetchedChatHistory as any;
+        } else chatHistoryObj.data = fetchedChatHistory as any;
 
         chatHistoryObj.isDataLoading = false;
         chatHistoryObj.isDataFetched = true;
@@ -295,5 +341,6 @@ export const {
   addTypingUser,
   removeTypingUser,
   setMessageIsSentToRecipient,
+  replaceTemporaryMessageIdWithActualMessageId,
 } = chatsSlice.actions;
 export default chatsSlice.reducer;

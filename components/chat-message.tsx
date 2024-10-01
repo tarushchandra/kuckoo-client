@@ -12,7 +12,7 @@ export default function ChatMessage({ message }: { message: Message }) {
   const { data: sessionUser } = useAuth(selectUser);
   const selectedChat = useAppSelector((store) => store.chat.selectedChat);
 
-  console.log("message -", message);
+  // console.log("message -", message);
 
   const [isMessageSeenByModalOpen, setIsMessageSeenByModalOpen] =
     useState(false);

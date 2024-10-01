@@ -6,6 +6,7 @@ import {
   addMessage,
   addTypingUser,
   removeTypingUser,
+  replaceTemporaryMessageIdWithActualMessageId,
   setMessageIsSentToRecipient,
   setUnseenMessagesAsSeen,
 } from "@/lib/redux/features/chat/chatSlice";
@@ -119,6 +120,14 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
           setUnseenMessagesAsSeen({
             actionType: "SETTING_THE_UNSEEN_MESSAGES_AS_SEEN_FOR_SENDER",
             payload: parsedMessage,
+          })
+        );
+
+      if (parsedMessage.type === "ACTUAL_MESSAGE_ID")
+        dispatch(
+          replaceTemporaryMessageIdWithActualMessageId({
+            ...parsedMessage,
+            sessionUser,
           })
         );
     };

@@ -138,7 +138,7 @@ export default function Chat() {
   const handleSendMessage = async () => {
     const messagePayload = {
       type: "CHAT_MESSAGE",
-      chatId: selectedChat!.id ?? "default-message-id",
+      chatId: selectedChat!.id ?? "default-chat-id",
       message: {
         id: Math.random(),
         content: message,
