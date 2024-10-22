@@ -39,6 +39,10 @@ export const chatsSlice = createSlice({
       state.selectedChat = action.payload;
     },
 
+    removeSelectedChat: (state) => {
+      state.selectedChat = null;
+    },
+
     addTypingUser: (state, action) => {
       const { chatId, user } = action.payload;
       state.typingUsers[chatId] = { user };
@@ -271,6 +275,21 @@ export const chatsSlice = createSlice({
       if (state.selectedChat?.id === messagePayload.chatId)
         state.selectedChat = filteredChat[0];
     },
+
+    renameChatGroupName: (state, action) => {
+      // rename the selectedChat's group name
+      state.selectedChat!.name = action.payload.chatName;
+
+      // rename the the chatGroupName from the totalChats Array
+      const mutatedChat = {
+        ...state.totalChats.find((x: any) => x.id === action.payload.id),
+        name: action.payload.chatName,
+      };
+      const remainingChats = state.totalChats.filter(
+        (x: any) => x.id !== action.payload.id
+      );
+      state.totalChats = [mutatedChat, ...remainingChats];
+    },
   },
   extraReducers: (builder) => {
     // chat/fetchChatHistory
@@ -335,6 +354,7 @@ export const chatsSlice = createSlice({
 export const {
   addChats,
   selectChat,
+  removeSelectedChat,
   addMessage,
   setChatAsSeen,
   setUnseenMessagesAsSeen,

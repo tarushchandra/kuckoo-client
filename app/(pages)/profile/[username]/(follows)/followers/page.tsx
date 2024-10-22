@@ -14,7 +14,7 @@ export default function FollowersPage({ params }: ProfilePageProps) {
         {Array.from({ length: 11 }, (_, index) => (
           <UserCardLoading
             key={index}
-            className="px-10 py-3"
+            className="px-2 py-3"
             nameClassName="w-40"
             userNameClassName="w-32"
           />
@@ -30,11 +30,11 @@ export default function FollowersPage({ params }: ProfilePageProps) {
     );
 
   return (
-    <div className="px-4 py-4 flex flex-col gap-2">
+    <div className="p-4 flex flex-col gap-2">
       {followers.map((follower: any) => {
         return (
           <UserCard
-            className="px-10 py-3 rounded-lg hover:bg-zinc-950"
+            className="px-2 py-3 rounded-lg hover:bg-zinc-950"
             buttonClassName="px-4 py-2"
             key={follower?.id}
             user={follower}

@@ -6,6 +6,7 @@ import { ReactQueryProvider } from "@/providers/QueryProvider";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import ProgressBarProvider from "@/providers/ProgressBarProvider";
+import mergeClasses from "@/utils/mergeClasses";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={mergeClasses(inter.className, "debug-screens")}>
         <ProgressBarProvider>
           <ReactQueryProvider>
             <ReduxProvider>

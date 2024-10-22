@@ -65,7 +65,7 @@ export default function ChatInfo(props: ChatInfoProps) {
 
   return (
     <>
-      <div className="bg-black h-full flex flex-col z-20 absolute right-0 border-l border-zinc-800 w-1/2">
+      <div className="bg-black h-full flex flex-col z-20 absolute right-0 border-l border-zinc-800 w-full xl:w-1/2">
         <h2 className="text-md py-4 text-center font-semibold bg-black border-b border-zinc-800">
           Chat Info
         </h2>

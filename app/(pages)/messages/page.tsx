@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { addChats, selectChat } from "@/lib/redux/features/chat/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useChats } from "@/hooks/services/chat";
+import mergeClasses from "@/utils/mergeClasses";
 
 interface MessagesPageProps {}
 
@@ -30,7 +31,12 @@ export default function MessagesPage() {
 
   return (
     <>
-      <div className="col-span-5 border-l border-zinc-800 overflow-y-hidden">
+      <div
+        className={mergeClasses(
+          "sm:col-span-8 sm:border-zinc-800 sm:border-l sm:border-r md:col-span-9 lg:col-span-5 xl:col-span-6 overflow-y-hidden",
+          selectedChat && "hidden lg:block"
+        )}
+      >
         <Header className="p-4 text-xl font-semibold flex justify-between items-center">
           <h1>Chats</h1>
           <div className="flex gap-4">
@@ -66,11 +72,36 @@ export default function MessagesPage() {
         </>
       </div>
 
-      <div className="col-span-12 flex flex-col overflow-y-hidden border-x border-zinc-800 ">
+      {/* <div
+        className={mergeClasses(
+          "hidden col-span-12 lg:flex flex-col overflow-y-hidden border-x border-zinc-800",
+          selectedChat && "flex"
+        )}
+      >
         {selectedChat ? (
           <Chat key={selectedChat.id} />
         ) : (
           <div className="flex flex-col gap-2 justify-center items-center h-full">
+            <div className="flex flex-col gap-1 items-center">
+              <div className="flex justify-center items-center border-4 border-zinc-300 p-5 rounded-full">
+                <Mails size={100} strokeWidth={4} absoluteStrokeWidth={true} />
+              </div>
+              <h1 className="text-zinc-400">Send a message to start a chat.</h1>
+            </div>
+            <button className="bg-[#1D9BF0] text-white text-sm transition-all font-semibold px-4 py-2 rounded-full hover:bg-[#1993e6] ">
+              Send Message
+            </button>
+          </div>
+        )}
+      </div> */}
+
+      <div className="sm:col-span-8 md:col-span-9 lg:col-span-8 xl:col-span-12 overflow-y-auto">
+        {selectedChat ? (
+          <div className="h-full flex flex-col border-x border-zinc-800">
+            <Chat key={selectedChat.id} />
+          </div>
+        ) : (
+          <div className="hidden lg:border-r lg:border-zinc-800 lg:flex flex-col gap-2 justify-center items-center h-full">
             <div className="flex flex-col gap-1 items-center">
               <div className="flex justify-center items-center border-4 border-zinc-300 p-5 rounded-full">
                 <Mails size={100} strokeWidth={4} absoluteStrokeWidth={true} />

@@ -27,7 +27,7 @@ export default function NotificationCard(props: NotificationCardProps) {
           height={40}
         />
       </Link>
-      <div className="flex justify-between gap-2 w-full">
+      <div className="flex xs:max-xs1:flex-col xs1:justify-between gap-2 w-full">
         <Link
           href={
             metaData

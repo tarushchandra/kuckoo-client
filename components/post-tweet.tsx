@@ -61,8 +61,8 @@ export default function PostTweet(props: PostTweetProps) {
   };
 
   return (
-    <div className={mergeClasses("px-4 py-2 flex gap-3", containerClassName)}>
-      <div>
+    <div className={mergeClasses("px-4 py-2 gap-3", containerClassName)}>
+      <div className="">
         <Image
           src={sessionUser?.profileImageURL!}
           alt="session-user-image"
@@ -71,7 +71,7 @@ export default function PostTweet(props: PostTweetProps) {
           className="rounded-full"
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 w-full">
         <textarea
           name="tweet-input"
           id="tweet-input"

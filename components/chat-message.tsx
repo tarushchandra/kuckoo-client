@@ -40,7 +40,7 @@ export default function ChatMessage({ message }: { message: Message }) {
         </div>
         <div
           className={mergeClasses(
-            "flex flex-col gap-1 w-96 items-start",
+            "flex flex-col gap-1 w-7/12 items-start",
             message?.sender?.username === sessionUser?.username && "items-end"
           )}
         >

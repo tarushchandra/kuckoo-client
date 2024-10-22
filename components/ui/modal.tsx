@@ -46,13 +46,13 @@ export default function Modal({
       <div
         onClick={onClose}
         className={mergeClasses(
-          "fixed left-0 top-0 w-screen h-screen bg-black opacity-[0.85] z-50",
+          "fixed left-0 top-0 w-screen h-screen bg-black opacity-[0.9] z-50",
           bgClassName
         )}
       />
       <div
         className={mergeClasses(
-          "fixed left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 z-[500] rounded-lg bg-black border border-zinc-800",
+          "overflow-hidden fixed left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 z-[500] bg-black bg-none rounded-lg border border-zinc-800",
           modalClassName
         )}
       >

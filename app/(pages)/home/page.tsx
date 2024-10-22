@@ -11,7 +11,7 @@ export default function HomePage() {
       <PostTweet
         mode={MODE.CREATE_TWEET}
         showCancelButton={false}
-        containerClassName="border-b border-zinc-800"
+        containerClassName="border-b border-zinc-800 hidden sm:flex"
         buttonClassName="text-sm py-2"
       />
       <TweetsFeed />

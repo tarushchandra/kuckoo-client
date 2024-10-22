@@ -1,5 +1,5 @@
 "use client";
-import { Info, SendHorizontal } from "lucide-react";
+import { ArrowLeft, Info, SendHorizontal } from "lucide-react";
 import Header from "./header";
 import Image from "next/image";
 import ChatMessages from "./chat-history";
@@ -23,7 +23,10 @@ import { useSocket } from "@/context/socket";
 import { useSelector } from "react-redux";
 import { queryClient } from "@/lib/clients/query";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { addMessage } from "@/lib/redux/features/chat/chatSlice";
+import {
+  addMessage,
+  removeSelectedChat,
+} from "@/lib/redux/features/chat/chatSlice";
 import { getModifiedLastSeenDateForChat } from "@/utils/date";
 import { useUserLastSeenAt } from "@/hooks/services/chat";
 import { useThrottle } from "@/hooks/utils";
@@ -199,97 +202,73 @@ export default function Chat() {
     <>
       <Header className="px-4 py-3">
         <div className="flex justify-between items-center">
-          <div className="flex gap-2 items-center ">
-            <div className="cursor-pointer">
-              {selectedChat?.isGroupChat ? (
-                <div className="relative w-[40px] h-[40px]">
-                  <Image
-                    title={
-                      selectedChat.members![0]?.firstName +
-                      " " +
-                      selectedChat.members![0]?.lastName
-                    }
-                    src={selectedChat.members![0]?.profileImageURL!}
-                    alt="chat-user-image"
-                    width={30}
-                    height={30}
-                    className="rounded-full absolute top-0 left-0"
-                  />
-                  <Image
-                    title={
-                      selectedChat.members![1]?.firstName +
-                      " " +
-                      selectedChat.members![1]?.lastName
-                    }
-                    src={selectedChat.members![1]?.profileImageURL!}
-                    alt="chat-user-image"
-                    width={30}
-                    height={30}
-                    className="rounded-full absolute bottom-0 left-[50%] -translate-x-1/2 border border-zinc-500"
-                  />
-                  {selectedChat.totalMembersCount! > 3 && (
-                    <div className="border border-zinc-500 flex justify-center items-center text-xs font-bold w-[30px] h-[30px] rounded-full absolute top-0 right-0 bg-white text-black opacity-80">
-                      +{selectedChat.totalMembersCount! - 3}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="w-[40px] h-[40px] relative">
-                  <Image
-                    src={selectedChat!.members![0]?.profileImageURL!}
-                    alt="chat-user-image"
-                    width={40}
-                    height={40}
-                    className="rounded-full object-cover h-full w-full"
-                  />{" "}
-                  {onlineUser?.isOnline && (
-                    <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-400 border border-zinc-800 rounded-full"></div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <div className="transition-all">
-              <>
+          <div className="flex gap-3 items-center">
+            <ArrowLeft
+              className="xs:max-lg:block hidden"
+              onClick={() => dispatch(removeSelectedChat())}
+            />
+            <div className="flex gap-2 items-center ">
+              <div className="cursor-pointer">
                 {selectedChat?.isGroupChat ? (
-                  <h2 className="font-semibold">{selectedChat!.name}</h2>
+                  <div className="relative w-[40px] h-[40px]">
+                    <Image
+                      title={
+                        selectedChat.members![0]?.firstName +
+                        " " +
+                        selectedChat.members![0]?.lastName
+                      }
+                      src={selectedChat.members![0]?.profileImageURL!}
+                      alt="chat-user-image"
+                      width={30}
+                      height={30}
+                      className="rounded-full absolute top-0 left-0"
+                    />
+                    <Image
+                      title={
+                        selectedChat.members![1]?.firstName +
+                        " " +
+                        selectedChat.members![1]?.lastName
+                      }
+                      src={selectedChat.members![1]?.profileImageURL!}
+                      alt="chat-user-image"
+                      width={30}
+                      height={30}
+                      className="rounded-full absolute bottom-0 left-[50%] -translate-x-1/2 border border-zinc-500"
+                    />
+                    {selectedChat.totalMembersCount! > 3 && (
+                      <div className="border border-zinc-500 flex justify-center items-center text-xs font-bold w-[30px] h-[30px] rounded-full absolute top-0 right-0 bg-white text-black opacity-80">
+                        +{selectedChat.totalMembersCount! - 3}
+                      </div>
+                    )}
+                  </div>
                 ) : (
-                  <h2 className="font-semibold cursor-pointer">
-                    {selectedChat!.members![0]?.firstName}{" "}
-                    {selectedChat!.members![0]?.lastName}
-                  </h2>
+                  <div className="w-[40px] h-[40px] relative">
+                    <Image
+                      src={selectedChat!.members![0]?.profileImageURL!}
+                      alt="chat-user-image"
+                      width={40}
+                      height={40}
+                      className="rounded-full object-cover h-full w-full"
+                    />{" "}
+                    {onlineUser?.isOnline && (
+                      <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-400 border border-zinc-800 rounded-full"></div>
+                    )}
+                  </div>
                 )}
-              </>
-              <>
-                {isUserTyping ? (
-                  <h2 className="text-zinc-500 text-sm font-medium">
-                    {selectedChat?.isGroupChat!
-                      ? `${isUserTyping.user.firstName} is typing...`
-                      : "typing..."}
-                  </h2>
-                ) : (
-                  !selectedChat?.isGroupChat && (
-                    <h2 className="text-zinc-500 text-sm font-medium">
-                      {onlineUser
-                        ? onlineUser?.isOnline
-                          ? "online"
-                          : lastSeenAt
-                        : "click here to view profile"}
-                    </h2>
-                  )
-                )}
-              </>
-            </div>
-            {/* <div className="transition-all">
-              {selectedChat!.isGroupChat ? (
-                <h2 className="font-semibold">{selectedChat!.name}</h2>
-              ) : (
-                <>
-                  <h2 className="font-semibold cursor-pointer">
-                    {selectedChat!.members![0]?.firstName}{" "}
-                    {selectedChat!.members![0]?.lastName}
-                  </h2>
+              </div>
 
+              <div className="transition-all">
+                <>
+                  {selectedChat?.isGroupChat ? (
+                    <h2 className="font-semibold">{selectedChat!.name}</h2>
+                  ) : (
+                    <h2 className="font-semibold cursor-pointer">
+                      {selectedChat!.members![0]?.firstName}{" "}
+                      {selectedChat!.members![0]?.lastName}
+                    </h2>
+                  )}
+                </>
+                <>
                   {isUserTyping ? (
                     <h2 className="text-zinc-500 text-sm font-medium">
                       {selectedChat?.isGroupChat!
@@ -297,21 +276,19 @@ export default function Chat() {
                         : "typing..."}
                     </h2>
                   ) : (
-                    <h2 className="text-zinc-500 text-sm font-medium">
-                      {onlineUser
-                        ? onlineUser?.isOnline
-                          ? "online"
-                          : lastSeenAt
-                        : "click here to view profile"}
-                    </h2>
+                    !selectedChat?.isGroupChat && (
+                      <h2 className="text-zinc-500 text-sm font-medium">
+                        {onlineUser
+                          ? onlineUser?.isOnline
+                            ? "online"
+                            : lastSeenAt
+                          : "click here to view profile"}
+                      </h2>
+                    )
                   )}
-
-                  <h2 className="text-zinc-500 text-sm font-medium">
-                    @{selectedChat!.members![0]?.username}
-                  </h2>
                 </>
-              )}
-            </div> */}
+              </div>
+            </div>
           </div>
 
           <>
@@ -370,9 +347,7 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* {isChatInfoTabOpen && (
-          <ChatInfo chat={chat} setSelectedChat={setSelectedChat} />
-        )} */}
+        {isChatInfoTabOpen && <ChatInfo chat={selectedChat!} />}
       </div>
     </>
   );

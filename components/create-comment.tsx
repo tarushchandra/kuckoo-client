@@ -97,7 +97,7 @@ export default function CreateComment(props: CreateCommentProps) {
   const handleEditCommentReply = () => {};
 
   return (
-    <div className="px-4 py-2 flex gap-2 items-start border-b border-zinc-800">
+    <div className=" py-2 flex gap-2 items-start border-b border-zinc-800">
       <Image
         src={sessionUser?.profileImageURL!}
         alt="session-user-image"
@@ -107,8 +107,7 @@ export default function CreateComment(props: CreateCommentProps) {
       />
       <textarea
         rows={3}
-        cols={50}
-        className="bg-black text-sm focus:outline-none  my-[0.34rem] border-b border-b-zinc-800"
+        className="w-full bg-black text-sm focus:outline-none  my-[0.34rem] border-b border-b-zinc-800"
         placeholder={placeholder}
         value={textContent}
         onChange={(e) => setTextContent(e.target.value)}

@@ -75,7 +75,7 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
             className="flex flex-col gap-[0.1rem]"
           >
             <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center">
+              <div className="flex flex-col xs1:flex-row xs1:gap-2 xs1:items-center">
                 <Link
                   href={`/profile/${username}`}
                   className="font-semibold hover:underline"
