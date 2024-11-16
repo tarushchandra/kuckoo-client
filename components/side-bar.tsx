@@ -19,9 +19,10 @@ import SignOutModal from "./signout-modal";
 import Badge from "./ui/badge";
 import { useUnseenNotificationsCount } from "@/hooks/queries/notification";
 import { usePathname } from "next/navigation";
-import { useUnseenChatsCount } from "@/hooks/queries/chat";
 import { IoMdMail } from "react-icons/io";
 import mergeClasses from "@/utils/mergeClasses";
+import { useAppSelector } from "@/hooks/redux";
+import { useUnseenChatsCount } from "@/hooks/services/chat";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -29,11 +30,34 @@ interface SideBarMenuI {
   link: string;
 }
 
+{
+  /* <>
+                          {path.includes(menuItem.path)
+                            ? menuItem.selectedIcon
+                            : menuItem.icon}
+                        </>
+                        <h2
+                          className={mergeClasses(
+                            "text-xl xs:max-xl:hidden",
+                            path.includes(menuItem.path) && "font-bold",
+                            path.includes("messages") && "hidden"
+                          )}
+                        >
+                          {menuItem.text}
+                        </h2> */
+}
+
 export default function SideBar({ className }: { className: string }) {
   const { data: sessionUser } = useAuth(selectUser);
   const path = usePathname();
   const unseenNotificationsCount = useUnseenNotificationsCount();
   const unseenChatsCount = useUnseenChatsCount();
+
+  // const unseenChatsCount = useAppSelector(
+  //   (store) => store.chat.unseenChatsCount
+  // );
+
+  console.log("unseenChatsCount -", unseenChatsCount);
 
   const sidebarMenuItems = useMemo(() => {
     return [
@@ -102,11 +126,20 @@ export default function SideBar({ className }: { className: string }) {
                   <div className="h-16 flex items-center">
                     <Link href={`/${menuItem.path}`} className="w-full group">
                       <div className="flex justify-start items-center w-fit gap-3 px-4 py-4  transition-all rounded-full xl:group-hover:bg-zinc-900">
-                        <>
-                          {path.includes(menuItem.path)
-                            ? menuItem.selectedIcon
-                            : menuItem.icon}
-                        </>
+                        <div className="relative">
+                          <>
+                            {path.includes(menuItem.path)
+                              ? menuItem.selectedIcon
+                              : menuItem.icon}
+                          </>
+                          <>
+                            {menuItem.id === 3 && unseenChatsCount! > 0 && (
+                              <Badge className="-mt-[0.5rem] -mr-[0.3rem]">
+                                {unseenChatsCount}
+                              </Badge>
+                            )}
+                          </>
+                        </div>
                         <h2
                           className={mergeClasses(
                             "text-xl xs:max-xl:hidden",

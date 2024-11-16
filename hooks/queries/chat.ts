@@ -99,14 +99,6 @@ export const useAvailableMembers = (chatId: string, searchText: string) => {
   return data?.getAvailableMembers;
 };
 
-export const useUnseenChatsCount = () => {
-  const { data } = useQuery({
-    queryKey: ["unseen-chats-count"],
-    queryFn: () => graphqlClient.request(getUnseenChatsCountQuery),
-  });
-  return data?.getUnseenChatsCount;
-};
-
 export const usePeopleWithMessageSeen = (messageId: string) => {
   const { data } = useQuery({
     queryKey: ["people-who-seen-the-message", messageId],

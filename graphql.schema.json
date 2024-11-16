@@ -76,6 +76,18 @@
             "deprecationReason": null
           },
           {
+            "name": "latestChatContent",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "ChatContentUnion",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "latestMessage",
             "description": null,
             "args": [],
@@ -329,6 +341,27 @@
           }
         ],
         "possibleTypes": null
+      },
+      {
+        "kind": "UNION",
+        "name": "ChatContentUnion",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "ChatActivity",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Message",
+            "ofType": null
+          }
+        ]
       },
       {
         "kind": "OBJECT",
@@ -723,9 +756,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1059,35 +1096,6 @@
                 "name": "Boolean",
                 "ofType": null
               }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "createMessage",
-            "description": null,
-            "args": [
-              {
-                "name": "payload",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "CreateMessagePayload",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "Message",
-              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

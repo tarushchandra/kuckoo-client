@@ -10,17 +10,19 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Chat as ChatType, User } from "@/gql/graphql";
 import { getUsers } from "@/services/user";
 import { useSearchUsers } from "@/hooks/services/user";
+import { useAppDispatch } from "@/hooks/redux";
+import { selectChat } from "@/lib/redux/features/chat/chatSlice";
 
 interface NewChatModal {
   onClose: () => void;
-  setSelectedChat: React.Dispatch<React.SetStateAction<ChatType | null>>;
 }
 
 export default function NewChatModal(props: NewChatModal) {
-  const { onClose, setSelectedChat } = props;
+  const { onClose } = props;
   const [searchText, setSearchText] = useState("");
   const { users, isUsersLoading } = useSearchUsers(getUsers, searchText);
   const [isChatCreatedLoading, setIsChatCreatedLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   // console.log("searchText -", searchText);
   // console.log("users -", users);
@@ -31,11 +33,20 @@ export default function NewChatModal(props: NewChatModal) {
     setIsChatCreatedLoading(false);
 
     if (chat)
-      setSelectedChat({
-        ...chat,
-        members: [targetUser],
-      } as any);
-    else setSelectedChat({ id: null!, members: [targetUser] });
+      dispatch(
+        selectChat({
+          ...chat,
+          members: [targetUser],
+        })
+      );
+    else
+      dispatch(
+        selectChat({
+          id: Math.random(),
+          members: [targetUser],
+          unseenMessagesCount: 0,
+        })
+      );
 
     onClose();
   };

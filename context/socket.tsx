@@ -6,11 +6,17 @@ import {
   addMessage,
   addTypingUser,
   removeTypingUser,
+  replaceTemporaryChatIdWithActualChatId,
+  replaceTemporaryChatOrMessagesIdWithActualIds,
   replaceTemporaryMessageIdWithActualMessageId,
-  setMessageIsSentToRecipient,
+  setMessageIsRecivedByTheServer,
   setUnseenMessagesAsSeen,
 } from "@/lib/redux/features/chat/chatSlice";
-import { setOnlineStatus } from "@/lib/redux/features/onlineUsers/onlineUsersSlice";
+import {
+  addOnlineUser,
+  setOnlineStatus,
+} from "@/lib/redux/features/onlineUsers/onlineUsersSlice";
+import { usePathname } from "next/navigation";
 import React, {
   useContext,
   createContext,
@@ -48,6 +54,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const { data: sessionUser, getAccessToken } = useAuth(selectUser);
   const dispatch = useDispatch();
+  const path = usePathname();
   //   console.log("socket -", socket);
 
   const timeoutsRef = useRef<Timeouts>({});
@@ -67,7 +74,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
     socket.onmessage = (message) => {
       const parsedMessage = JSON.parse(message.data);
-      // console.log("message -", parsedMessage);
+      console.log("message -", parsedMessage);
 
       if (
         parsedMessage.type === "USER_IS_ONLINE" ||
@@ -75,8 +82,17 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       )
         dispatch(setOnlineStatus(parsedMessage));
 
+      if (parsedMessage.type === "IS_USER_ONLINE")
+        dispatch(addOnlineUser(parsedMessage));
+
       if (parsedMessage.type === "CHAT_MESSAGE") {
-        dispatch(addMessage({ messagePayload: parsedMessage, sessionUser }));
+        dispatch(
+          addMessage({
+            messagePayload: parsedMessage,
+            sessionUser,
+            isMessagesPathSelected: path.includes("messages") ? true : false,
+          })
+        );
 
         const {
           chatId,
@@ -112,8 +128,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         }, 3000);
       }
 
-      if (parsedMessage.type === "CHAT_MESSAGE_IS_SENT_TO_THE_RECIPIENT")
-        dispatch(setMessageIsSentToRecipient(parsedMessage));
+      if (parsedMessage.type === "CHAT_MESSAGE_IS_RECIEVED_BY_THE_SERVER")
+        dispatch(setMessageIsRecivedByTheServer(parsedMessage));
 
       if (parsedMessage.type === "CHAT_MESSAGES_ARE_SEEN_BY_THE_RECIPIENT")
         dispatch(
@@ -123,13 +139,29 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
           })
         );
 
-      if (parsedMessage.type === "ACTUAL_MESSAGE_ID")
+      if (parsedMessage.type === "ACTUAL_CHAT_OR_MESSAGES_IDS")
         dispatch(
-          replaceTemporaryMessageIdWithActualMessageId({
+          replaceTemporaryChatOrMessagesIdWithActualIds({
             ...parsedMessage,
             sessionUser,
           })
         );
+
+      // if (parsedMessage.type === "ACTUAL_CHAT_ID")
+      //   dispatch(
+      //     replaceTemporaryChatIdWithActualChatId({
+      //       ...parsedMessage,
+      //       sessionUser,
+      //     })
+      //   );
+
+      // if (parsedMessage.type === "ACTUAL_MESSAGE_ID")
+      //   dispatch(
+      //     replaceTemporaryMessageIdWithActualMessageId({
+      //       ...parsedMessage,
+      //       sessionUser,
+      //     })
+      //   );
     };
 
     return () => {

@@ -1,18 +1,27 @@
-import { Chat, ChatHistory } from "@/gql/graphql";
+import {
+  Chat,
+  ChatActivity,
+  ChatActivityType,
+  ChatHistory,
+  User,
+} from "@/gql/graphql";
 import { createSlice } from "@reduxjs/toolkit";
 import { current } from "@reduxjs/toolkit";
 import { fetchChatHistory } from "./chatThunks";
 
 interface initialStateType {
-  totalChats: Chat[];
+  totalChats: Chat[] | null;
   chatHistories: {
     [chatId: string]: {
       data: ChatHistory[];
-      isDataFetched: Boolean;
-      isDataLoading: Boolean;
+      isDataFetched: boolean;
+      isDataLoading: boolean;
+      isUnseenChat: boolean;
+      isNewChat: boolean;
     };
   };
   selectedChat: Chat | null;
+  unseenChatsCount: number;
   isIncomingMessageChatSelected: boolean | null;
   typingUsers: {
     [chatId: string]: { user: { firstName: string } };
@@ -20,9 +29,10 @@ interface initialStateType {
 }
 
 const initialState: initialStateType = {
-  totalChats: [],
+  totalChats: null,
   chatHistories: {},
   selectedChat: null,
+  unseenChatsCount: 0,
   isIncomingMessageChatSelected: null,
   typingUsers: {},
 };
@@ -36,6 +46,19 @@ export const chatsSlice = createSlice({
     },
 
     selectChat: (state, action) => {
+      const { id: chatId } = action.payload;
+
+      // creating the new chat in the sender's UI
+      if (!state.chatHistories[chatId] && typeof chatId === "number") {
+        state.chatHistories[chatId] = {
+          data: [],
+          isDataFetched: false,
+          isDataLoading: false,
+          isUnseenChat: false,
+          isNewChat: true,
+        };
+      }
+
       state.selectedChat = action.payload;
     },
 
@@ -52,13 +75,21 @@ export const chatsSlice = createSlice({
       delete state.typingUsers[action.payload.chatId];
     },
 
+    addFetchedUnseenChatsCount: (state, action) => {
+      state.unseenChatsCount = action.payload;
+    },
+
     setChatAsSeen: (state) => {
-      const chat = state.totalChats.find(
+      if (state.selectedChat?.id === null) return;
+
+      const chat = state.totalChats?.find(
         (x) => x.id === state.selectedChat!.id
       );
       chat!.unseenMessagesCount = 0;
-
       state.selectedChat!.unseenMessagesCount = 0;
+
+      state.chatHistories[state.selectedChat?.id!].isUnseenChat = false;
+      state.unseenChatsCount--;
     },
 
     setUnseenMessagesAsSeen: (state, action) => {
@@ -98,7 +129,7 @@ export const chatsSlice = createSlice({
       }
     },
 
-    setMessageIsSentToRecipient: (state, action) => {
+    setMessageIsRecivedByTheServer: (state, action) => {
       const chatHistory = state.chatHistories[action.payload.chatId].data;
       chatHistory.forEach((chatHistoryItem) => {
         const sessionUserMessages =
@@ -111,6 +142,90 @@ export const chatsSlice = createSlice({
           }
         });
       });
+    },
+
+    replaceTemporaryChatOrMessagesIdWithActualIds: (state, action) => {
+      // replace the temporary chatId with actual Id if present
+      if (action.payload?.chat) {
+        const { temporaryChatId, actualChatId, creator } = action.payload.chat;
+
+        state.chatHistories[actualChatId] =
+          state.chatHistories[temporaryChatId];
+        delete state.chatHistories[temporaryChatId];
+
+        const targetChat = state.totalChats?.find(
+          (x) => x.id === temporaryChatId
+        );
+        targetChat!.id = actualChatId;
+
+        if (
+          creator.id === action.payload.sessionUser.id ||
+          state.selectedChat?.id === temporaryChatId
+        )
+          state.selectedChat = targetChat!;
+      }
+
+      // replace the temporary messagesId with actual Ids
+      const { chatId, messages } = action.payload.messages;
+      const chatHistory = state.chatHistories[chatId];
+
+      for (const message of messages) {
+        const { temporaryMessageId, actualMessageId, sender } = message;
+
+        chatHistoryLoop: for (const chatHistoryItem of chatHistory.data) {
+          const unseenMessages = chatHistoryItem.messages?.unseenMessages!;
+          const seenMessages = chatHistoryItem.messages?.seenMessages!;
+          const sessionUserMessages =
+            chatHistoryItem.messages?.sessionUserMessages!;
+
+          if (sender.id === action.payload.sessionUser.id) {
+            for (const sessionUserMessage of sessionUserMessages) {
+              if (
+                typeof sessionUserMessage?.id === "number" &&
+                sessionUserMessage.id === temporaryMessageId
+              ) {
+                sessionUserMessage.id = actualMessageId;
+                break chatHistoryLoop;
+              }
+            }
+          } else {
+            for (const unseenMessage of unseenMessages) {
+              if (
+                typeof unseenMessage?.id === "number" &&
+                unseenMessage.id === temporaryMessageId
+              ) {
+                unseenMessage.id = actualMessageId;
+                break chatHistoryLoop;
+              }
+            }
+
+            for (const seenMessage of seenMessages) {
+              if (
+                typeof seenMessage?.id === "number" &&
+                seenMessage.id === temporaryMessageId
+              ) {
+                seenMessage.id = actualMessageId;
+                break chatHistoryLoop;
+              }
+            }
+          }
+        }
+      }
+    },
+
+    replaceTemporaryChatIdWithActualChatId: (state, action) => {
+      const { temporaryChatId, actualChatId, creator, sessionUser } =
+        action.payload;
+
+      state.chatHistories[actualChatId] = state.chatHistories[temporaryChatId];
+      delete state.chatHistories[temporaryChatId];
+
+      const targetChat = state.totalChats?.find(
+        (x) => x.id === temporaryChatId
+      );
+      targetChat!.id = actualChatId;
+
+      if (creator.id === sessionUser.id) state.selectedChat = targetChat!;
     },
 
     replaceTemporaryMessageIdWithActualMessageId: (state, action) => {
@@ -162,7 +277,10 @@ export const chatsSlice = createSlice({
     },
 
     addMessage: (state, action) => {
-      const { messagePayload, sessionUser } = action.payload;
+      const { messagePayload, sessionUser, isMessagesPathSelected } =
+        action.payload;
+
+      console.log("messagePayload -", messagePayload);
 
       const isMessageSentBySessionUser =
         messagePayload.message.sender.id === sessionUser.id;
@@ -180,6 +298,7 @@ export const chatsSlice = createSlice({
       ).toDateString();
 
       const chatHistoryObj = state.chatHistories[messagePayload.chatId];
+      // let chatId;
 
       if (!chatHistoryObj) {
         const chatHistoryItem = {
@@ -205,11 +324,16 @@ export const chatsSlice = createSlice({
           data: [chatHistoryItem],
           isDataFetched: false,
           isDataLoading: false,
+          isUnseenChat: isMessageSentBySessionUser ? false : true,
+          isNewChat: typeof messagePayload.chatId === "number" ? true : false,
         };
       } else {
         const chatHistory = state.chatHistories[messagePayload.chatId].data;
 
-        // firstly, mark the unseen messages as seen
+        /* 
+            - firstly, mark the previous unseen messages as seen (both for sender as well as recipient) if the incoming message chat is selected 
+            - secondly, mark the chat as seen or unseen accordingly 
+          */
         if (state.isIncomingMessageChatSelected || isMessageSentBySessionUser) {
           for (const chatHistoryItem of chatHistory) {
             const unseenMessages = chatHistoryItem.messages?.unseenMessages;
@@ -222,9 +346,11 @@ export const chatsSlice = createSlice({
             ];
             chatHistoryItem.messages!.unseenMessages = [];
           }
-        }
 
-        if (chatHistory[0].date === messageCreatedAtDate) {
+          state.chatHistories[messagePayload.chatId].isUnseenChat = false;
+        } else state.chatHistories[messagePayload.chatId].isUnseenChat = true;
+
+        if (chatHistory[0]?.date === messageCreatedAtDate) {
           if (isMessageSentBySessionUser)
             chatHistory[0].messages?.sessionUserMessages?.unshift(
               messagePayload.message
@@ -257,23 +383,66 @@ export const chatsSlice = createSlice({
         }
       }
 
-      // Re-ording the current chats list
-      const filteredChat = state.totalChats.filter(
-        (x) => x.id === messagePayload.chatId
-      );
-      const remainingChats = state.totalChats.filter(
-        (x) => x.id !== messagePayload.chatId
-      );
-
-      filteredChat[0].latestMessage = messagePayload.message;
-      if (!isMessageSentBySessionUser) {
-        filteredChat[0].unseenMessagesCount =
-          filteredChat[0].unseenMessagesCount! + 1;
+      // updating (adding) the state.unseenChatsCount
+      if (!isMessageSentBySessionUser || !state.isIncomingMessageChatSelected) {
+        let unseenChatsCount = 0;
+        for (const key in state.chatHistories) {
+          if (state.chatHistories[key].isUnseenChat) unseenChatsCount++;
+        }
+        state.unseenChatsCount = unseenChatsCount;
       }
-      state.totalChats = [filteredChat[0], ...remainingChats];
 
-      if (state.selectedChat?.id === messagePayload.chatId)
-        state.selectedChat = filteredChat[0];
+      // Re-ording of chats only possible if they are actually present
+      if (!state.totalChats || state.totalChats?.length === 0) return;
+
+      // Re-ording the current chats list
+      if (typeof messagePayload.chatId === "number") {
+        const currentChat = state.totalChats?.find(
+          (x) => x.id === messagePayload.chatId
+        );
+
+        if (currentChat) {
+          currentChat.latestMessage = messagePayload.message;
+          if (!isMessageSentBySessionUser) {
+            currentChat.unseenMessagesCount =
+              currentChat.unseenMessagesCount! + 1;
+          }
+        } else {
+          const newChat = {
+            id: messagePayload.chatId,
+            name: null,
+            isGroupChat: false,
+            totalMembersCount: messagePayload.targetUsers.length + 1,
+            createdAt: String(Date.now()),
+            creator: messagePayload.creator,
+            members: isMessageSentBySessionUser
+              ? messagePayload.targetUsers
+              : [messagePayload.creator],
+            latestMessage: messagePayload.message,
+            unseenMessagesCount: isMessageSentBySessionUser ? 0 : 1,
+          } as any;
+
+          state.totalChats = [newChat, ...state.totalChats!];
+          if (isMessageSentBySessionUser) state.selectedChat = newChat;
+        }
+      } else {
+        const filteredChat = state.totalChats?.filter(
+          (x) => x.id === messagePayload.chatId
+        );
+        const remainingChats = state.totalChats?.filter(
+          (x) => x.id !== messagePayload.chatId
+        );
+
+        filteredChat![0].latestMessage = messagePayload.message;
+        if (!isMessageSentBySessionUser) {
+          filteredChat![0].unseenMessagesCount =
+            filteredChat![0].unseenMessagesCount! + 1;
+        }
+        state.totalChats = [filteredChat![0], ...remainingChats!];
+
+        if (state.selectedChat?.id === messagePayload.chatId)
+          state.selectedChat = filteredChat![0];
+      }
     },
 
     renameChatGroupName: (state, action) => {
@@ -281,14 +450,62 @@ export const chatsSlice = createSlice({
       state.selectedChat!.name = action.payload.chatName;
 
       // rename the the chatGroupName from the totalChats Array
-      const mutatedChat = {
-        ...state.totalChats.find((x: any) => x.id === action.payload.id),
-        name: action.payload.chatName,
-      };
-      const remainingChats = state.totalChats.filter(
+      const targetChat = state.totalChats?.find(
+        (x: any) => x.id === action.payload.id
+      );
+      targetChat!.name = action.payload.chatName;
+      const remainingChats = state.totalChats?.filter(
         (x: any) => x.id !== action.payload.id
       );
-      state.totalChats = [mutatedChat, ...remainingChats];
+
+      // console.log("mutated chat -", mutatedChat);
+      state.totalChats = [targetChat!, ...remainingChats!];
+    },
+
+    addMembersToGroup: (state, action) => {
+      const { chatId, selectedUsers, sessionUser } = action.payload;
+      const currentDate = new Date();
+      const currentDateString = currentDate.toDateString();
+
+      const activities = selectedUsers.map((selectedUser: User) => ({
+        id: Math.random(),
+        type: ChatActivityType.MemberAdded,
+        user: sessionUser,
+        targetUser: selectedUser,
+        createdAt: currentDate,
+      }));
+
+      const chatHistory = state.chatHistories[chatId].data;
+
+      if (chatHistory[0].date !== currentDateString) {
+        const chatHistoryItem = {
+          date: currentDate,
+          activities,
+          messages: {
+            unseenMessages: <any>[],
+            seenMessages: <any>[],
+            sessionUserMessages: <any>[],
+          },
+        };
+      } else {
+        activities.forEach((activity: ChatActivity) => {
+          chatHistory[0].activities?.unshift(activity);
+        });
+      }
+    },
+
+    removeMemberFromGroup: (state, action) => {
+      const { chatId, sessionUser, targetUser } = action.payload;
+
+      const activity: any = {
+        id: Math.random(),
+        type: ChatActivityType.MemberRemoved,
+        user: sessionUser,
+        targetUser,
+        createdAt: new Date(),
+      };
+      const chatHistory = state.chatHistories[chatId].data;
+      chatHistory[0].activities?.unshift(activity);
     },
   },
   extraReducers: (builder) => {
@@ -304,39 +521,20 @@ export const chatsSlice = createSlice({
             data: [],
             isDataFetched: false,
             isDataLoading: false,
+            isUnseenChat: false,
+            isNewChat: false,
           };
 
         state.chatHistories[chatId].isDataLoading = true;
       })
       .addCase(fetchChatHistory.fulfilled, (state, action) => {
         const {
-          arg: { chatId, recentChatHistory },
+          arg: { chatId },
         } = action.meta;
-
-        let fetchedChatHistory = action.payload;
-        const chatHistoryObj = state.chatHistories[chatId];
-
-        if (recentChatHistory) {
-          fetchedChatHistory = fetchedChatHistory?.filter(
-            (fetchedChatHistoryItem) => {
-              const fetchedUnseenMessages =
-                fetchedChatHistoryItem?.messages?.unseenMessages!;
-
-              recentChatHistory.forEach((recentChatHistoryItem) => {
-                const recentUnseenMessages =
-                  recentChatHistoryItem?.messages?.unseenMessages!;
-              });
-            }
-          );
-
-          chatHistoryObj.data = [
-            ...recentChatHistory!,
-            ...fetchedChatHistory!,
-          ] as any;
-        } else chatHistoryObj.data = fetchedChatHistory as any;
-
-        chatHistoryObj.isDataLoading = false;
-        chatHistoryObj.isDataFetched = true;
+        const fetchedChatHistory = action.payload;
+        state.chatHistories[chatId].data = fetchedChatHistory as any;
+        state.chatHistories[chatId].isDataLoading = false;
+        state.chatHistories[chatId].isDataFetched = true;
       })
       .addCase(fetchChatHistory.rejected, (state, action) => {
         const {
@@ -360,7 +558,13 @@ export const {
   setUnseenMessagesAsSeen,
   addTypingUser,
   removeTypingUser,
-  setMessageIsSentToRecipient,
+  setMessageIsRecivedByTheServer,
   replaceTemporaryMessageIdWithActualMessageId,
+  renameChatGroupName,
+  addMembersToGroup,
+  removeMemberFromGroup,
+  replaceTemporaryChatIdWithActualChatId,
+  replaceTemporaryChatOrMessagesIdWithActualIds,
+  addFetchedUnseenChatsCount,
 } = chatsSlice.actions;
 export default chatsSlice.reducer;

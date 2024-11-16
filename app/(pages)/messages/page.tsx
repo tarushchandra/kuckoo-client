@@ -49,14 +49,18 @@ export default function MessagesPage() {
           </div>
         </Header>
         <>
-          {chats.length > 0 ? (
-            <div className="h-full overflow-y-auto">
-              {chats.map((chat: any) => (
-                <div key={chat.id} onClick={() => dispatch(selectChat(chat))}>
-                  <ChatCard chat={chat} />
-                </div>
-              ))}
-            </div>
+          {chats ? (
+            chats.length > 0 ? (
+              <div className="h-full overflow-y-auto">
+                {chats.map((chat: any) => (
+                  <div key={chat.id} onClick={() => dispatch(selectChat(chat))}>
+                    <ChatCard chat={chat} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <h1 className="text-center my-2">No Chats</h1>
+            )
           ) : (
             Array.from({ length: 15 }, (_, index) => (
               <div key={index} className="border-b border-zinc-800">
@@ -71,29 +75,6 @@ export default function MessagesPage() {
           )}
         </>
       </div>
-
-      {/* <div
-        className={mergeClasses(
-          "hidden col-span-12 lg:flex flex-col overflow-y-hidden border-x border-zinc-800",
-          selectedChat && "flex"
-        )}
-      >
-        {selectedChat ? (
-          <Chat key={selectedChat.id} />
-        ) : (
-          <div className="flex flex-col gap-2 justify-center items-center h-full">
-            <div className="flex flex-col gap-1 items-center">
-              <div className="flex justify-center items-center border-4 border-zinc-300 p-5 rounded-full">
-                <Mails size={100} strokeWidth={4} absoluteStrokeWidth={true} />
-              </div>
-              <h1 className="text-zinc-400">Send a message to start a chat.</h1>
-            </div>
-            <button className="bg-[#1D9BF0] text-white text-sm transition-all font-semibold px-4 py-2 rounded-full hover:bg-[#1993e6] ">
-              Send Message
-            </button>
-          </div>
-        )}
-      </div> */}
 
       <div className="sm:col-span-8 md:col-span-9 lg:col-span-8 xl:col-span-12 overflow-y-auto">
         {selectedChat ? (
@@ -115,18 +96,15 @@ export default function MessagesPage() {
         )}
       </div>
 
-      {/* <>
+      <>
         {isNewChatModalOpen && (
-          <NewChatModal
-            onClose={() => setIsNewChatModalOpen(false)}
-            setSelectedChat={setSelectedChat}
-          />
+          <NewChatModal onClose={() => setIsNewChatModalOpen(false)} />
         )}
 
         {isNewGroupModalOpen && (
           <NewGroupModal onClose={() => setIsNewGroupModalOpen(false)} />
         )}
-      </> */}
+      </>
     </>
   );
 }

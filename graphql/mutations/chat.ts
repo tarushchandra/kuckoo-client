@@ -1,15 +1,15 @@
 import { graphql } from "@/gql";
 
-export const createMessageMutation = graphql(/* GraphQL */ `
-  mutation CreateMessageMutation($payload: CreateMessagePayload!) {
-    createMessage(payload: $payload) {
-      id
-      chat {
-        id
-      }
-    }
-  }
-`);
+// export const createMessageMutation = graphql(/* GraphQL */ `
+//   mutation CreateMessageMutation($payload: CreateMessagePayload!) {
+//     createMessage(payload: $payload) {
+//       id
+//       chat {
+//         id
+//       }
+//     }
+//   }
+// `);
 
 export const createGroupMutation = graphql(/* GraphQL */ `
   mutation CreateGroupMutation($name: String!, $targetUserIds: [String]!) {

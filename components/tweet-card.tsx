@@ -105,8 +105,8 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
                     src={imageURL}
                     alt="tweet-image"
                     className="rounded-xl w-full h-full border border-zinc-800 object-cover"
-                    width={640}
-                    height={360}
+                    width={320}
+                    height={240}
                   />
                 </div>
               )}

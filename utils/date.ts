@@ -27,7 +27,7 @@ export const getModifiedDateForChatCard = (createdAt: string) => {
 };
 
 export const getModifiedLastSeenDateForChat = (lastSeenAt: string) => {
-  const lastSeenAtDate = dayjs(Number(lastSeenAt));
+  const lastSeenAtDate = dayjs(lastSeenAt);
 
   if (lastSeenAtDate.isToday())
     return `last seen today at ${lastSeenAtDate.format("h:mm a")}`;

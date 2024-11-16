@@ -128,13 +128,12 @@ export default function ChatMessage({ message }: { message: Message }) {
         </div>
       </div>
 
-      {/* {isMessageSeenByModalOpen && (
+      {isMessageSeenByModalOpen && (
         <MessageSeenByModal
           messageId={message.id!}
           onClose={() => setIsMessageSeenByModalOpen(false)}
-          setSelectedChat={setSelectedChat}
         />
-      )} */}
+      )}
     </>
   );
 }

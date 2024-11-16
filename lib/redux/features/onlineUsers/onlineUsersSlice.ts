@@ -23,8 +23,14 @@ export const onlineUsersSlice = createSlice({
       }
     },
     addOnlineUser: (state, action) => {
-      const { userId, data } = action.payload;
-      state[userId] = data;
+      // const { userId, data } = action.payload;
+      // state[userId] = data;
+
+      const { userId, isOnline } = action.payload;
+      state[userId] = {
+        isOnline,
+        lastSeenAt: isOnline ? null : action.payload.lastSeenAt,
+      };
     },
   },
 });

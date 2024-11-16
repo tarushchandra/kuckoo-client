@@ -46,6 +46,7 @@ export const getChatQuery = graphql(/* GraphQL */ `
         lastName
         username
       }
+      unseenMessagesCount
     }
   }
 `);

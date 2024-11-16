@@ -7,17 +7,19 @@ import { Chat, User } from "@/gql/graphql";
 import { getChat } from "@/services/chat";
 import UserCardLoading from "./ui/user-card-loading";
 import Link from "next/link";
+import { useAppDispatch } from "@/hooks/redux";
+import { selectChat } from "@/lib/redux/features/chat/chatSlice";
 
 interface MessageSeenByModalProps {
   onClose: () => void;
   messageId: string;
-  setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>;
 }
 
 export default function MessageSeenByModal(props: MessageSeenByModalProps) {
-  const { messageId, onClose, setSelectedChat } = props;
+  const { messageId, onClose } = props;
   const users = usePeopleWithMessageSeen(messageId);
   const [isChatCreatedLoading, setIsChatCreatedLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   console.log("seen by - ", users);
 
@@ -26,12 +28,16 @@ export default function MessageSeenByModal(props: MessageSeenByModalProps) {
     const chat = await getChat(targetUser.id);
     setIsChatCreatedLoading(false);
 
-    if (chat)
-      setSelectedChat({
-        ...chat,
-        members: [targetUser],
-      } as any);
-    else setSelectedChat({ id: null!, members: [targetUser] });
+    if (chat) {
+      dispatch(selectChat({ ...chat, members: [targetUser] }));
+    } else dispatch(selectChat({ id: null, members: [targetUser] }));
+
+    // if (chat)
+    //   setSelectedChat({
+    //     ...chat,
+    //     members: [targetUser],
+    //   } as any);
+    // else setSelectedChat({ id: null!, members: [targetUser] });
 
     onClose();
   };

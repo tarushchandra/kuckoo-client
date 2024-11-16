@@ -10,16 +10,18 @@ import AddMembersModal from "./add-members-modal";
 import { useRenameGroup } from "@/hooks/mutations/chat";
 import { queryClient } from "@/lib/clients/query";
 import ChatMemberOptionsModal from "./chat-member-options-modal";
+import { useAppDispatch } from "@/hooks/redux";
+import { renameChatGroupName } from "@/lib/redux/features/chat/chatSlice";
 
 interface ChatInfoProps {
   chat: Chat;
-  setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>;
 }
 
 export default function ChatInfo(props: ChatInfoProps) {
-  const { chat, setSelectedChat } = props;
+  const { chat } = props;
   const { data: sessionUser } = useAuth(selectUser);
   const chatMembers = useChatMembers(chat.id);
+  const dispatch = useAppDispatch();
 
   const [isAddMembersModalOpen, setIsAddMembersModalOpen] = useState(false);
   const [isRenameChatNameInputOpen, setIsRenameChatNameInputOpen] =
@@ -39,20 +41,7 @@ export default function ChatInfo(props: ChatInfoProps) {
       name: chatName,
     });
 
-    queryClient.setQueryData(["chats"], (prev: any) => {
-      const mutatedChat = {
-        ...prev.getChats.find((x: any) => x.id === chat.id),
-        name: chatName,
-      };
-      const remainingChats = prev.getChats.filter((x: any) => x.id !== chat.id);
-
-      return { getChats: [mutatedChat, ...remainingChats] };
-    });
-
-    setSelectedChat((prev: any) => ({
-      ...prev,
-      name: chatName,
-    }));
+    dispatch(renameChatGroupName({ id: chat.id, chatName }));
     setIsRenameChatNameInputOpen(false);
   };
 
@@ -206,7 +195,6 @@ export default function ChatInfo(props: ChatInfoProps) {
         <AddMembersModal
           onClose={() => setIsAddMembersModalOpen(false)}
           chat={chat}
-          setSelectedChat={setSelectedChat}
         />
       )}
 

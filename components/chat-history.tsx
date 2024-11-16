@@ -121,7 +121,9 @@ function ChatHistory() {
   // setMessagesStatus();
   // }, [chatHistory]);
 
-  if (!selectedChat!.id) return <div className="h-full" />;
+  // if (chatHistory?.length === 0) return <div className="h-full" />;
+
+  // if (!selectedChat!.id) return <div className="h-full" />;
 
   return (
     <div className="h-full overflow-y-auto flex flex-col-reverse gap-2 p-4 ">
@@ -142,7 +144,8 @@ function ChatHistory() {
             </h1>
           )}
 
-          {chatHistoryObj.isDataFetched && (
+          {(chatHistoryObj.isDataFetched ||
+            (chatHistoryObj.isNewChat && chatHistory.length > 0)) && (
             <div className="flex justify-center">
               <h2 className="text-xs font-semibold px-2 py-1 rounded-full bg-zinc-200 text-black  ">
                 <>

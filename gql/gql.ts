@@ -13,7 +13,6 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload) {\n      id\n      chat {\n        id\n      }\n    }\n  }\n": types.CreateMessageMutationDocument,
     "\n  mutation CreateGroupMutation($name: String!, $targetUserIds: [String]!) {\n    createGroup(name: $name, targetUserIds: $targetUserIds)\n  }\n": types.CreateGroupMutationDocument,
     "\n  mutation RenameGroupMutation($chatId: String!, $name: String!) {\n    renameGroup(chatId: $chatId, name: $name)\n  }\n": types.RenameGroupMutationDocument,
     "\n  mutation AddMembersToGroup($chatId: String!, $targetUserIds: [String]!) {\n    addMembersToGroup(chatId: $chatId, targetUserIds: $targetUserIds)\n  }\n": types.AddMembersToGroupDocument,
@@ -41,7 +40,7 @@ const documents = {
     "\n  mutation UnfollowUserMutation($to: ID!) {\n    unfollowUser(to: $to)\n  }\n": types.UnfollowUserMutationDocument,
     "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
     "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      totalMembersCount\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n        lastSeenAt\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n      unseenMessagesCount\n    }\n  }\n": types.GetChatsQueryDocument,
-    "\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n    }\n  }\n": types.GetChatQueryDocument,
+    "\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n      unseenMessagesCount\n    }\n  }\n": types.GetChatQueryDocument,
     "\n  query getChatHistoryQuery($chatId: String!) {\n    getChatHistory(chatId: $chatId) {\n      date\n      messages {\n        unseenMessages {\n          id\n          content\n          sender {\n            id\n            username\n            profileImageURL\n          }\n          createdAt\n        }\n        seenMessages {\n          id\n          content\n          sender {\n            id\n            username\n            profileImageURL\n          }\n          createdAt\n        }\n        sessionUserMessages {\n          id\n          content\n          sender {\n            id\n            username\n            profileImageURL\n          }\n          createdAt\n          seenBy {\n            id\n          }\n        }\n      }\n      activities {\n        id\n        type\n        metaData {\n          chatName\n        }\n        user {\n          firstName\n          lastName\n          username\n        }\n        targetUser {\n          firstName\n          lastName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatHistoryQueryDocument,
     "\n  query getChatMembersQuery($chatId: String!) {\n    getChatMembers(chatId: $chatId) {\n      user {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      role\n    }\n  }\n": types.GetChatMembersQueryDocument,
     "\n  query getAvailableMembersQuery($chatId: String!, $searchText: String!) {\n    getAvailableMembers(chatId: $chatId, searchText: $searchText) {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n    }\n  }\n": types.GetAvailableMembersQueryDocument,
@@ -89,10 +88,6 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload) {\n      id\n      chat {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateMessageMutation($payload: CreateMessagePayload!) {\n    createMessage(payload: $payload) {\n      id\n      chat {\n        id\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -204,7 +199,7 @@ export function graphql(source: "\n  query GetChatsQuery {\n    getChats {\n    
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n      unseenMessagesCount\n    }\n  }\n"): (typeof documents)["\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n      unseenMessagesCount\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

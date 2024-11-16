@@ -21,6 +21,8 @@ export default function ChatMemberOptionsModal(
   const addAdminMutation = useAddGroupAdmin();
   const removeAdminMutation = useRemoveGroupAdmin();
 
+  console.log("chatMember -", chatMember);
+
   return (
     <Modal wrapperId="chat-member-options-modal" onClose={onClose}>
       <div className="flex flex-col w-72 text-center text-sm font-semibold">
@@ -63,7 +65,7 @@ export default function ChatMemberOptionsModal(
           onClick={async () => {
             await removeMemberMutation.mutateAsync({
               chatId: chat.id,
-              targetUserId: chatMember.user?.id!,
+              targetUser: chatMember.user!,
             });
             onClose();
           }}

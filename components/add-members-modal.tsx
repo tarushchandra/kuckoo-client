@@ -9,18 +9,19 @@ import { FaPlusCircle, FaCheckCircle } from "react-icons/fa";
 import { useAddMembersToGroup } from "@/hooks/mutations/chat";
 import mergeClasses from "@/utils/mergeClasses";
 import { getAvailableMembers } from "@/services/chat";
+import { selectUser } from "@/lib/redux/features/auth/authSlice";
+import { useAuth } from "@/hooks/auth";
 
 interface AddMembersModalProps {
   onClose: () => void;
   chat: Chat;
-  setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>;
 }
 
 export default function AddMembersModal(props: AddMembersModalProps) {
-  const { onClose, chat, setSelectedChat } = props;
+  const { onClose, chat } = props;
   const [searchText, setSearchText] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-  const addMembersToGroupMutation = useAddMembersToGroup(setSelectedChat);
+  const addMembersToGroupMutation = useAddMembersToGroup(selectedUsers);
   const { users, isUsersLoading } = useSearchUsers(
     getAvailableMembers,
     searchText,
