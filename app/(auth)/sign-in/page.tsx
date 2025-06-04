@@ -83,7 +83,7 @@ const SignInPage: React.FC = () => {
         </div>
       </div>
       <div className="flex justify-center gap-2">
-        <span>Don't have an account?</span>
+        <span>Don&apos;t have an account?</span>
         <span className="text-[#1D9BF0] hover:underline">
           <Link href="/sign-up">Sign Up</Link>
         </span>

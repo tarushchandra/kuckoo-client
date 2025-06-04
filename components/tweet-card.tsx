@@ -3,7 +3,7 @@ import { TweetEngagement as TweetEnagementType, User } from "@/gql/graphql";
 import dayjs from "dayjs";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { forwardRef } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
 import TweetEngagement from "./tweet-engagement";
@@ -39,9 +39,10 @@ interface TweetCardProps {
     author: User;
     tweetEngagement: TweetEnagementType | null;
   };
+  ref: any;
 }
 
-const TweetCard: React.FC<TweetCardProps> = (props) => {
+const TweetCard: React.FC<TweetCardProps> = forwardRef((props, ref) => {
   const { tweet } = props;
   const {
     id,
@@ -58,7 +59,10 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
 
   return (
     <>
-      <div className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-800 transition-all p-3 hover:bg-zinc-950">
+      <div
+        ref={ref as any}
+        className="flex items-start gap-3 cursor-pointer border-y border-t-0 border-zinc-800 transition-all p-3 hover:bg-zinc-950"
+      >
         <Link href={`/profile/${username}`}>
           <Image
             src={tweet.author.profileImageURL!}
@@ -124,6 +128,6 @@ const TweetCard: React.FC<TweetCardProps> = (props) => {
       </div>
     </>
   );
-};
+});
 
 export default TweetCard;

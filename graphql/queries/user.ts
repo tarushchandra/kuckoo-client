@@ -7,7 +7,7 @@ export const getCustomUserTokenQuery = graphql(/* GraphQL */ `
 `);
 
 export const getUserQuery = graphql(/* GraphQL */ `
-  query GetUserQuery($username: String) {
+  query GetUserQuery($username: String!) {
     getUser(username: $username) {
       id
       firstName
@@ -76,7 +76,7 @@ export const isEmailExistQuery = graphql(/* GraphQL */ `
 `);
 
 export const getFollowersQuery = graphql(/* GraphQL */ `
-  query GetFollowersQuery($username: String) {
+  query GetFollowersQuery($username: String!) {
     getUser(username: $username) {
       followers {
         id
@@ -91,7 +91,7 @@ export const getFollowersQuery = graphql(/* GraphQL */ `
 `);
 
 export const getFollowingsQuery = graphql(/* GraphQL */ `
-  query GetFollowingsQuery($username: String) {
+  query GetFollowingsQuery($username: String!) {
     getUser(username: $username) {
       followings {
         id
@@ -129,25 +129,6 @@ export const getRecommendedUsersQuery = graphql(/* GraphQL */ `
       username
       email
       profileImageURL
-    }
-  }
-`);
-
-export const getUserTweetsQuery = graphql(/* GraphQL */ `
-  query GetUserTweetsQuery($username: String) {
-    getUser(username: $username) {
-      tweets {
-        id
-        content
-        imageURL
-        createdAt
-        updatedAt
-        tweetEngagement {
-          likesCount
-          isTweetLikedBySessionUser
-          commentsCount
-        }
-      }
     }
   }
 `);

@@ -1,4 +1,7 @@
+import { getPaginatedUserTweetsQuery } from "@/graphql/queries/tweet";
+import { graphqlClient } from "@/lib/clients/graphql";
 import { getSignedURLforUploadingImage } from "@/services/tweet";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 export const handleSelectAndUploadImage = (
@@ -38,3 +41,93 @@ export const handleSelectAndUploadImage = (
 
   input.click();
 };
+
+// export const fetchUserTweets = async (
+//   userId: string,
+//   limit: number,
+//   cursor?: string
+// ) => {
+//   const { getPaginatedTweets } = await graphqlClient.request(
+//     getPaginatedUserTweetsQuery,
+//     {
+//       userId,
+//       limit,
+//       cursor,
+//     }
+//   );
+//   return getPaginatedTweets;
+// };
+
+export const fetchUserTweets = async (
+  userId: string,
+  limit: number,
+  cursor?: string
+) => {
+  const { getPaginatedTweets } = await graphqlClient.request(
+    getPaginatedUserTweetsQuery,
+    {
+      userId,
+      limit,
+      cursor,
+    }
+  );
+  return getPaginatedTweets;
+};
+
+// export const useInfiniteUserTweets = (userId: string, limit: number) => {
+//   const [userTweets, setUserTweets] = useState<any[] | undefined>(undefined);
+//   const [nextCursor, setNextCursor] = useState<string | undefined | null>(
+//     undefined
+//   );
+//   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
+//   const [hasNextPage, setHasNextPage] = useState(true);
+//   const lastTweetRef = useRef<any>(null);
+
+//   // fetching user tweets
+//   useEffect(() => {
+//     if (nextCursor === null || !hasNextPage) return;
+
+//     const fetchTweets = async () => {
+//       setIsFetchingNextPage(true);
+//       const fetchedPaginatedTweets = await fetchUserTweets(
+//         userId,
+//         limit,
+//         nextCursor
+//       );
+//       setIsFetchingNextPage(false);
+
+//       setUserTweets((prev) => {
+//         if (!prev) return fetchedPaginatedTweets.tweets;
+//         return [...prev, ...fetchedPaginatedTweets.tweets];
+//       });
+//       setNextCursor(fetchedPaginatedTweets?.nextCursor);
+//       setHasNextPage(false);
+//     };
+
+//     fetchTweets();
+//   }, [hasNextPage]);
+
+//   // observering last tweet
+//   useEffect(() => {
+//     if (!lastTweetRef.current) return;
+
+//     const observer = new IntersectionObserver((entries) => {
+//       const entry = entries[0];
+//       if (entry.isIntersecting) {
+//         if (nextCursor) setHasNextPage(true);
+//         observer.unobserve(lastTweetRef.current);
+//       }
+//     });
+//     observer.observe(lastTweetRef.current);
+
+//     return () => {
+//       if (lastTweetRef.current) observer.unobserve(lastTweetRef.current);
+//     };
+//   }, [userTweets]);
+
+//   return {
+//     userTweets,
+//     isFetchingNextPage,
+//     lastTweetRef,
+//   };
+// };

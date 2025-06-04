@@ -58,13 +58,13 @@ export const useIsFollowing = (sessionUserId: string, targetUserId: string) => {
       graphqlClient.request(getIsFollowingQuery, { userId: targetUserId }),
   });
 
-  useEffect(() => {
-    return () => {
-      queryClient.invalidateQueries({
-        queryKey: [sessionUserId, "is-following", targetUserId],
-      });
-    };
-  });
+  // useEffect(() => {
+  //   return () => {
+  //     queryClient.invalidateQueries({
+  //       queryKey: [sessionUserId, "is-following", targetUserId],
+  //     });
+  //   };
+  // });
   return response.data?.isFollowing;
 };
 

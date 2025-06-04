@@ -2,21 +2,23 @@
 import { User } from "@/gql/graphql";
 import { getUsers } from "@/services/user";
 import { useEffect, useState } from "react";
+import { useDebounce } from "../utils";
 
 export const useSearchUsers = (fn: any, ...args: any) => {
   const [searchText] = args;
   const [users, setUsers] = useState<User[]>([]);
   const [isUsersLoading, setIsUsersLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setIsUsersLoading(true);
-      const users = await fn(...args);
-      setIsUsersLoading(false);
+  const fetchUsers = async () => {
+    setIsUsersLoading(true);
+    const users = await fn(...args);
+    setIsUsersLoading(false);
+    setUsers(users as User[]);
+  };
+  const debouncedFetchUsers = useDebounce(fetchUsers, 300);
 
-      setUsers(users as User[]);
-    };
-    fetchUsers();
+  useEffect(() => {
+    debouncedFetchUsers();
   }, [searchText]);
 
   return { isUsersLoading, users };

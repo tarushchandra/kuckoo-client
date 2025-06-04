@@ -1,19 +1,16 @@
 "use client";
-
 import React from "react";
 import TweetCard from "./tweet-card";
-import { Tweet } from "@/gql/graphql";
 import TweetCardLoading from "./ui/tweet-card-loading";
-import { useAuth } from "@/hooks/auth";
-import { selectUser } from "@/lib/redux/features/auth/authSlice";
-import { useTweetsFeed, useUserTweets } from "@/hooks/queries/tweet";
 
 interface TweetsProps {
   tweets: any[] | undefined;
+  observe: (node: Element) => void;
+  isFetchingNextPage: boolean;
 }
 
 export default function Tweets(props: TweetsProps) {
-  const { tweets } = props;
+  const { tweets, isFetchingNextPage, observe } = props;
 
   if (!tweets)
     return Array.from({ length: 4 }, (_, index) => (
@@ -23,7 +20,20 @@ export default function Tweets(props: TweetsProps) {
   return (
     <div>
       {tweets.length > 0 ? (
-        tweets.map((tweet: any) => <TweetCard key={tweet.id} tweet={tweet} />)
+        <>
+          {tweets.map((tweet: any, index) => (
+            <TweetCard
+              key={tweet.id}
+              tweet={tweet}
+              ref={index === tweets.length - 1 ? observe : null}
+            />
+          ))}
+          {isFetchingNextPage && (
+            <h2 className="text-zinc-500 animate-pulse text-center my-2">
+              Loading...
+            </h2>
+          )}
+        </>
       ) : (
         <h1 className="text-center mt-2">No Tweets yet</h1>
       )}

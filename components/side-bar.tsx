@@ -30,34 +30,13 @@ interface SideBarMenuI {
   link: string;
 }
 
-{
-  /* <>
-                          {path.includes(menuItem.path)
-                            ? menuItem.selectedIcon
-                            : menuItem.icon}
-                        </>
-                        <h2
-                          className={mergeClasses(
-                            "text-xl xs:max-xl:hidden",
-                            path.includes(menuItem.path) && "font-bold",
-                            path.includes("messages") && "hidden"
-                          )}
-                        >
-                          {menuItem.text}
-                        </h2> */
-}
-
 export default function SideBar({ className }: { className: string }) {
   const { data: sessionUser } = useAuth(selectUser);
   const path = usePathname();
   const unseenNotificationsCount = useUnseenNotificationsCount();
   const unseenChatsCount = useUnseenChatsCount();
 
-  // const unseenChatsCount = useAppSelector(
-  //   (store) => store.chat.unseenChatsCount
-  // );
-
-  console.log("unseenChatsCount -", unseenChatsCount);
+  // console.log("unseenChatsCount -", unseenChatsCount);
 
   const sidebarMenuItems = useMemo(() => {
     return [
@@ -123,7 +102,7 @@ export default function SideBar({ className }: { className: string }) {
             <div className="xs:max-sm:flex xs:max-sm:justify-around">
               {sidebarMenuItems.map((menuItem) => {
                 return (
-                  <div className="h-16 flex items-center">
+                  <div key={menuItem.id} className="h-16 flex items-center">
                     <Link href={`/${menuItem.path}`} className="w-full group">
                       <div className="flex justify-start items-center w-fit gap-3 px-4 py-4  transition-all rounded-full xl:group-hover:bg-zinc-900">
                         <div className="relative">
