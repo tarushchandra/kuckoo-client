@@ -107,9 +107,9 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="py-10 h-full flex flex-col justify-center items-center gap-4">
       <h1 className="text-3xl font-semibold">Sign Up to Twitter</h1>
-      <div className="flex flex-col gap-6 p-10 w-1/4 rounded-md bg-zinc-950 border border-zinc-800">
+      <div className="xs:w-full xs:p-5 xs:gap-3 xs1:w-[30rem] xs1:p-10 xs1:gap-6 flex flex-col rounded-md bg-zinc-950 border border-zinc-800">
         <div className="flex justify-center">
           {isGoogleButtonLoaded ? (
             <GoogleLogin
@@ -166,7 +166,7 @@ const SignUpPage: React.FC = () => {
           <Link href="/sign-in">Sign In</Link>
         </span>
       </div>
-    </>
+    </div>
   );
 };
 
