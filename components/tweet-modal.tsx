@@ -52,20 +52,24 @@ export default function TweetModal(props: TweetModalProps) {
     >
       <div
         className={mergeClasses(
-          "flex xs:flex-col md:flex-row md:h-full ",
+          "flex xs:flex-col md:flex-row md:h-full",
           !isTweetInfoPanelActive && "h-full justify-center"
         )}
       >
         <div
           className={mergeClasses(
             "relative h-full",
-            // isTweetInfoPanelActive && "md:w-1/2 lg:w-2/3"
             isTweetInfoPanelActive && "md:flex-1"
           )}
         >
           <>
             {imageURL && (
-              <div className="flex justify-center items-center w-full h-full border-r border-zinc-800">
+              <div
+                className={mergeClasses(
+                  "flex justify-center items-center w-full h-full",
+                  isTweetInfoPanelActive && "border-r border-zinc-800"
+                )}
+              >
                 <Image
                   src={imageURL!}
                   alt="tweet-image"
@@ -115,9 +119,8 @@ export default function TweetModal(props: TweetModalProps) {
           {isTweetInfoPanelActive && (
             <div
               className={mergeClasses(
-                "bg-black p-8 flex flex-col gap-2",
+                "bg-black p-8 flex flex-col gap-2 h-full",
                 imageURL && "p-4",
-                // isTweetInfoPanelActive && "md:w-1/2 lg:w-1/3"
                 isTweetInfoPanelActive && "md:w-[400px] xl:w-[500px]"
               )}
             >

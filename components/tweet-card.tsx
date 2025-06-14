@@ -42,6 +42,7 @@ interface TweetCardProps {
   ref: any;
 }
 
+// eslint-disable-next-line react/display-name
 const TweetCard: React.FC<TweetCardProps> = forwardRef((props, ref) => {
   const { tweet } = props;
   const {
@@ -56,6 +57,8 @@ const TweetCard: React.FC<TweetCardProps> = forwardRef((props, ref) => {
   const { firstName, lastName, username } = author;
   const formattedCreatedAt = dayjs(Number(createdAt)).fromNow();
   const formattedUpdatedAt = dayjs(Number(updatedAt)).fromNow();
+
+  console.log("tweetId -", tweet.id);
 
   return (
     <>

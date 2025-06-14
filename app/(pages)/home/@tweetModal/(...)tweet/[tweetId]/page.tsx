@@ -10,9 +10,6 @@ interface InterceptedTweetPageProps {
 export default async function InterceptedTweetPage(
   props: InterceptedTweetPageProps
 ) {
-  console.log("intercepted tweet page");
-  console.log("intercepted tweet page props -", props);
-
   const tweet = await getTweet(props.params.tweetId);
   return <TweetModal tweet={tweet} />;
 }

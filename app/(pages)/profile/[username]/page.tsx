@@ -26,6 +26,8 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const dateJoined = dayjs(Number(user.createdAt));
   const formattedDate = dateJoined.format("MMMM D, YYYY");
 
+  console.log("user profile page rendered");
+
   return (
     <>
       <Header className="px-4 py-2">

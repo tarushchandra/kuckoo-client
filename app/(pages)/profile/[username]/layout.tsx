@@ -7,7 +7,7 @@ interface ProfileLayoutProps {
 
 export default function ProfileLayout(props: ProfileLayoutProps) {
   const { children, tweetModal } = props;
-  console.log(props);
+  // console.log("props in profile page -", props);
 
   return (
     <>

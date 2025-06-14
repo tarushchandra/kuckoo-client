@@ -12,6 +12,8 @@ interface TweetsProps {
 export default function Tweets(props: TweetsProps) {
   const { tweets, isFetchingNextPage, observe } = props;
 
+  console.log("tweets -", tweets);
+
   if (!tweets)
     return Array.from({ length: 4 }, (_, index) => (
       <TweetCardLoading key={index} />
