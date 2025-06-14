@@ -2,30 +2,34 @@
 import React, { useEffect, useState } from "react";
 import Header from "@/components/header";
 import ChatCard from "@/components/chat-card";
-import { Chat as ChatType } from "@/gql/graphql";
-import { Mails, MessageSquarePlus, MessagesSquare, Users } from "lucide-react";
+import { Mails, MessagesSquare, Users } from "lucide-react";
 import Chat from "@/components/chat";
 import UserCardLoading from "@/components/ui/user-card-loading";
 import NewChatModal from "@/components/new-chat-modal";
 import NewGroupModal from "@/components/new-group-modal";
-import { queryClient } from "@/lib/clients/query";
-import { graphqlClient } from "@/lib/clients/graphql";
-import { getChatsQuery } from "@/graphql/queries/chat";
-import { useDispatch } from "react-redux";
-import { addChats, selectChat } from "@/lib/redux/features/chat/chatSlice";
+import {
+  removeSelectedChat,
+  selectChat,
+} from "@/lib/redux/features/chat/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useChats } from "@/hooks/services/chat";
 import mergeClasses from "@/utils/mergeClasses";
-
-interface MessagesPageProps {}
 
 export default function MessagesPage() {
   const chats = useChats();
   const dispatch = useAppDispatch();
   const selectedChat = useAppSelector((store) => store.chat.selectedChat);
 
-  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
-  const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false);
+  const [isCreateNewChatModalOpen, setIsCreateNewChatModalOpen] =
+    useState(false);
+  const [isCreateNewGroupModalOpen, setIsCreateNewGroupModalOpen] =
+    useState(false);
+
+  useEffect(() => {
+    return () => {
+      dispatch(removeSelectedChat());
+    };
+  }, []);
 
   console.log("chats -", chats);
 
@@ -40,10 +44,16 @@ export default function MessagesPage() {
         <Header className="p-4 text-xl font-semibold flex justify-between items-center">
           <h1>Chats</h1>
           <div className="flex gap-4">
-            <div title="New Chat" onClick={() => setIsNewChatModalOpen(true)}>
+            <div
+              title="New Chat"
+              onClick={() => setIsCreateNewChatModalOpen(true)}
+            >
               <MessagesSquare size={25} className="cursor-pointer" />
             </div>
-            <div title="New Group" onClick={() => setIsNewGroupModalOpen(true)}>
+            <div
+              title="New Group"
+              onClick={() => setIsCreateNewGroupModalOpen(true)}
+            >
               <Users size={25} className="cursor-pointer " />
             </div>
           </div>
@@ -97,12 +107,12 @@ export default function MessagesPage() {
       </div>
 
       <>
-        {isNewChatModalOpen && (
-          <NewChatModal onClose={() => setIsNewChatModalOpen(false)} />
+        {isCreateNewChatModalOpen && (
+          <NewChatModal onClose={() => setIsCreateNewChatModalOpen(false)} />
         )}
 
-        {isNewGroupModalOpen && (
-          <NewGroupModal onClose={() => setIsNewGroupModalOpen(false)} />
+        {isCreateNewGroupModalOpen && (
+          <NewGroupModal onClose={() => setIsCreateNewGroupModalOpen(false)} />
         )}
       </>
     </>

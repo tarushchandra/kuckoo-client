@@ -67,7 +67,6 @@ import { useThrottle } from "@/hooks/utils";
 export default function Chat() {
   const { data: sessionUser } = useAuth(selectUser);
   const selectedChat = useAppSelector((store) => store.chat.selectedChat);
-  // const onlineUser = useUserLastSeenAt(selectedChat!.members![0]?.id!);
   const onlineUser = useOnlineUser(selectedChat!.members![0]?.id!);
   const isUserTyping = useAppSelector(
     (store) => store.chat.typingUsers[selectedChat?.id!]
