@@ -392,10 +392,7 @@ export const chatsSlice = createSlice({
         state.unseenChatsCount = unseenChatsCount;
       }
 
-      // Re-ording of chats only possible if they are actually present
-      if (!state.totalChats || state.totalChats?.length === 0) return;
-
-      // Re-ording the current chats list
+      // Adding the new chat to the totalChats
       if (typeof messagePayload.chatId === "number") {
         const currentChat = state.totalChats?.find(
           (x) => x.id === messagePayload.chatId
@@ -426,6 +423,9 @@ export const chatsSlice = createSlice({
           if (isMessageSentBySessionUser) state.selectedChat = newChat;
         }
       } else {
+        // Re-ording of chats only possible if they are actually present
+        if (!state.totalChats || state.totalChats?.length === 0) return;
+
         const filteredChat = state.totalChats?.filter(
           (x) => x.id === messagePayload.chatId
         );
