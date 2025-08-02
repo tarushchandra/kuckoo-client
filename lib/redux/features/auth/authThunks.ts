@@ -6,8 +6,9 @@ import { IsignInAction } from "@/hooks/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import { getSessionUser } from "@/services/user";
+import { deleteTokensFromCookies } from "@/lib/actions/user";
 
-const getCustomUserToken = async (payload: IsignInAction) => {
+export const getCustomUserToken = async (payload: IsignInAction) => {
   try {
     let customUserToken;
     if (payload.googleToken) {
@@ -35,22 +36,16 @@ const getCustomUserToken = async (payload: IsignInAction) => {
 export const signIn = createAsyncThunk(
   "auth/signIn",
   async (payload?: IsignInAction) => {
-    const access_token = localStorage.getItem("__access__token");
-
     try {
-      if (!access_token) {
-        if (!payload) throw new Error("Payload not found");
-        const customUserToken = await getCustomUserToken(payload);
-        localStorage.setItem("__access__token", customUserToken);
-      }
+      // set custom user token as a cookie
+      if (payload) await getCustomUserToken(payload);
+
+      // get session user
       await queryClient.invalidateQueries({ queryKey: ["session-user"] });
-
       const { user } = await getSessionUser();
-      if (!user) {
-        localStorage.removeItem("__access__token");
-        throw new Error("You are not authenticated");
-      }
+      if (!user) throw new Error("You are not authenticated");
 
+      // update the redux store
       return user as User;
     } catch (err: any) {
       toast.error(err.message);
@@ -61,7 +56,7 @@ export const signIn = createAsyncThunk(
 
 export const signOut = createAsyncThunk("auth/signOut", async () => {
   try {
-    localStorage.removeItem("__access__token");
+    await deleteTokensFromCookies();
     await queryClient.invalidateQueries({ queryKey: ["session-user"] });
   } catch (err) {
     console.log(err);

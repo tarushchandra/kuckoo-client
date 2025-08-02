@@ -1,7 +1,7 @@
 "use client";
 import AppLoading from "@/components/ui/app-loading";
 import { useAuth } from "@/hooks/auth";
-import { selectUser } from "@/lib/redux/features/auth/authSlice";
+import { selectAuth, selectUser } from "@/lib/redux/features/auth/authSlice";
 import {
   addMessage,
   addTypingUser,
@@ -52,7 +52,8 @@ interface Timeouts {
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const { data: sessionUser, getAccessToken } = useAuth(selectUser);
+  const { data: auth } = useAuth(selectAuth);
+  const { user: sessionUser, isUserAuthenticated } = auth;
   const dispatch = useDispatch();
   const path = usePathname();
   //   console.log("socket -", socket);
@@ -61,6 +62,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   // const timeoutRef = useRef<any>(null);
 
   useEffect(() => {
+    // don't open the socket connection until the user is authenticated
+    if (!isUserAuthenticated) return;
+
     const socket = new WebSocket("ws://localhost:8000");
 
     socket.onopen = () => {
@@ -68,7 +72,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       setSocket(socket);
 
       socket.send(
-        JSON.stringify({ type: "AUTH", accessToken: getAccessToken() })
+        JSON.stringify({
+          type: "CONNECTION_ESTABLISHED",
+          userId: sessionUser?.id,
+        })
       );
     };
 
@@ -165,11 +172,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     };
 
     return () => {
+      console.log("closing socket");
       socket.close();
     };
-  }, []);
+  }, [isUserAuthenticated]);
 
-  if (!socket) return <AppLoading />;
+  // if (!socket) return <AppLoading />;
 
   return (
     <SocketContext.Provider value={{ socket }}>

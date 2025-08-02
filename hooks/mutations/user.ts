@@ -3,7 +3,7 @@ import {
   removeFollowerMutation,
   unfollowUserMutation,
 } from "@/graphql/mutations/user";
-import revalidateUserProfile from "@/lib/actions/user";
+import { revalidateUserProfile } from "@/lib/actions/user";
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
 import { useMutation } from "@tanstack/react-query";

@@ -60,7 +60,9 @@ const documents = {
     "\n  query GetPaginatedTweetsFeed($limit: Int!, $cursor: String) {\n    getPaginatedTweetsFeed(limit: $limit, cursor: $cursor) {\n      tweets {\n        id\n        content\n        imageURL\n        createdAt\n        updatedAt\n        author {\n          firstName\n          lastName\n          username\n          profileImageURL\n        }\n        tweetEngagement {\n          likesCount\n          isTweetLikedBySessionUser\n          commentsCount\n          isTweetBookmarkedBySessionUser\n        }\n      }\n      nextCursor\n    }\n  }\n": types.GetPaginatedTweetsFeedDocument,
     "\n  query GetPaginatedUserTweetsQuery(\n    $userId: String!\n    $limit: Int!\n    $cursor: String\n  ) {\n    getPaginatedTweets(userId: $userId, limit: $limit, cursor: $cursor) {\n      tweets {\n        id\n        content\n        imageURL\n        createdAt\n        updatedAt\n        tweetEngagement {\n          likesCount\n          isTweetLikedBySessionUser\n          commentsCount\n        }\n      }\n      nextCursor\n    }\n  }\n": types.GetPaginatedUserTweetsQueryDocument,
     "\n  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {\n    getCustomUserToken(googleToken: $googleToken, user: $user)\n  }\n": types.GetCustomUserTokenQueryDocument,
+    "\n  query VerifyRefreshTokenQuery($refreshToken: String!) {\n    verifyRefreshToken(refreshToken: $refreshToken)\n  }\n": types.VerifyRefreshTokenQueryDocument,
     "\n  query GetUserQuery($username: String!) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweetsCount\n    }\n  }\n": types.GetUserQueryDocument,
+    "\n  query VerifyAccessTokenQuery($accessToken: String!) {\n    verifyAccessToken(accessToken: $accessToken)\n  }\n": types.VerifyAccessTokenQueryDocument,
     "\n  query GetSessionUserQuery {\n    getSessionUser {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetSessionUserQueryDocument,
     "\n  query GetAllUsersQuery {\n    getAllUsers {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n      followers {\n        username\n      }\n    }\n  }\n": types.GetAllUsersQueryDocument,
     "\n  query GetUsersQuery($searchText: String!) {\n    getUsers(searchText: $searchText) {\n      id\n      firstName\n      lastName\n      username\n      profileImageURL\n      email\n    }\n  }\n": types.GetUsersQueryDocument,
@@ -279,7 +281,15 @@ export function graphql(source: "\n  query getCustomUserTokenQuery($googleToken:
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query VerifyRefreshTokenQuery($refreshToken: String!) {\n    verifyRefreshToken(refreshToken: $refreshToken)\n  }\n"): (typeof documents)["\n  query VerifyRefreshTokenQuery($refreshToken: String!) {\n    verifyRefreshToken(refreshToken: $refreshToken)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query GetUserQuery($username: String!) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweetsCount\n    }\n  }\n"): (typeof documents)["\n  query GetUserQuery($username: String!) {\n    getUser(username: $username) {\n      id\n      firstName\n      lastName\n      profileImageURL\n      followersCount\n      followingsCount\n      createdAt\n      tweetsCount\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query VerifyAccessTokenQuery($accessToken: String!) {\n    verifyAccessToken(accessToken: $accessToken)\n  }\n"): (typeof documents)["\n  query VerifyAccessTokenQuery($accessToken: String!) {\n    verifyAccessToken(accessToken: $accessToken)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

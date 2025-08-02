@@ -1,7 +1,6 @@
 "use client";
 import type { Metadata } from "next";
 import SideBar from "@/components/side-bar";
-import { AuthRoute } from "@/providers/AuthProvider";
 import ExploreBar from "../../components/explore-bar";
 import { usePathname } from "next/navigation";
 import { SocketProvider } from "@/context/socket";
@@ -54,39 +53,33 @@ export default function PagesLayout({
     const selectedChat = useAppSelector((store) => store.chat.selectedChat);
 
     return (
-      <AuthRoute>
-        <SocketProvider>
-          {/* <div className="overflow-y-scroll"> */}
-          <div className="h-screen grid mx-auto sm:grid-cols-9 sm:max-w-[42rem] md:grid-cols-10 md:max-w-[45rem] lg:grid-cols-14 lg:max-w-[62rem] xl:grid-cols-19 xl:min-w-[78rem]">
-            <SideBar
-              className={mergeClasses(
-                "bg-black xs:max-sm:fixed xs:max-sm:z-50 xs:max-sm:bottom-0 xs:max-sm:w-full xs:max-sm:border-t xs:max-sm:border-t-zinc-800 sm:col-span-1",
-                selectedChat && "xs:max-sm:hidden"
-              )}
-            />
-            {children}
-          </div>
-          {/* </div> */}
-        </SocketProvider>
-      </AuthRoute>
-    );
-  }
-
-  // grid-cols-20 h-screen mx-auto gap-4
-
-  return (
-    <AuthRoute>
       <SocketProvider>
         {/* <div className="overflow-y-scroll"> */}
-        <div className="grid mx-auto sm:grid-cols-9 sm:max-w-[42rem] md:grid-cols-10 md:max-w-[45rem] lg:grid-cols-14 lg:max-w-[62rem] xl:grid-cols-12 xl:min-w-[78rem]">
-          <SideBar className="bg-black xs:max-sm:fixed xs:max-sm:z-50 xs:max-sm:bottom-0 xs:max-sm:w-full xs:max-sm:border-t xs:max-sm:border-t-zinc-800 sm:col-span-1 xl:col-span-3" />
-          <div className="border-x border-zinc-800 sm:col-span-8 md:col-span-9 lg:ml-1 lg:mr-4 xl:col-span-6">
-            {children}
-          </div>
-          <ExploreBar className="hidden lg:block lg:col-span-4 xl:col-span-3" />
+        <div className="h-screen grid mx-auto sm:grid-cols-9 sm:max-w-[42rem] md:grid-cols-10 md:max-w-[45rem] lg:grid-cols-14 lg:max-w-[62rem] xl:grid-cols-19 xl:min-w-[78rem]">
+          <SideBar
+            className={mergeClasses(
+              "bg-black xs:max-sm:fixed xs:max-sm:z-50 xs:max-sm:bottom-0 xs:max-sm:w-full xs:max-sm:border-t xs:max-sm:border-t-zinc-800 sm:col-span-1",
+              selectedChat && "xs:max-sm:hidden"
+            )}
+          />
+          {children}
         </div>
         {/* </div> */}
       </SocketProvider>
-    </AuthRoute>
+    );
+  }
+
+  return (
+    <SocketProvider>
+      {/* <div className="overflow-y-scroll"> */}
+      <div className="grid mx-auto sm:grid-cols-9 sm:max-w-[42rem] md:grid-cols-10 md:max-w-[45rem] lg:grid-cols-14 lg:max-w-[62rem] xl:grid-cols-12 xl:min-w-[78rem]">
+        <SideBar className="bg-black xs:max-sm:fixed xs:max-sm:z-50 xs:max-sm:bottom-0 xs:max-sm:w-full xs:max-sm:border-t xs:max-sm:border-t-zinc-800 sm:col-span-1 xl:col-span-3" />
+        <div className="border-x border-zinc-800 sm:col-span-8 md:col-span-9 lg:ml-1 lg:mr-4 xl:col-span-6">
+          {children}
+        </div>
+        <ExploreBar className="hidden lg:block lg:col-span-4 xl:col-span-3" />
+      </div>
+      {/* </div> */}
+    </SocketProvider>
   );
 }

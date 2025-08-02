@@ -6,17 +6,6 @@ import { GraphQLClient } from "graphql-request";
 
 export const graphqlEndPoint = "http://localhost:8000/graphql";
 
-export const graphqlClient = new GraphQLClient(
-  "http://localhost:8000/graphql",
-  {
-    headers: () => {
-      const access_token = localStorage.getItem("__access__token");
-      return {
-        Authorization:
-          isClientSideRenderedPage && access_token
-            ? `Bearer ${access_token}`
-            : "",
-      };
-    },
-  }
-);
+export const graphqlClient = new GraphQLClient(graphqlEndPoint, {
+  credentials: "include",
+});
