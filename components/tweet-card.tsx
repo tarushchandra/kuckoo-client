@@ -58,7 +58,7 @@ const TweetCard: React.FC<TweetCardProps> = forwardRef((props, ref) => {
   const formattedCreatedAt = dayjs(Number(createdAt)).fromNow();
   const formattedUpdatedAt = dayjs(Number(updatedAt)).fromNow();
 
-  console.log("tweetId -", tweet.id);
+  // console.log("tweetId -", tweet.id);
 
   return (
     <>

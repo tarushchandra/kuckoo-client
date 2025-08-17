@@ -8,6 +8,7 @@ import {
 import { signInFormType } from "@/app/(auth)/sign-in/page";
 import { useRouter } from "@/hooks/router";
 import { usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 
 export interface IsignInAction {
   user?: signInFormType;
@@ -28,11 +29,13 @@ export const useAuth = <T extends AuthStateValues>(
     // handling sign in when user is clicking on sign in button
     await dispatch(signIn(payload));
     router.replace("/home");
+    toast.success("Signed in successfully");
   };
 
   const signOutAction = async () => {
     await dispatch(signOut());
     router.replace("/sign-in");
+    toast.success("Signed out successfully");
   };
 
   const updateGoogleButtonAction = () => dispatch(updateGoogleButton());

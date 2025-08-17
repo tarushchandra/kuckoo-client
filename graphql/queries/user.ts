@@ -1,17 +1,5 @@
 import { graphql } from "@/gql";
 
-export const getCustomUserTokenQuery = graphql(/* GraphQL */ `
-  query getCustomUserTokenQuery($googleToken: String, $user: SignInFormInput) {
-    getCustomUserToken(googleToken: $googleToken, user: $user)
-  }
-`);
-
-export const verifyRefreshTokenQuery = graphql(/* GraphQL */ `
-  query VerifyRefreshTokenQuery($refreshToken: String!) {
-    verifyRefreshToken(refreshToken: $refreshToken)
-  }
-`);
-
 export const getUserQuery = graphql(/* GraphQL */ `
   query GetUserQuery($username: String!) {
     getUser(username: $username) {
@@ -24,12 +12,6 @@ export const getUserQuery = graphql(/* GraphQL */ `
       createdAt
       tweetsCount
     }
-  }
-`);
-
-export const verifyAccessTokenQuery = graphql(/* GraphQL */ `
-  query VerifyAccessTokenQuery($accessToken: String!) {
-    verifyAccessToken(accessToken: $accessToken)
   }
 `);
 

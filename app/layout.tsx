@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
-import { ReactQueryProvider } from "@/providers/QueryProvider";
-import { ReduxProvider } from "@/providers/ReduxProvider";
-import { AuthProvider } from "@/providers/AuthProvider";
-import ProgressBarProvider from "@/providers/ProgressBarProvider";
 import mergeClasses from "@/utils/mergeClasses";
-import { cookies, headers } from "next/headers";
-import { getTokensFromCookies } from "@/lib/actions/user";
-import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/middlewares/auth";
+import Providers from "@/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,27 +16,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { accessToken, refreshToken } = await getTokensFromCookies();
-
-  console.log("accessToken in RootLayout -", accessToken);
-  console.log("refreshToken in RootLayout -", refreshToken);
-
   return (
     <html lang="en">
       <body className={mergeClasses(inter.className, "debug-screens")}>
-        <ProgressBarProvider>
-          <ReactQueryProvider>
-            <ReduxProvider>
-              <AuthProvider
-                hasAccessToken={accessToken ? true : false}
-                hasRefreshToken={refreshToken ? true : false}
-              >
-                {children}
-              </AuthProvider>
-            </ReduxProvider>
-          </ReactQueryProvider>
-        </ProgressBarProvider>
-        <Toaster />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
