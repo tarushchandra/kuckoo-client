@@ -1,14 +1,11 @@
 "use client";
-import AppLoading from "@/components/ui/app-loading";
 import { useAuth } from "@/hooks/auth";
-import { selectAuth, selectUser } from "@/lib/redux/features/auth/authSlice";
+import { selectAuth } from "@/lib/redux/features/auth/authSlice";
 import {
   addMessage,
   addTypingUser,
   removeTypingUser,
-  replaceTemporaryChatIdWithActualChatId,
   replaceTemporaryChatOrMessagesIdWithActualIds,
-  replaceTemporaryMessageIdWithActualMessageId,
   setMessageIsRecivedByTheServer,
   setUnseenMessagesAsSeen,
 } from "@/lib/redux/features/chat/chatSlice";
@@ -56,7 +53,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const { user: sessionUser, isUserAuthenticated } = auth;
   const dispatch = useDispatch();
   const path = usePathname();
-  //   console.log("socket -", socket);
 
   const timeoutsRef = useRef<Timeouts>({});
   // const timeoutRef = useRef<any>(null);
@@ -65,7 +61,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     // don't open the socket connection until the user is authenticated
     if (!isUserAuthenticated) return;
 
-    const socket = new WebSocket("ws://localhost:8000");
+    const socket = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
 
     socket.onopen = () => {
       console.log("connected to socket server");

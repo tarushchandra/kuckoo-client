@@ -1,3 +1,4 @@
+"use client";
 import { GraphQLClient, RequestDocument, Variables } from "graphql-request";
 import { verifyRefreshToken } from "@/services/auth";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
@@ -91,5 +92,5 @@ class CustomGraphQLClient {
   }
 }
 
-export const graphqlEndPoint = "http://localhost:8000/graphql";
+export const graphqlEndPoint = `${process.env.NEXT_PUBLIC_BACKEND_SERVER_URL}/graphql`;
 export const graphqlClient = new CustomGraphQLClient();
