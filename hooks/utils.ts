@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 export const debounce = (func: () => void, delay: number) => {
   let timeout: any;
@@ -39,30 +39,6 @@ export const useThrottle = (func: () => void, delay: number) => {
     isTimeoutPresentRef.current = true;
   };
 };
-
-// export const useIntersection = (options: any = {}, listOfItems: any) => {
-//   const ref = useRef<any>(null);
-//   const [isIntersecting, setIsIntersecting] = useState(false);
-
-//   console.log("ref.current -", ref.current);
-
-//   useEffect(() => {
-//     if (!ref.current) return;
-
-//     const observer = new IntersectionObserver(([entry]) => {
-//       console.log("entry -", entry);
-//       setIsIntersecting(entry.isIntersecting);
-//       if (entry.isIntersecting) observer.unobserve(ref.current);
-//     }, options);
-//     observer.observe(ref.current);
-
-//     return () => {
-//       observer.disconnect();
-//     };
-//   }, [ref.current]);
-
-//   return { ref, isIntersecting };
-// };
 
 export const useIntersection = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);

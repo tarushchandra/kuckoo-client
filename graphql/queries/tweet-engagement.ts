@@ -97,7 +97,7 @@ export const getCommentsOfCommentQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export const getRepliedToComment = graphql(/* GraphQL */ `
+export const getRepliedToCommentQuery = graphql(/* GraphQL */ `
   query getRepliedToComment($commentId: String!, $tweetId: String!) {
     getComment(commentId: $commentId, tweetId: $tweetId) {
       repliedTo {

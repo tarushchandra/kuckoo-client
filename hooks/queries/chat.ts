@@ -17,13 +17,6 @@ export const useChats = () => {
     queryKey: ["chats"],
     queryFn: () => graphqlClient.request(getChatsQuery),
   });
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["chats"] });
-    };
-  }, []);
-
   return data?.getChats;
 };
 
@@ -36,22 +29,14 @@ export const useChatHistory = (chat: Chat) => {
     },
   });
 
-  // console.log("chat History data -", data);
-
   const cacheRef = useRef<ChatHistory[] | null>(null);
 
   useEffect(() => {
     if (chat.id === "default-chat-id") return;
     cacheRef.current = null;
-
-    // return () => {
-    //   queryClient.invalidateQueries({ queryKey: ["chat-history", chat.id] });
-    // };
   }, [chat.id]);
 
-  if (cacheRef.current) {
-    return cacheRef.current;
-  }
+  if (cacheRef.current) return cacheRef.current;
 
   if (!data || data.getChatHistory!.length === 0) {
     if (chat.id === "default-chat-id") {
@@ -79,13 +64,6 @@ export const useChatMembers = (chatId: string) => {
     queryKey: ["chat-members", chatId],
     queryFn: () => graphqlClient.request(getChatMembersQuery, { chatId }),
   });
-
-  useEffect(() => {
-    return () => {
-      queryClient.invalidateQueries({ queryKey: ["chat-members", chatId] });
-    };
-  }, [chatId]);
-
   return data?.getChatMembers;
 };
 
@@ -105,14 +83,5 @@ export const usePeopleWithMessageSeen = (messageId: string) => {
     queryFn: () =>
       graphqlClient.request(getPeopleWithMessageSeenQuery, { messageId }),
   });
-
-  useEffect(() => {
-    return () => {
-      queryClient.invalidateQueries({
-        queryKey: ["people-who-seen-the-message", messageId],
-      });
-    };
-  }, [messageId]);
-
   return data?.getPeopleWithMessageSeen;
 };

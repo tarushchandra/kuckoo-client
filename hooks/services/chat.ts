@@ -1,10 +1,9 @@
 "use client";
 import { queryClient } from "@/lib/clients/query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../redux";
 import { graphqlClient } from "@/lib/clients/graphql";
 import {
-  getChatHistoryQuery,
   getChatsQuery,
   getUnseenChatsCountQuery,
 } from "@/graphql/queries/chat";
@@ -16,7 +15,6 @@ import { fetchChatHistory } from "@/lib/redux/features/chat/chatThunks";
 import { getUserLastSeenQuery } from "@/graphql/queries/user";
 import { addOnlineUser } from "@/lib/redux/features/onlineUsers/onlineUsersSlice";
 import { useSocket } from "@/context/socket";
-import { usePathname } from "next/navigation";
 
 export const getUnseenMessagesCount = () => {
   const currentUnseenChatsCount: any = queryClient.getQueryData([
@@ -131,108 +129,3 @@ export const useUnseenChatsCount = () => {
 
   return unseenChatsCount;
 };
-
-// export const useChatHistory = (chatId: string) => {
-//   const chatHistoryObj = useAppSelector(
-//     (store) => store.chat.chatHistories[chatId]
-//   );
-//   const chatHistory = chatHistoryObj?.data;
-//   const dispatch = useAppDispatch();
-
-//   useEffect(() => {
-//     if (chatHistoryObj?.isDataFetched) return;
-
-//     const fetch = async () => {
-//       const data = await queryClient.fetchQuery({
-//         queryKey: ["chat-history", chatId],
-//         queryFn: () => graphqlClient.request(getChatHistoryQuery, { chatId }),
-//       });
-
-//       console.log("chatHistory fetched -", data.getChatHistory);
-
-//       if (!chatHistoryObj)
-//         dispatch(
-//           addChatHistory({
-//             chatId,
-//             chatHistoryObj: { data: data.getChatHistory, isDataFetched: true },
-//           })
-//         );
-//       else
-//         dispatch(
-//           addChatHistory({
-//             chatId,
-//             chatHistoryObj: {
-//               data: [...chatHistory, ...data.getChatHistory!],
-//               isDataFetched: true,
-//             },
-//           })
-//         );
-//     };
-
-//     fetch();
-//   }, [chatId]);
-
-//   return chatHistoryObj;
-// };
-
-// export const useChatHistory = (chatId: string) => {
-//   const chatHistoryObj = useAppSelector(
-//     (store) => store.chat.chatHistories[chatId]
-//   );
-//   const chatHistory = chatHistoryObj.data;
-
-//   const dispatch = useAppDispatch();
-
-//   const [isFetchedDataAddedToStore, setIsFetchedDataAddedToStore] =
-//     useState(false);
-//   console.log("isFetchedDataAddedToStore -", isFetchedDataAddedToStore);
-
-//   useEffect(() => {
-//     if (isFetchedDataAddedToStore) return;
-
-//     const fetch = async () => {
-//       const data = await queryClient.fetchQuery({
-//         queryKey: ["chat-history", chatId],
-//         queryFn: () => graphqlClient.request(getChatHistoryQuery, { chatId }),
-//       });
-
-//       console.log("chatHistory fetched -", data.getChatHistory);
-
-//       if (!chatHistory) {
-//         dispatch(
-//           addChatHistory({
-//             chatId,
-//             chatHistory: data.getChatHistory,
-//           })
-//         );
-//       } else {
-//         dispatch(
-//           addChatHistory({
-//             chatId,
-//             chatHistory: [...chatHistory, ...data.getChatHistory!],
-//           })
-//         );
-//       }
-
-//       setIsFetchedDataAddedToStore(true);
-//     };
-//     fetch();
-//   }, [chatId]);
-
-//   return chatHistory;
-// };
-
-// if (chatHistory) return;
-// dispatch(
-//   addChatHistory({
-//     chatId,
-//     chatHistory: data.getChatHistory,
-//   })
-// );
-
-// dispatch(
-//   addChatHistory({
-//     chatId,
-//     chatHistory: [...chatHistory, ...data.getChatHistory!],
-//   })
-// );

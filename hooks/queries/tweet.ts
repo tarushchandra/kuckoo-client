@@ -1,4 +1,3 @@
-import { Tweet } from "@/gql/graphql";
 import {
   getPaginatedTweetsFeedQuery,
   getPaginatedUserTweetsQuery,
@@ -7,40 +6,11 @@ import {
 import { graphqlClient } from "@/lib/clients/graphql";
 import { queryClient } from "@/lib/clients/query";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useIntersection } from "../utils";
 
-// export const useInfiniteUserTweets = (userId: string, limit: number) => {
-//   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
-//     useInfiniteQuery({
-//       queryKey: ["user-tweets", userId],
-//       queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
-//         graphqlClient.request(getPaginatedUserTweetsQuery, {
-//           userId,
-//           limit,
-//           cursor: pageParam,
-//         }),
-//       initialPageParam: undefined,
-//       getNextPageParam: (lastPage) => lastPage.getPaginatedTweets.nextCursor,
-//     });
-//   const userTweets = useMemo(() => {
-//     return data?.pages.flatMap((x) => x.getPaginatedTweets.tweets);
-//   }, [data?.pages.length]);
-//   const { ref: lastTweetRef, isIntersecting } = useIntersection({}, userTweets);
-
-//   useEffect(() => {
-//     if (isIntersecting && hasNextPage) fetchNextPage();
-//   }, [isIntersecting]);
-
-//   return {
-//     userTweets,
-//     isFetchingNextPage,
-//     lastTweetRef,
-//   };
-// };
-
 export const useInfiniteUserTweets = (userId: string, limit: number) => {
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isFetching } =
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery({
       queryKey: ["user-tweets", userId],
       queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
@@ -70,27 +40,10 @@ export const useInfiniteUserTweets = (userId: string, limit: number) => {
   };
 };
 
-// export const useTweetsFeed = (sessionUsername: string) => {
-//   const { data } = useQuery({
-//     queryKey: ["tweets-feed", sessionUsername],
-//     queryFn: () => graphqlClient.request(getTweetsFeedQuery),
-//   });
-
-//   useEffect(() => {
-//     return () => {
-//       queryClient.removeQueries({
-//         queryKey: ["tweets-feed", sessionUsername],
-//       });
-//     };
-//   }, [sessionUsername]);
-
-//   return data?.getTweetsFeed;
-// };
-
-export const useInfiniteTweetsFeed = (userId: string, limit: number) => {
+export const useInfiniteTweetsFeed = (limit: number) => {
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["tweets-feed", userId],
+      queryKey: ["tweets-feed"],
       queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
         graphqlClient.request(getPaginatedTweetsFeedQuery, {
           limit,
@@ -123,12 +76,6 @@ export const useTweet = (tweetId: string) => {
     queryKey: ["tweet", tweetId],
     queryFn: () => graphqlClient.request(getTweetQuery, { tweetId }),
   });
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["tweet", tweetId] });
-    };
-  }, [tweetId]);
 
   return data?.getTweet;
 };

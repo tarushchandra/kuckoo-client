@@ -15,14 +15,6 @@ import {
 } from "@/lib/redux/features/chat/chatSlice";
 import { useSocket } from "@/context/socket";
 
-/* 
-  TODO: fix the bug
-  - when a user sends me a message, then I want to make sure when I click the chat, I need to
-    fetch the chat's old messages along with marking the recent recieved messsage to be 
-    "unseen" until another chat is open, or a new message has been sent or recieved.
-  - only "until another chat is open" case is not working
-*/
-
 function ChatHistory() {
   const selectedChat = useAppSelector((store) => store.chat.selectedChat);
   const { data: sessionUser } = useAuth(selectUser);
@@ -35,11 +27,6 @@ function ChatHistory() {
 
   const chatHistory = chatHistoryObj?.data;
   const chatCreatedAtDate = getModifiedDateInNumbers(selectedChat!.createdAt!);
-
-  // const setMessagesAsSeenMutation = useSetMessagesAsSeen();
-
-  // console.log("selectedChat -", selectedChat);
-  console.log("chatHistory -", chatHistory);
 
   // ----------------------------------------------------------------------------------------
 
@@ -94,36 +81,6 @@ function ChatHistory() {
       );
     };
   }, [selectedChat?.id]);
-
-  // ----------------------------------------------------------------------------------------
-
-  // const setMessagesStatus = async () => {
-  //   const unseenMessageIds: string[] = [];
-
-  //   chatHistory.forEach((chatHistoryItem) => {
-  //     if (chatHistoryItem?.messages?.unseenMessages?.length === 0) return;
-
-  //     chatHistoryItem?.messages?.unseenMessages?.forEach((x) =>
-  //       unseenMessageIds.push(x?.id!)
-  //     );
-  //   });
-
-  //   // console.log("unseenMessageIds -", unseenMessageIds);
-
-  //   await setMessagesAsSeenMutation.mutateAsync({
-  //     chatId: chat.id,
-  //     messageIds: unseenMessageIds,
-  //   });
-
-  //   setSelectedChat((prev: any) => ({ ...prev, unseenMessagesCount: 0 }));
-  // };
-
-  // setMessagesStatus();
-  // }, [chatHistory]);
-
-  // if (chatHistory?.length === 0) return <div className="h-full" />;
-
-  // if (!selectedChat!.id) return <div className="h-full" />;
 
   return (
     <div className="h-full overflow-y-auto flex flex-col-reverse gap-2 p-4 ">
