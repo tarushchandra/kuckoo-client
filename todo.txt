@@ -1,4 +1,0 @@
-- Invalidate the "recommended-users" cache of react query only when there is
-  mutualFollowers.length > 0 when session user is following or unfollowing someone
-  (optimization over normally Invalidating the cache for anybody while following or
-  unfollowing)

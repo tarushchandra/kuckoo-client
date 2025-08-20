@@ -1,4 +1,3 @@
-"use client";
 import { GraphQLClient, RequestDocument, Variables } from "graphql-request";
 import { verifyRefreshToken } from "@/services/auth";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
