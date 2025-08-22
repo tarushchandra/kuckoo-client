@@ -59,7 +59,7 @@ const SignInPage: React.FC = () => {
           />
           <button
             disabled={isSubmitting}
-            className="bg-[#1D9BF0] text-sm text-white rounded-md py-2 border border-zinc-700 disabled:cursor-wait transition-all active:scale-[0.95]"
+            className="bg-primary-500 text-sm rounded-md py-2  disabled:cursor-wait transition-all active:scale-[0.95]"
           >
             Sign In
           </button>
@@ -83,7 +83,7 @@ const SignInPage: React.FC = () => {
       </div>
       <div className=" flex justify-center gap-2">
         <span>Don&apos;t have an account?</span>
-        <span className="text-[#1D9BF0] hover:underline">
+        <span className="text-primary-500 hover:underline">
           <Link href="/sign-up">Sign Up</Link>
         </span>
       </div>

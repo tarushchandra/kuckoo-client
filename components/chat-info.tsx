@@ -110,7 +110,7 @@ export default function ChatInfo(props: ChatInfoProps) {
               {chat.isGroupChat && (
                 <button
                   onClick={() => setIsAddMembersModalOpen(true)}
-                  className="text-[#1D9BF0]"
+                  className="text-primary"
                 >
                   Add Members
                 </button>

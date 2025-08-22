@@ -156,7 +156,7 @@ export default function PostComment(props: PostCommentProps) {
             </div>
             <h2 className="text-sm text-zinc-500">
               Replying to{" "}
-              <span className="font-semibold text-[#1D9BF0]">
+              <span className="font-semibold text-primary">
                 @{comment?.author?.username}
               </span>
             </h2>
@@ -210,7 +210,7 @@ export default function PostComment(props: PostCommentProps) {
             </>
             <h2 className="text-sm text-zinc-500">
               Replied to{" "}
-              <span className="font-semibold text-[#1D9BF0]">
+              <span className="font-semibold text-primary">
                 @{comment?.author?.username}
               </span>
             </h2>

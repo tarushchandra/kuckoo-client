@@ -109,7 +109,7 @@ export default function PostTweet(props: PostTweetProps) {
         <div className="flex justify-between items-center py-1">
           <div className="rounded-full cursor-pointer p-[0.4rem] transition-all hover:bg-[#051f30]">
             <ImageIcon
-              className="text-[#1D9BF0]"
+              className="text-primary"
               size={20}
               onClick={() => handleSelectAndUploadImage(setImageURL)}
             />
@@ -131,11 +131,11 @@ export default function PostTweet(props: PostTweetProps) {
                   createTweetMutation.isPending || (!textContent && !imageURL)
                 }
                 className={mergeClasses(
-                  "bg-[#1D9BF0] font-bold text-white cursor-pointer px-4 py-1 transition-all rounded-full active:scale-[0.95]",
+                  "bg-primary-500 font-bold text-white cursor-pointer px-4 py-1 transition-all rounded-full active:scale-[0.95]",
                   buttonClassName,
                   !textContent &&
                     !imageURL &&
-                    "disabled:bg-sky-900 disabled:text-zinc-500 disabled:cursor-not-allowed",
+                    "disabled:bg-primary-900 disabled:text-zinc-500 disabled:cursor-not-allowed",
                   createTweetMutation.isPending && "cursor-wait"
                 )}
               >
@@ -158,11 +158,11 @@ export default function PostTweet(props: PostTweetProps) {
                   editTweetMutation.isPending || (!textContent && !imageURL)
                 }
                 className={mergeClasses(
-                  "bg-[#1D9BF0] font-bold text-white cursor-pointer px-4 py-1 transition-all rounded-full active:scale-[0.95]",
+                  "bg-primary-500 font-bold text-white cursor-pointer px-4 py-1 transition-all rounded-full active:scale-[0.95]",
                   buttonClassName,
                   !textContent &&
                     !imageURL &&
-                    "disabled:bg-sky-900 disabled:text-zinc-500 disabled:cursor-not-allowed",
+                    "disabled:bg-primary-900 disabled:text-zinc-500 disabled:cursor-not-allowed",
                   editTweetMutation.isPending && "cursor-wait"
                 )}
               >

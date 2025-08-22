@@ -151,7 +151,7 @@ export default function NewGroupModal({ onClose }: { onClose: () => void }) {
             selectedUsers.length < 2
           }
           className={mergeClasses(
-            "bg-[#1D9BF0] mx-2 p-2 text-sm font-semibold rounded-md transition-all hover:bg-[#1993e6] disabled:bg-sky-900 disabled:text-zinc-500",
+            "bg-primary-500 mx-2 p-2 text-sm font-semibold rounded-md transition-all hover:bg-primary-600 disabled:bg-primary-900 disabled:text-zinc-500",
             (!groupName || selectedUsers.length < 2) &&
               "disabled:cursor-not-allowed",
             createGroupMutation.isPending && "cursor-wait"

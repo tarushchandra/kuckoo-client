@@ -4,16 +4,12 @@ import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import Image from "next/image";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import mergeClasses from "@/utils/mergeClasses";
-import { getModifiedDate, getModifiedDateForChatCard } from "@/utils/date";
-import { useSocket } from "@/context/socket";
-import { useSelector } from "react-redux";
+import { getModifiedDateForChatCard } from "@/utils/date";
 import { useAppSelector } from "@/hooks/redux";
 
 dayjs.extend(relativeTime);
-
-// bg-[#1D9BF0]
 
 interface ChatCardProps {
   chat: Chat;
@@ -29,11 +25,7 @@ export default function ChatCard(props: ChatCardProps) {
     name,
     totalMembersCount,
     creator,
-    createdAt,
   } = chat;
-
-  // console.log("chat -", chat);
-  // console.log("selectedChat -", selectedChat);
 
   const { data: sessionUser } = useAuth(selectUser);
   const onlineUser = useAppSelector(
@@ -42,15 +34,6 @@ export default function ChatCard(props: ChatCardProps) {
   const isUserTyping = useAppSelector(
     (store) => store.chat.typingUsers[chat.id]
   );
-
-  // console.log("isUserTyping -", isUserTyping);
-
-  // const realTimeChat = useSelector((store: any) => store.chats[chat.id]);
-
-  // const isOnline = onlineUsers[members![0]!.id];
-  // console.log("isOnline -", isOnline);
-
-  // console.log(`${chat.id} realTimeUnseenMessages -`, realTimeUnseenMessages);
 
   let chatMember = null;
   if (!isGroupChat) chatMember = members![0];
@@ -127,7 +110,7 @@ export default function ChatCard(props: ChatCardProps) {
           <h2
             className={mergeClasses(
               "text-xs font-medium text-zinc-500",
-              chat.unseenMessagesCount! > 0 && "text-[#1D9BF0] font-bold"
+              chat.unseenMessagesCount! > 0 && "text-primary font-bold"
             )}
           >
             {modifiedCreatedAtDate}
@@ -138,7 +121,7 @@ export default function ChatCard(props: ChatCardProps) {
             <div className="flex justify-between items-center w-full">
               <>
                 {isUserTyping ? (
-                  <h2 className="text-[#1D9BF0] font-semibold">
+                  <h2 className="text-primary font-semibold">
                     {chat.isGroupChat
                       ? `${isUserTyping.user.firstName} is typing...`
                       : "typing..."}
@@ -163,7 +146,7 @@ export default function ChatCard(props: ChatCardProps) {
               </>
               <>
                 {chat.unseenMessagesCount! > 0 && (
-                  <div className="bg-[#1D9BF0] w-4 h-4 p-[0.6rem] rounded-full text-white text-xs font-bold flex justify-center items-center">
+                  <div className="bg-primary-500 w-4 h-4 p-[0.6rem] rounded-full text-white text-xs font-bold flex justify-center items-center">
                     {chat.unseenMessagesCount}
                   </div>
                 )}

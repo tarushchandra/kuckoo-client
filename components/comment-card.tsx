@@ -129,7 +129,7 @@ export default function CommentCard(props: CommentCardProps) {
             {parentComment && (
               <Link
                 href={`/profile/${repliedTo?.author?.username}`}
-                className="text-[#1D9BF0] font-semibold"
+                className="text-primary font-semibold"
               >
                 @{repliedTo?.author?.username}
               </Link>

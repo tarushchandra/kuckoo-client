@@ -20,7 +20,7 @@ export default function HeaderOptions({ username }: { username: string }) {
         <Link
           href={`/profile/${username}/followers`}
           className={mergeClasses(
-            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-[#1D9BF0]",
+            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-primary",
             option === 0 && "border-b text-white"
           )}
         >
@@ -29,7 +29,7 @@ export default function HeaderOptions({ username }: { username: string }) {
         <Link
           href={`/profile/${username}/followings`}
           className={mergeClasses(
-            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-[#1D9BF0]",
+            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-primary",
             option === 1 && "border-b text-white"
           )}
         >
@@ -52,7 +52,7 @@ export default function HeaderOptions({ username }: { username: string }) {
         <Link
           href={`/explore/suggestions`}
           className={mergeClasses(
-            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-[#1D9BF0]",
+            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-primary",
             option === 0 && "border-b text-white"
           )}
         >
@@ -61,7 +61,7 @@ export default function HeaderOptions({ username }: { username: string }) {
         <Link
           href={`/explore/all-users`}
           className={mergeClasses(
-            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-[#1D9BF0]",
+            "flex-1 cursor-pointer text-center py-3 hover:bg-zinc-900 border-primary",
             option === 1 && "border-b text-white"
           )}
         >

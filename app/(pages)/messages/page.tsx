@@ -99,7 +99,7 @@ export default function MessagesPage() {
               </div>
               <h1 className="text-zinc-400">Send a message to start a chat.</h1>
             </div>
-            <button className="bg-[#1D9BF0] text-white text-sm transition-all font-semibold px-4 py-2 rounded-full hover:bg-[#1993e6] ">
+            <button className="bg-primary-500 text-white text-sm transition-all font-semibold px-4 py-2 rounded-full hover:bg-primary-600 ">
               Send Message
             </button>
           </div>

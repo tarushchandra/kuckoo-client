@@ -9,7 +9,7 @@ interface ProgressProviderProps {
 const ProgressBarProvider: React.FC<ProgressProviderProps> = ({ children }) => {
   return (
     <>
-      <ProgressBar color="#1D9BF0" />
+      <ProgressBar color="#e91e63" />
       {children}
     </>
   );

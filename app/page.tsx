@@ -8,8 +8,8 @@ const RootPage: React.FC = () => {
       <div className="flex-1 flex flex-col justify-center items-center xs1:gap-4 lg:gap-8">
         <h1 className="xs:text-[clamp(2rem,10vw,3rem)] xs1:text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-semibold">
           New to{" "}
-          <span className="bg-[#1D9BF0] xs:px-1 xs:rounded-lg lg:px-4 lg:rounded-2xl">
-            Twitter
+          <span className="bg-primary-500 xs:px-1 xs:rounded-lg lg:px-4 lg:rounded-2xl">
+            Coo
           </span>
           ?
         </h1>
@@ -22,5 +22,3 @@ const RootPage: React.FC = () => {
 };
 
 export default RootPage;
-
-// bg-[#1D9BF0]

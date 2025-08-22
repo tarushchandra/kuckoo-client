@@ -119,7 +119,7 @@ export default function CreateComment(props: CreateCommentProps) {
             onClick={handleCreateComment}
             disabled={!textContent || createCommentMutation.isPending}
             className={mergeClasses(
-              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
+              "bg-primary-500 font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-primary-900 disabled:text-zinc-500 active:scale-[0.95]",
               createCommentMutation.isPending && "disabled:cursor-wait",
               !textContent && "disabled:cursor-not-allowed",
               createCommentMutation.isPending &&
@@ -143,7 +143,7 @@ export default function CreateComment(props: CreateCommentProps) {
               editCommentMutation.isPending
             }
             className={mergeClasses(
-              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
+              "bg-primary-500 font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-primary-900 disabled:text-zinc-500 active:scale-[0.95]",
               editCommentMutation.isPending && "disabled:cursor-wait",
               !textContent ||
                 (textContent === comment?.content &&
@@ -161,7 +161,7 @@ export default function CreateComment(props: CreateCommentProps) {
             onClick={handleCreateCommentReply}
             disabled={!textContent || createCommentReplyMutation.isPending}
             className={mergeClasses(
-              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
+              "bg-primary-500 font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-primary-900 disabled:text-zinc-500 active:scale-[0.95]",
               createCommentReplyMutation.isPending && "disabled:cursor-wait"
             )}
           >
@@ -169,21 +169,6 @@ export default function CreateComment(props: CreateCommentProps) {
           </button>
         )}
       </>
-
-      {/* <>
-        {mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT && (
-          <button
-            onClick={handleEditCommentReply}
-            disabled={!textContent || createCommentReplyMutation.isPending}
-            className={mergeClasses(
-              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
-              createCommentReplyMutation.isPending && "disabled:cursor-wait"
-            )}
-          >
-            Reply
-          </button>
-        )}
-      </> */}
     </div>
   );
 }

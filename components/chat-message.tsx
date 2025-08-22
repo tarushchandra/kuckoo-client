@@ -48,7 +48,7 @@ export default function ChatMessage({ message }: { message: Message }) {
             className={mergeClasses(
               "bg-zinc-800 text-sm p-2 rounded-lg",
               message?.sender?.username === sessionUser?.username &&
-                "bg-[#1D9BF0]"
+                "bg-primary-500"
             )}
           >
             <>
