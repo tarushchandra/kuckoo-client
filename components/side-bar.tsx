@@ -14,7 +14,7 @@ import {
   User,
 } from "lucide-react";
 import Link from "next/link";
-import PostTweetModal, { MODE } from "./post-tweet-modal";
+import PostPostModal, { MODE } from "./create-post-modal";
 import SignOutModal from "./signout-modal";
 import Badge from "./ui/badge";
 import { useUnseenNotificationsCount } from "@/hooks/queries/notification";
@@ -83,7 +83,7 @@ export default function SideBar({ className }: { className: string }) {
     ];
   }, [sessionUser?.username]);
 
-  const [isCreateTweetModalOpen, setIsCreateTweetModalOpen] = useState(false);
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
 
   return (
@@ -139,7 +139,7 @@ export default function SideBar({ className }: { className: string }) {
               )}
             >
               <button
-                onClick={() => setIsCreateTweetModalOpen(true)}
+                onClick={() => setIsCreatePostModalOpen(true)}
                 className={mergeClasses(
                   "bg-primary-500 p-4 rounded-full flex justify-center items-center w-full"
                 )}
@@ -152,7 +152,7 @@ export default function SideBar({ className }: { className: string }) {
                     path.includes("messages") ? "hidden" : "xs:max-xl:hidden"
                   }
                 >
-                  Tweet
+                  Post
                 </span>
               </button>
             </div>
@@ -186,10 +186,10 @@ export default function SideBar({ className }: { className: string }) {
       </div>
 
       <>
-        {isCreateTweetModalOpen && (
-          <PostTweetModal
-            mode={MODE.CREATE_TWEET}
-            onClose={() => setIsCreateTweetModalOpen(false)}
+        {isCreatePostModalOpen && (
+          <PostPostModal
+            mode={MODE.CREATE_POST}
+            onClose={() => setIsCreatePostModalOpen(false)}
           />
         )}
       </>

@@ -1,5 +1,5 @@
 "use client";
-import { Comment, Tweet } from "@/gql/graphql";
+import { Comment, Post } from "@/gql/graphql";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import dayjs from "dayjs";
@@ -13,7 +13,7 @@ import PostCommentModal, { COMMENT_MODE } from "./post-comment-modal";
 import {
   useDislikeComment,
   useLikeComment,
-} from "@/hooks/mutations/tweet-engagement";
+} from "@/hooks/mutations/post-engagement";
 import CommentReplies from "./comment-replies";
 
 dayjs.extend(relativeTime);
@@ -28,12 +28,12 @@ dayjs.extend(relativeTime);
 
 interface CommentCardProps {
   comment: Comment;
-  tweet: Tweet;
+  post: Post;
   setParentCommentsCount?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function CommentCard(props: CommentCardProps) {
-  const { comment, tweet, setParentCommentsCount } = props;
+  const { comment, post, setParentCommentsCount } = props;
   const { data: sessionUser } = useAuth(selectUser);
   const { content, createdAt, author, id, parentComment, repliedTo } = comment;
   const formattedCommentCreatedAt = dayjs(Number(createdAt)).fromNow();
@@ -106,14 +106,14 @@ export default function CommentCard(props: CommentCardProps) {
                 <div className="flex gap-1">
                   <div
                     className="bg-zinc-200 text-black p-1 rounded-full transition-all cursor-pointer hover:bg-zinc-200"
-                    title="Edit this tweet"
+                    title="Edit this post"
                     onClick={() => setIsEditCommentModalOpen(true)}
                   >
                     <FilePenLine size={13} />
                   </div>
                   <div
                     className="bg-red-700  p-1 rounded-full transition-all cursor-pointer hover:bg-red-800"
-                    title="Delete this tweet?"
+                    title="Delete this post?"
                     onClick={() => setIsDeleteCommentModalOpen(true)}
                   >
                     <Trash2
@@ -195,7 +195,7 @@ export default function CommentCard(props: CommentCardProps) {
         {showReplies && !parentComment && (
           <CommentReplies
             commentId={id}
-            tweet={tweet}
+            post={post}
             setParentCommentsCount={setCommentsCount}
           />
         )}
@@ -210,7 +210,7 @@ export default function CommentCard(props: CommentCardProps) {
                 ? setParentCommentsCount((x) => x - 1)
                 : setCommentsCount((x) => x - 1)
             }
-            tweetId={tweet.id}
+            postId={post.id}
             comment={{ ...comment, createdAt: formattedCommentCreatedAt }}
           />
         )}
@@ -218,16 +218,16 @@ export default function CommentCard(props: CommentCardProps) {
         {isEditCommentModalOpen &&
           (!parentComment ? (
             <PostCommentModal
-              mode={COMMENT_MODE.EDIT_COMMENT_ON_TWEET}
+              mode={COMMENT_MODE.EDIT_COMMENT_ON_POST}
               onClose={() => setIsEditCommentModalOpen(false)}
-              tweet={tweet}
+              post={post}
               comment={comment}
             />
           ) : (
             <PostCommentModal
               mode={COMMENT_MODE.EDIT_REPLY_ON_COMMENT}
               onClose={() => setIsEditCommentModalOpen(false)}
-              tweet={tweet}
+              post={post}
               comment={comment}
             />
           ))}
@@ -245,7 +245,7 @@ export default function CommentCard(props: CommentCardProps) {
               },
               onError: () => {},
             }}
-            tweet={tweet}
+            post={post}
             comment={{ ...comment, createdAt: formattedCommentCreatedAt }}
           />
         )}

@@ -21,7 +21,7 @@ export const getAllNotificationsQuery = graphql(/* GraphQL */ `
         }
         createdAt
         metaData {
-          tweet {
+          post {
             id
             imageURL
           }
@@ -46,7 +46,7 @@ export const getAllNotificationsQuery = graphql(/* GraphQL */ `
         }
         createdAt
         metaData {
-          tweet {
+          post {
             id
             imageURL
           }

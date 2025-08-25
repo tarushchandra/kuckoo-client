@@ -1,15 +1,15 @@
 import {
   Comment,
-  Tweet,
-  TweetEngagement as TweetEngagementType,
+  Post,
+  PostEngagement as PostEngagementType,
 } from "@/gql/graphql";
 import Modal from "./ui/modal";
 import PostComment from "./post-comment";
 import { X } from "lucide-react";
 
 export enum COMMENT_MODE {
-  CREATE_COMMENT_ON_TWEET,
-  EDIT_COMMENT_ON_TWEET,
+  CREATE_COMMENT_ON_POST,
+  EDIT_COMMENT_ON_POST,
   CREATE_REPLY_ON_COMMENT,
   EDIT_REPLY_ON_COMMENT,
 }
@@ -17,14 +17,14 @@ export enum COMMENT_MODE {
 interface PostCommentModalProps {
   mode: COMMENT_MODE;
   onClose: () => void;
-  tweet: Tweet;
-  tweetEngagement?: TweetEngagementType;
+  post: Post;
+  postEngagement?: PostEngagementType;
   comment?: Comment;
   onCommentMutation?: { onSuccess: () => void; onError: () => void };
 }
 
 export default function PostCommentModal(props: PostCommentModalProps) {
-  const { onClose, mode, tweet, tweetEngagement, onCommentMutation, comment } =
+  const { onClose, mode, post, postEngagement, onCommentMutation, comment } =
     props;
 
   return (
@@ -36,20 +36,20 @@ export default function PostCommentModal(props: PostCommentModalProps) {
     >
       <>
         <div className="p-6 w-[35rem]">
-          {mode === COMMENT_MODE.CREATE_COMMENT_ON_TWEET && (
+          {mode === COMMENT_MODE.CREATE_COMMENT_ON_POST && (
             <PostComment
               mode={mode}
               onClose={onClose}
-              tweet={tweet}
-              tweetEngagement={tweetEngagement}
+              post={post}
+              postEngagement={postEngagement}
               onCommentMutation={onCommentMutation}
             />
           )}
 
-          {mode === COMMENT_MODE.EDIT_COMMENT_ON_TWEET && (
+          {mode === COMMENT_MODE.EDIT_COMMENT_ON_POST && (
             <PostComment
               mode={mode}
-              tweet={tweet}
+              post={post}
               comment={comment as any}
               onClose={onClose}
             />
@@ -59,7 +59,7 @@ export default function PostCommentModal(props: PostCommentModalProps) {
             <PostComment
               mode={mode}
               onClose={onClose}
-              tweet={tweet}
+              post={post}
               comment={comment as any}
               onCommentMutation={onCommentMutation}
             />
@@ -69,7 +69,7 @@ export default function PostCommentModal(props: PostCommentModalProps) {
             <PostComment
               mode={mode}
               onClose={onClose}
-              tweet={tweet}
+              post={post}
               comment={comment as any}
             />
           )}

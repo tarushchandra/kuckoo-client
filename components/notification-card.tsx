@@ -31,7 +31,7 @@ export default function NotificationCard(props: NotificationCardProps) {
         <Link
           href={
             metaData
-              ? `/tweet/${metaData.tweet?.id}`
+              ? `/post/${metaData.post?.id}`
               : `profile/${sender.username}`
           }
           className="flex flex-col w-full"
@@ -51,13 +51,13 @@ export default function NotificationCard(props: NotificationCardProps) {
           </div>
 
           <>
-            {type === NotificationType.LikeOnTweet && (
-              <h2 className="text-sm ">❤️ liked your tweet.</h2>
+            {type === NotificationType.LikeOnPost && (
+              <h2 className="text-sm ">❤️ liked your post.</h2>
             )}
 
-            {type === NotificationType.CommentOnTweet && (
+            {type === NotificationType.CommentOnPost && (
               <>
-                <h2 className="text-sm ">commented on your tweet:</h2>
+                <h2 className="text-sm ">commented on your post:</h2>
                 <h2 className="text-sm ">
                   {notification.metaData?.comment?.content}
                 </h2>
@@ -94,11 +94,11 @@ export default function NotificationCard(props: NotificationCardProps) {
         </Link>
 
         <>
-          {notification.metaData?.tweet && (
+          {notification.metaData?.post && (
             <div className="rounded-md">
               <Image
-                src={notification.metaData.tweet?.imageURL!}
-                alt="tweet-image"
+                src={notification.metaData.post?.imageURL!}
+                alt="post-image"
                 width={100}
                 height={70}
                 className="border border-zinc-800 rounded-md"

@@ -1,15 +1,15 @@
-import { useCommentReplies } from "@/hooks/queries/tweet-engagement";
+import { useCommentReplies } from "@/hooks/queries/post-engagement";
 import CommentCard from "./comment-card";
-import { Tweet } from "@/gql/graphql";
+import { Post } from "@/gql/graphql";
 
 interface CommentRepliesProps {
   commentId: string;
-  tweet: Tweet;
+  post: Post;
   setParentCommentsCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function CommentReplies(props: CommentRepliesProps) {
-  const { commentId, tweet, setParentCommentsCount } = props;
+  const { commentId, post, setParentCommentsCount } = props;
   const comments = useCommentReplies(commentId);
 
   if (!comments)
@@ -26,7 +26,7 @@ export default function CommentReplies(props: CommentRepliesProps) {
           <CommentCard
             key={reply?.id}
             comment={reply}
-            tweet={tweet}
+            post={post}
             setParentCommentsCount={setParentCommentsCount}
           />
         ))}
