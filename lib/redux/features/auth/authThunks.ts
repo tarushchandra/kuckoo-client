@@ -4,7 +4,10 @@ import { IsignInAction } from "@/hooks/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import { getSessionUser } from "@/services/user";
-import { deleteTokensFromCookies } from "@/lib/actions/user";
+import {
+  deleteTokensFromCookies,
+  deleteTokensAndRedirectToSignInPage,
+} from "@/lib/actions/user";
 import { getTokens } from "@/services/auth";
 
 export const signIn = createAsyncThunk(
@@ -17,7 +20,7 @@ export const signIn = createAsyncThunk(
       // get session user
       await queryClient.invalidateQueries({ queryKey: ["session-user"] });
       const { user } = await getSessionUser();
-      if (!user) throw new Error("You are not authenticated");
+      if (!user) await deleteTokensAndRedirectToSignInPage();
 
       // update the redux store
       return user as User;
