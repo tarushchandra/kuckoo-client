@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import mergeClasses from "@/utils/mergeClasses";
-import Providers from "@/providers";
+import RootLayoutProvider from "@/providers/layouts/root";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +19,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={mergeClasses(inter.className, "debug-screens")}>
-        <Providers>{children}</Providers>
+        <RootLayoutProvider>{children}</RootLayoutProvider>
       </body>
     </html>
   );
