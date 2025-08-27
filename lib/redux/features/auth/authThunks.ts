@@ -1,4 +1,4 @@
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { User } from "@/gql/graphql";
 import { IsignInAction } from "@/hooks/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";

@@ -4,7 +4,7 @@ import {
   getPostQuery,
 } from "@/graphql/queries/post";
 import { graphqlClient } from "@/lib/clients/graphql";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { useIntersection } from "../utils";

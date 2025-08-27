@@ -20,7 +20,7 @@ import { AiFillInfoCircle, AiOutlineInfoCircle } from "react-icons/ai";
 import ChatHistory from "./chat-history";
 import { useSocket } from "@/context/socket";
 import { useSelector } from "react-redux";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   addMessage,

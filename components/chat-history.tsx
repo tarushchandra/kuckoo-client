@@ -6,7 +6,7 @@ import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import { useEffect, useRef } from "react";
 import { useSetMessagesAsSeen } from "@/hooks/mutations/chat";
 import ChatHistoryItem from "./chat-history-item";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useChatHistory } from "@/hooks/services/chat";
 import {

@@ -1,6 +1,6 @@
 import { getAvailableMembersQuery, getChatQuery } from "@/graphql/queries/chat";
 import { graphqlClient } from "@/lib/clients/graphql";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 
 export const getChat = async (targetUserId: string) => {
   const data = await graphqlClient.request(getChatQuery, {

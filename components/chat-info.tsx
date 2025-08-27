@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useState } from "react";
 import AddMembersModal from "./add-members-modal";
 import { useRenameGroup } from "@/hooks/mutations/chat";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import ChatMemberOptionsModal from "./chat-member-options-modal";
 import { useAppDispatch } from "@/hooks/redux";
 import { renameChatGroupName } from "@/lib/redux/features/chat/chatSlice";

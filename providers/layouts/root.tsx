@@ -1,6 +1,6 @@
 import React from "react";
 import ProgressBarProvider from "../progress-bar-provider";
-import { ReactQueryProvider } from "../query-provider";
+import { ReactQueryProvider } from "../react-query-provider";
 import { ReduxProvider } from "../redux-provider";
 import { AuthProvider } from "../auth-provider";
 import { getTokensFromCookies } from "@/lib/actions/user";

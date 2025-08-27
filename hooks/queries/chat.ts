@@ -8,7 +8,7 @@ import {
   getUnseenChatsCountQuery,
 } from "@/graphql/queries/chat";
 import { graphqlClient } from "@/lib/clients/graphql";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 

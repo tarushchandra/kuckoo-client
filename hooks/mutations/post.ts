@@ -5,7 +5,7 @@ import {
   updatePostMutation,
 } from "@/graphql/mutations/post";
 import { graphqlClient } from "@/lib/clients/graphql";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 

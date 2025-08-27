@@ -5,7 +5,7 @@ import {
 } from "@/graphql/mutations/user";
 import { revalidateUserProfile } from "@/lib/actions/user";
 import { graphqlClient } from "@/lib/clients/graphql";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { useMutation } from "@tanstack/react-query";
 
 interface FollowsMutationPayload {
