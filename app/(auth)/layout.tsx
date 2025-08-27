@@ -1,5 +1,5 @@
 import LandingHeader from "@/components/landing-header";
-import { GoogleProvider } from "@/providers/GoogleProvider";
+import { GoogleProvider } from "@/providers/google-provider";
 import { Twitter } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";

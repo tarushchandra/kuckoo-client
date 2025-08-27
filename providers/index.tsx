@@ -1,8 +1,8 @@
 import React from "react";
-import ProgressBarProvider from "./ProgressBarProvider";
-import { ReactQueryProvider } from "./QueryProvider";
-import { ReduxProvider } from "./ReduxProvider";
-import { AuthProvider } from "./AuthProvider";
+import ProgressBarProvider from "./progress-bar-provider";
+import { ReactQueryProvider } from "./query-provider";
+import { ReduxProvider } from "./redux-provider";
+import { AuthProvider } from "./auth-provider";
 import { getTokensFromCookies } from "@/lib/actions/user";
 import { Toaster } from "react-hot-toast";
 
