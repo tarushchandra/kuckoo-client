@@ -4,7 +4,8 @@ import { getSignedURLforUploadingImage } from "@/services/post";
 import toast from "react-hot-toast";
 
 export const handleSelectAndUploadImage = (
-  setImageURL: (str: string) => void
+  setImageURL: (str: string) => void,
+  setImagePathname: (str: string) => void
 ) => {
   const input = document.createElement("input");
   input.setAttribute("type", "file");
@@ -12,7 +13,7 @@ export const handleSelectAndUploadImage = (
 
   input.addEventListener("change", async () => {
     const file = input.files?.item(0);
-    if (!file) return;
+    if (!file) throw new Error("Please select a valid file to upload");
 
     toast.loading("Uploading...", { id: "upload" });
 
@@ -20,7 +21,7 @@ export const handleSelectAndUploadImage = (
       imageName: file.name.split(".")[0],
       imageType: file.type.split("/")[1],
     });
-    if (!PUTSignedURL) return;
+    if (!PUTSignedURL) throw new Error("Could not get the signed URL");
 
     await fetch(PUTSignedURL, {
       method: "PUT",
@@ -30,11 +31,8 @@ export const handleSelectAndUploadImage = (
       body: file,
     });
 
-    const PUTSignedURLObject = new URL(PUTSignedURL);
-    const { origin, pathname } = PUTSignedURLObject;
-    const GETUrl = origin + pathname;
-
-    setImageURL(GETUrl);
+    setImageURL(URL.createObjectURL(file));
+    setImagePathname(new URL(PUTSignedURL).pathname);
     toast.success("Uploaded", { id: "upload" });
   });
 

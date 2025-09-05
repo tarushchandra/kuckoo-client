@@ -345,7 +345,7 @@ export type PostEngagement = {
 
 export type PostInput = {
   content?: InputMaybe<Scalars['String']['input']>;
-  imageURL?: InputMaybe<Scalars['String']['input']>;
+  imagePathname?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query = {

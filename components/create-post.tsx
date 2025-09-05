@@ -35,14 +35,16 @@ export default function CreatePost(props: CreatePostProps) {
   const [textContent, setTextContent] = useState(post?.content || "");
   const [imageURL, setImageURL] = useState(post?.imageURL || "");
   const [showRemoveImageButton, setShowRemoveImageButton] = useState(false);
+  const [imagePathname, setImagePathname] = useState("");
 
   const handleCreatePost = async () => {
     await createPostMutation.mutateAsync({
       content: textContent || null,
-      imageURL: imageURL || null,
+      imagePathname: imagePathname || null,
     });
     setTextContent("");
     setImageURL("");
+    setImagePathname("");
 
     if (!onClose) return;
     onClose();
@@ -51,10 +53,14 @@ export default function CreatePost(props: CreatePostProps) {
   const handleEditPost = async () => {
     await editPostMutation.mutateAsync({
       postId: post?.id!,
-      payload: { content: textContent || null, imageURL: imageURL || null },
+      payload: {
+        content: textContent || null,
+        imagePathname: imageURL || null,
+      },
     });
     setTextContent("");
     setImageURL("");
+    setImagePathname("");
 
     if (!onClose) return;
     onClose();
@@ -111,7 +117,9 @@ export default function CreatePost(props: CreatePostProps) {
             <ImageIcon
               className="text-primary"
               size={20}
-              onClick={() => handleSelectAndUploadImage(setImageURL)}
+              onClick={() =>
+                handleSelectAndUploadImage(setImageURL, setImagePathname)
+              }
             />
           </div>
 

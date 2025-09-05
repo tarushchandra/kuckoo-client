@@ -2442,7 +2442,7 @@
             "deprecationReason": null
           },
           {
-            "name": "imageURL",
+            "name": "imagePathname",
             "description": null,
             "type": {
               "kind": "SCALAR",
