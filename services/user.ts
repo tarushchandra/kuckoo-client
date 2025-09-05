@@ -5,7 +5,7 @@ import {
   getUsersQuery,
 } from "@/graphql/queries/user";
 import { graphqlClient, graphqlEndPoint } from "@/lib/clients/graphql";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { print } from "graphql";
 
 export const getSessionUser = async () => {

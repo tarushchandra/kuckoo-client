@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useState } from "react";
 import AddMembersModal from "./add-members-modal";
 import { useRenameGroup } from "@/hooks/mutations/chat";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import ChatMemberOptionsModal from "./chat-member-options-modal";
 import { useAppDispatch } from "@/hooks/redux";
 import { renameChatGroupName } from "@/lib/redux/features/chat/chatSlice";
@@ -110,7 +110,7 @@ export default function ChatInfo(props: ChatInfoProps) {
               {chat.isGroupChat && (
                 <button
                   onClick={() => setIsAddMembersModalOpen(true)}
-                  className="text-[#1D9BF0]"
+                  className="text-primary"
                 >
                   Add Members
                 </button>

@@ -10,9 +10,8 @@ import {
   setMessagesAsSeenMutation,
 } from "@/graphql/mutations/chat";
 import { graphqlClient } from "@/lib/clients/graphql";
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { useAppDispatch } from "../redux";
 import {
   addMembersToGroup,
@@ -20,18 +19,6 @@ import {
 } from "@/lib/redux/features/chat/chatSlice";
 import { useAuth } from "../auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
-
-interface SendMessage {
-  payload: CreateMessagePayload;
-  message: Message;
-  selectedChat: Chat;
-}
-
-interface onMessageMutation {
-  onSuccess: () => void;
-  onError: () => void;
-  setSelectedChat: React.Dispatch<React.SetStateAction<Chat | null>>;
-}
 
 export const useCreateGroup = () => {
   return useMutation({
@@ -228,9 +215,5 @@ export const useSetMessagesAsSeen = () => {
       );
       queryClient.setQueryData(["chats"], context.previousChats);
     },
-    // onSettled: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["chats"] });
-    //   queryClient.invalidateQueries({ queryKey: ["unseen-chats-count"] });
-    // },
   });
 };

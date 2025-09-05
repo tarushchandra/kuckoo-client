@@ -140,7 +140,7 @@ export default function AddMembersModal(props: AddMembersModalProps) {
             addMembersToGroupMutation.isPending || selectedUsers.length === 0
           }
           className={mergeClasses(
-            "bg-[#1D9BF0] mx-2 p-2 text-sm font-semibold rounded-md transition-all hover:bg-[#1993e6]",
+            "bg-primary-500 mx-2 p-2 text-sm font-semibold rounded-md transition-all hover:bg-primary-600",
             addMembersToGroupMutation.isPending && "cursor-wait"
           )}
         >

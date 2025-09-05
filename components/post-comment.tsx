@@ -1,13 +1,13 @@
 import {
   Comment,
-  Tweet,
-  TweetEngagement as TweetEngagementType,
+  Post,
+  PostEngagement as PostEngagementType,
 } from "@/gql/graphql";
 import { COMMENT_MODE } from "./post-comment-modal";
-import TweetCard from "./tweet-card";
+import PostCard from "./post-card";
 import Image from "next/image";
 import CreateComment from "./create-comment";
-import { useRepliedToComment } from "@/hooks/queries/tweet-engagement";
+import { useRepliedToComment } from "@/hooks/queries/post-engagement";
 import CommentCardLoading from "./ui/comment-card-loading";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
@@ -17,31 +17,31 @@ dayjs.extend(relativeTime);
 interface PostCommentProps {
   mode: COMMENT_MODE;
   onClose: () => void;
-  tweet?: Tweet;
+  post?: Post;
   comment?: Comment;
-  tweetEngagement?: TweetEngagementType;
+  postEngagement?: PostEngagementType;
   onCommentMutation?: { onSuccess: () => void; onError: () => void };
 }
 
 export default function PostComment(props: PostCommentProps) {
-  const { mode, onClose, tweet, tweetEngagement, onCommentMutation, comment } =
+  const { mode, onClose, post, postEngagement, onCommentMutation, comment } =
     props;
 
   let repliedToComment;
   if (mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT)
-    repliedToComment = useRepliedToComment(comment?.id!, tweet?.id!);
+    repliedToComment = useRepliedToComment(comment?.id!, post?.id!);
 
   // console.log("comment -", comment);
   // console.log("repliedToComment -", repliedToComment);
 
   return (
     <>
-      {mode === COMMENT_MODE.CREATE_COMMENT_ON_TWEET && (
+      {mode === COMMENT_MODE.CREATE_COMMENT_ON_POST && (
         <>
           <div className="pb-4 border-b border-zinc-800 overflow-auto">
             <div className="flex py-4 gap-2 items-start">
               <Image
-                src={tweet?.author?.profileImageURL!}
+                src={post?.author?.profileImageURL!}
                 alt="user-image"
                 width={40}
                 height={40}
@@ -50,21 +50,21 @@ export default function PostComment(props: PostCommentProps) {
               <div className="text-sm flex flex-col w-full">
                 <div className="flex gap-2 items-center">
                   <h1 className="font-semibold hover:underline">
-                    {tweet?.author?.firstName} {tweet?.author?.lastName}
+                    {post?.author?.firstName} {post?.author?.lastName}
                   </h1>
                   <div className="flex items-center gap-2 text-zinc-500 text-sm">
-                    <span>@{tweet?.author?.username}</span>
+                    <span>@{post?.author?.username}</span>
                     <div className="bg-zinc-500 w-1 h-1 rounded-full" />
-                    <span>{tweet?.createdAt}</span>
+                    <span>{post?.createdAt}</span>
                   </div>
                 </div>
-                <p>{tweet?.content}</p>
+                <p>{post?.content}</p>
               </div>
             </div>
-            {tweet?.imageURL && (
+            {post?.imageURL && (
               <Image
-                src={tweet.imageURL}
-                alt="tweet-image"
+                src={post.imageURL}
+                alt="post-image"
                 width={640}
                 height={360}
                 className="rounded-xl border border-zinc-800 object-cover"
@@ -72,22 +72,22 @@ export default function PostComment(props: PostCommentProps) {
             )}
           </div>
           <CreateComment
-            tweet={tweet!}
-            tweetEngagement={tweetEngagement!}
+            post={post!}
+            postEngagement={postEngagement!}
             onCommentMutation={onCommentMutation}
             onClose={onClose}
-            mode={COMMENT_MODE.CREATE_COMMENT_ON_TWEET}
+            mode={COMMENT_MODE.CREATE_COMMENT_ON_POST}
             placeholder="Add a comment"
           />
         </>
       )}
 
-      {mode === COMMENT_MODE.EDIT_COMMENT_ON_TWEET && (
+      {mode === COMMENT_MODE.EDIT_COMMENT_ON_POST && (
         <>
           <div className="pb-4 border-b border-zinc-800 overflow-auto">
             <div className="flex py-4 gap-2 items-start">
               <Image
-                src={tweet?.author?.profileImageURL!}
+                src={post?.author?.profileImageURL!}
                 alt="user-image"
                 width={40}
                 height={40}
@@ -96,21 +96,21 @@ export default function PostComment(props: PostCommentProps) {
               <div className="text-sm flex flex-col w-full">
                 <div className="flex gap-2 items-center">
                   <h1 className="font-semibold hover:underline">
-                    {tweet?.author?.firstName} {tweet?.author?.lastName}
+                    {post?.author?.firstName} {post?.author?.lastName}
                   </h1>
                   <div className="flex items-center gap-2 text-zinc-500 text-sm">
-                    <span>@{tweet?.author?.username}</span>
+                    <span>@{post?.author?.username}</span>
                     <div className="bg-zinc-500 w-1 h-1 rounded-full" />
-                    <span>{tweet?.createdAt}</span>
+                    <span>{post?.createdAt}</span>
                   </div>
                 </div>
-                <p>{tweet?.content}</p>
+                <p>{post?.content}</p>
               </div>
             </div>
-            {tweet?.imageURL && (
+            {post?.imageURL && (
               <Image
-                src={tweet.imageURL}
-                alt="tweet-image"
+                src={post.imageURL}
+                alt="post-image"
                 width={640}
                 height={360}
                 className="rounded-xl w-full h-full border border-zinc-800 object-cover"
@@ -118,12 +118,12 @@ export default function PostComment(props: PostCommentProps) {
             )}
           </div>
           <CreateComment
-            tweetEngagement={tweetEngagement!}
+            postEngagement={postEngagement!}
             onCommentMutation={onCommentMutation}
             onClose={onClose}
-            mode={COMMENT_MODE.EDIT_COMMENT_ON_TWEET}
+            mode={COMMENT_MODE.EDIT_COMMENT_ON_POST}
             placeholder="Edit your comment"
-            tweet={tweet!}
+            post={post!}
             comment={comment as any}
           />
         </>
@@ -156,19 +156,19 @@ export default function PostComment(props: PostCommentProps) {
             </div>
             <h2 className="text-sm text-zinc-500">
               Replying to{" "}
-              <span className="font-semibold text-[#1D9BF0]">
+              <span className="font-semibold text-primary">
                 @{comment?.author?.username}
               </span>
             </h2>
           </div>
 
           <CreateComment
-            tweetEngagement={tweetEngagement!}
+            postEngagement={postEngagement!}
             onCommentMutation={onCommentMutation}
             onClose={onClose}
             mode={COMMENT_MODE.CREATE_REPLY_ON_COMMENT}
             placeholder="Add your Reply"
-            tweet={tweet!}
+            post={post!}
             comment={comment as any}
           />
         </>
@@ -210,19 +210,19 @@ export default function PostComment(props: PostCommentProps) {
             </>
             <h2 className="text-sm text-zinc-500">
               Replied to{" "}
-              <span className="font-semibold text-[#1D9BF0]">
+              <span className="font-semibold text-primary">
                 @{comment?.author?.username}
               </span>
             </h2>
           </div>
 
           <CreateComment
-            tweetEngagement={tweetEngagement!}
+            postEngagement={postEngagement!}
             onCommentMutation={onCommentMutation}
             onClose={onClose}
             mode={mode}
             placeholder="Edit your Reply"
-            tweet={tweet!}
+            post={post!}
             comment={comment as any}
           />
         </>

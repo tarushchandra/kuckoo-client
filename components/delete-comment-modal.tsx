@@ -1,26 +1,26 @@
-import { useDeleteTweet } from "@/hooks/mutations/tweet";
+import { useDeletePost } from "@/hooks/mutations/post";
 import Modal from "./ui/modal";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
-import { useDeleteComment } from "@/hooks/mutations/tweet-engagement";
+import { useDeleteComment } from "@/hooks/mutations/post-engagement";
 import Image from "next/image";
 import { Comment, User } from "@/gql/graphql";
 
-interface DeleteTweetModalProps {
+interface DeletePostModalProps {
   onClose: () => void;
-  tweetId: string;
+  postId: string;
   comment: Comment;
   onCommentMutation: () => void;
 }
 
-export default function DeleteCommentModal(props: DeleteTweetModalProps) {
-  const { onClose, tweetId, comment, onCommentMutation } = props;
+export default function DeleteCommentModal(props: DeletePostModalProps) {
+  const { onClose, postId, comment, onCommentMutation } = props;
   const { data: sessionUser } = useAuth(selectUser);
   const deleteCommentMutation = useDeleteComment();
 
   return (
     <Modal
-      wrapperId="delete-tweet-modal"
+      wrapperId="delete-post-modal"
       onClose={onClose}
       modalClassName="z-[1000]"
       bgClassName="z-[500]"
@@ -66,7 +66,7 @@ export default function DeleteCommentModal(props: DeleteTweetModalProps) {
               className="bg-red-600 font-semibold text-white px-4 py-1 rounded-full cursor-pointer transition-all hover:bg-red-700 active:scale-[0.95] disabled:cursor-wait"
               onClick={async () => {
                 await deleteCommentMutation.mutateAsync({
-                  tweetId,
+                  postId,
                   commentId: comment.id,
                   parentCommentId: comment.parentComment?.id!,
                 });

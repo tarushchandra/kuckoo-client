@@ -1,10 +1,10 @@
-import { Comment, Tweet, TweetEngagement } from "@/gql/graphql";
+import { Comment, Post, PostEngagement } from "@/gql/graphql";
 import { useAuth } from "@/hooks/auth";
 import {
   useCreateComment,
   useCreateCommentReply,
   useEditComment,
-} from "@/hooks/mutations/tweet-engagement";
+} from "@/hooks/mutations/post-engagement";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import mergeClasses from "@/utils/mergeClasses";
 import Image from "next/image";
@@ -12,9 +12,9 @@ import { useState } from "react";
 import { COMMENT_MODE } from "./post-comment-modal";
 
 interface CreateCommentProps {
-  tweet: Tweet;
+  post: Post;
   placeholder: string;
-  tweetEngagement: TweetEngagement;
+  postEngagement: PostEngagement;
   onCommentMutation?: { onSuccess: () => void; onError: () => void };
   onClose?: () => void;
   comment?: Comment;
@@ -23,8 +23,8 @@ interface CreateCommentProps {
 
 export default function CreateComment(props: CreateCommentProps) {
   const {
-    tweetEngagement,
-    tweet,
+    postEngagement,
+    post,
     onCommentMutation,
     onClose,
     mode,
@@ -32,13 +32,13 @@ export default function CreateComment(props: CreateCommentProps) {
     placeholder,
   } = props;
 
-  // console.log("tweet -", tweet);
+  // console.log("post -", post);
   // console.log("comment -", comment);
   // console.log("onClose -", onClose);
 
   const { data: sessionUser } = useAuth(selectUser);
   const [textContent, setTextContent] = useState(
-    mode === COMMENT_MODE.EDIT_COMMENT_ON_TWEET ||
+    mode === COMMENT_MODE.EDIT_COMMENT_ON_POST ||
       mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT
       ? comment?.content!
       : ""
@@ -59,7 +59,7 @@ export default function CreateComment(props: CreateCommentProps) {
     if (createCommentMutation.isPending) return;
 
     const payload = {
-      id: tweet.id,
+      id: post.id,
       content: textContent,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -76,7 +76,7 @@ export default function CreateComment(props: CreateCommentProps) {
   const handleEditComment = () => {
     if (editCommentMutation.isPending) return;
     editCommentMutation.mutate({
-      tweetId: tweet.id,
+      postId: post.id,
       commentId: comment?.id!,
       content: textContent,
       parentCommentId: comment?.parentComment?.id!,
@@ -87,7 +87,7 @@ export default function CreateComment(props: CreateCommentProps) {
     if (createCommentReplyMutation.isPending) return;
 
     createCommentReplyMutation.mutate({
-      tweetId: tweet.id,
+      postId: post.id,
       commentId: comment?.id!,
       content: textContent,
       parentCommentId: comment?.parentComment?.id!,
@@ -114,16 +114,16 @@ export default function CreateComment(props: CreateCommentProps) {
       />
 
       <>
-        {mode === COMMENT_MODE.CREATE_COMMENT_ON_TWEET && (
+        {mode === COMMENT_MODE.CREATE_COMMENT_ON_POST && (
           <button
             onClick={handleCreateComment}
             disabled={!textContent || createCommentMutation.isPending}
             className={mergeClasses(
-              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
+              "bg-primary-500 font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-primary-900 disabled:text-zinc-500 active:scale-[0.95]",
               createCommentMutation.isPending && "disabled:cursor-wait",
               !textContent && "disabled:cursor-not-allowed",
               createCommentMutation.isPending &&
-                tweetEngagement === null &&
+                postEngagement === null &&
                 "disabled:cursor-wait"
             )}
           >
@@ -133,7 +133,7 @@ export default function CreateComment(props: CreateCommentProps) {
       </>
 
       <>
-        {(mode === COMMENT_MODE.EDIT_COMMENT_ON_TWEET ||
+        {(mode === COMMENT_MODE.EDIT_COMMENT_ON_POST ||
           mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT) && (
           <button
             onClick={handleEditComment}
@@ -143,7 +143,7 @@ export default function CreateComment(props: CreateCommentProps) {
               editCommentMutation.isPending
             }
             className={mergeClasses(
-              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
+              "bg-primary-500 font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-primary-900 disabled:text-zinc-500 active:scale-[0.95]",
               editCommentMutation.isPending && "disabled:cursor-wait",
               !textContent ||
                 (textContent === comment?.content &&
@@ -161,7 +161,7 @@ export default function CreateComment(props: CreateCommentProps) {
             onClick={handleCreateCommentReply}
             disabled={!textContent || createCommentReplyMutation.isPending}
             className={mergeClasses(
-              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
+              "bg-primary-500 font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-primary-900 disabled:text-zinc-500 active:scale-[0.95]",
               createCommentReplyMutation.isPending && "disabled:cursor-wait"
             )}
           >
@@ -169,21 +169,6 @@ export default function CreateComment(props: CreateCommentProps) {
           </button>
         )}
       </>
-
-      {/* <>
-        {mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT && (
-          <button
-            onClick={handleEditCommentReply}
-            disabled={!textContent || createCommentReplyMutation.isPending}
-            className={mergeClasses(
-              "bg-[#1D9BF0] font-xs font-semibold text-white rounded-full px-4 py-1 disabled:bg-sky-900 disabled:text-zinc-500 active:scale-[0.95]",
-              createCommentReplyMutation.isPending && "disabled:cursor-wait"
-            )}
-          >
-            Reply
-          </button>
-        )}
-      </> */}
     </div>
   );
 }

@@ -18,3 +18,8 @@ export async function deleteTokensFromCookies() {
   cookies().delete(ACCESS_TOKEN_COOKIE);
   cookies().delete(REFRESH_TOKEN_COOKIE);
 }
+
+export async function deleteTokensAndRedirectToSignInPage() {
+  await deleteTokensFromCookies();
+  window.location.href = "/sign-in";
+}

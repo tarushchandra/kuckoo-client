@@ -20,7 +20,7 @@ export default function SearchPage() {
           onChange={(e) => setSearchText(e.target.value)}
           type="text"
           placeholder="Search..."
-          className="w-full rounded-s-full bg-zinc-950 px-4 py-2 border-[0.01rem] border-zinc-800 focus:outline-none focus:border-[#1D9BF0] focus:ring-1"
+          className="w-full rounded-s-full bg-zinc-950 px-4 py-2 border-[0.01rem] border-zinc-800 focus:outline-none focus:border-primary focus:ring-1"
         />
         <button className="bg-zinc-900 px-6 border-l-0 border-[0.01rem] border-zinc-800 rounded-e-full ">
           <Search size={22} className="text-zinc-400" />

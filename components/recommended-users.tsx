@@ -25,7 +25,7 @@ export default function RecommendedUsers(props: any) {
               ))}
               <Link
                 href="/explore/suggestions"
-                className="text-sm px-4 text-[#1D9BF0] cursor-pointer hover:underline"
+                className="text-sm px-4 text-primary cursor-pointer hover:underline"
               >
                 Show more
               </Link>
@@ -37,7 +37,7 @@ export default function RecommendedUsers(props: any) {
               </h1>
               <Link
                 href="/explore/all-users"
-                className="text-sm px-4 text-[#1D9BF0] cursor-pointer hover:underline"
+                className="text-sm px-4 text-primary-500 cursor-pointer hover:underline"
               >
                 Explore users
               </Link>

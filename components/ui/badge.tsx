@@ -11,7 +11,7 @@ export default function Badge({
   return (
     <div
       className={mergeClasses(
-        "absolute top-0 right-0 w-[1.1rem] h-[1.1rem] flex justify-center items-center bg-[#1D9BF0] rounded-full text-xs font-bold",
+        "absolute top-0 right-0 w-[1.1rem] h-[1.1rem] flex justify-center items-center bg-primary-500 rounded-full text-xs font-bold",
         className
       )}
     >

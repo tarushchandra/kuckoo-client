@@ -1,4 +1,4 @@
-import { queryClient } from "@/lib/clients/query";
+import { queryClient } from "@/lib/clients/react-query";
 
 export const getUnseenNotificationsCount = () => {
   const currentUnseenNotificationsCount: any = queryClient.getQueryData([

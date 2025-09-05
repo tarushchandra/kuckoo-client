@@ -1,6 +1,5 @@
 "use client";
 import { User } from "@/gql/graphql";
-import { getUsers } from "@/services/user";
 import { useEffect, useState } from "react";
 import { useDebounce } from "../utils";
 

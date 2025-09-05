@@ -42,7 +42,7 @@ const SignInPage: React.FC = () => {
 
   return (
     <div className="py-10 h-full flex flex-col justify-center items-center xs:gap-4">
-      <h1 className="text-3xl font-semibold">Sign In to Twitter</h1>
+      <h1 className="text-3xl font-semibold">Sign In to Coo!</h1>
       <div className="xs:w-full xs:p-5 xs:gap-3 xs1:w-[30rem] xs1:p-10 xs1:gap-6 flex flex-col rounded-md bg-zinc-950 border border-zinc-800">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <InputField
@@ -59,7 +59,7 @@ const SignInPage: React.FC = () => {
           />
           <button
             disabled={isSubmitting}
-            className="bg-[#1D9BF0] text-sm text-white rounded-md py-2 border border-zinc-700 disabled:cursor-wait transition-all active:scale-[0.95]"
+            className="bg-primary-500 text-sm rounded-md py-2  disabled:cursor-wait transition-all active:scale-[0.95]"
           >
             Sign In
           </button>
@@ -83,7 +83,7 @@ const SignInPage: React.FC = () => {
       </div>
       <div className=" flex justify-center gap-2">
         <span>Don&apos;t have an account?</span>
-        <span className="text-[#1D9BF0] hover:underline">
+        <span className="text-primary-500 hover:underline">
           <Link href="/sign-up">Sign Up</Link>
         </span>
       </div>

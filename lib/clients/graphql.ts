@@ -91,5 +91,5 @@ class CustomGraphQLClient {
   }
 }
 
-export const graphqlEndPoint = "http://localhost:8000/graphql";
+export const graphqlEndPoint = `${process.env.NEXT_PUBLIC_BACKEND_SERVER_URL}/graphql`;
 export const graphqlClient = new CustomGraphQLClient();

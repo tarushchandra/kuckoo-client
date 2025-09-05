@@ -1,9 +1,6 @@
 "use client";
-import { User } from "@/gql/graphql";
 import { graphqlClient } from "@/lib/clients/graphql";
-import { queryClient } from "@/lib/clients/query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   getAllUsersQuery,
   getFollowingsQuery,
@@ -12,7 +9,6 @@ import {
   getMutualFollowersQuery,
   getIsFollowingQuery,
 } from "@/graphql/queries/user";
-import { followUserMutation } from "@/graphql/mutations/user";
 
 export const useAllUsers = () => {
   const response = useQuery({
@@ -24,29 +20,18 @@ export const useAllUsers = () => {
 
 export const useFollowers = (username: string) => {
   const response = useQuery({
-    queryKey: ["followers"],
+    queryKey: ["followers", username],
     queryFn: () => graphqlClient.request(getFollowersQuery, { username }),
   });
 
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["followers"] });
-    };
-  }, [username]);
   return response.data?.getUser?.followers;
 };
 
 export const useFollowings = (username: string) => {
   const response = useQuery({
-    queryKey: ["followings"],
+    queryKey: ["followings", username],
     queryFn: () => graphqlClient.request(getFollowingsQuery, { username }),
   });
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["followings"] });
-    };
-  }, [username]);
 
   return response.data?.getUser?.followings;
 };
@@ -56,15 +41,8 @@ export const useIsFollowing = (sessionUserId: string, targetUserId: string) => {
     queryKey: [sessionUserId, "is-following", targetUserId],
     queryFn: () =>
       graphqlClient.request(getIsFollowingQuery, { userId: targetUserId }),
+    staleTime: 0,
   });
-
-  // useEffect(() => {
-  //   return () => {
-  //     queryClient.invalidateQueries({
-  //       queryKey: [sessionUserId, "is-following", targetUserId],
-  //     });
-  //   };
-  // });
   return response.data?.isFollowing;
 };
 
@@ -74,13 +52,6 @@ export const useMutualFollowers = (username: string) => {
     queryFn: () => graphqlClient.request(getMutualFollowersQuery, { username }),
   });
 
-  useEffect(() => {
-    return () => {
-      queryClient.invalidateQueries({
-        queryKey: ["mutual-followers", username],
-      });
-    };
-  }, [username]);
   return data?.getMutualFollowers;
 };
 
@@ -91,5 +62,3 @@ export const useRecommendedUsers = () => {
   });
   return data?.getRecommendedUsers;
 };
-
-// ------------------------------------------------------------------------

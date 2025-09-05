@@ -2,17 +2,17 @@ import React from "react";
 
 interface ProfileLayoutProps {
   children: React.ReactNode;
-  tweetModal: React.ReactNode;
+  postModal: React.ReactNode;
 }
 
 export default function ProfileLayout(props: ProfileLayoutProps) {
-  const { children, tweetModal } = props;
+  const { children, postModal } = props;
   // console.log("props in profile page -", props);
 
   return (
     <>
       {children}
-      {tweetModal}
+      {postModal}
     </>
   );
 }
