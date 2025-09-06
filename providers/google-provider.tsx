@@ -16,7 +16,7 @@ export const GoogleProvider: React.FC<GoogleProviderProps> = ({ children }) => {
 
   return (
     <GoogleOAuthProvider
-      clientId="656345855159-r0rql77b33jt71397q1j6maguj610nrt.apps.googleusercontent.com"
+      clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
       onScriptLoadSuccess={() => updateGoogleButtonAction()}
     >
       {children}
