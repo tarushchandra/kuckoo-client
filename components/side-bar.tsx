@@ -1,7 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
-import { BsTwitter } from "react-icons/bs";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import {
@@ -21,8 +20,8 @@ import { useUnseenNotificationsCount } from "@/hooks/queries/notification";
 import { usePathname } from "next/navigation";
 import { IoMdMail } from "react-icons/io";
 import mergeClasses from "@/utils/mergeClasses";
-import { useAppSelector } from "@/hooks/redux";
 import { useUnseenChatsCount } from "@/hooks/services/chat";
+import { FaEarlybirds } from "react-icons/fa";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -93,7 +92,7 @@ export default function SideBar({ className }: { className: string }) {
         <div>
           <div className="hidden sm:block text-3xl w-fit p-4 rounded-full cursor-pointer transition-all hover:bg-zinc-900">
             <Link href="/home">
-              <BsTwitter />
+              <FaEarlybirds />
             </Link>
           </div>
           <div className="flex flex-col justify-between sm:max-xl:items-center gap-4">

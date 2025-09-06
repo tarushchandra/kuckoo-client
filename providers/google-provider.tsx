@@ -5,6 +5,8 @@ import { selectGoogleButton } from "@/lib/redux/features/auth/authSlice";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";
 
+// GOCSPX - vu1i0qtrf5iVptjVlz0VjDBCziyg;
+
 interface GoogleProviderProps {
   children: React.ReactNode;
 }
@@ -14,7 +16,7 @@ export const GoogleProvider: React.FC<GoogleProviderProps> = ({ children }) => {
 
   return (
     <GoogleOAuthProvider
-      clientId="79601134659-lvunefks7ulgh3il028r8lgua5h4bg58.apps.googleusercontent.com"
+      clientId="656345855159-r0rql77b33jt71397q1j6maguj610nrt.apps.googleusercontent.com"
       onScriptLoadSuccess={() => updateGoogleButtonAction()}
     >
       {children}

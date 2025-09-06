@@ -7,9 +7,9 @@ import RootLayoutProvider from "@/providers/layouts/root";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Coo - Connect, Share, Discover",
+  title: "Kuckoo - Connect, Share, Discover",
   description:
-    "Join Coo, the social media platform where authentic connections flourish...",
+    "Join Kuckoo, the social media platform where authentic connections flourish...",
 };
 
 export default async function RootLayout({

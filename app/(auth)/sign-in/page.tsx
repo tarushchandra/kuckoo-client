@@ -42,7 +42,7 @@ const SignInPage: React.FC = () => {
 
   return (
     <div className="py-10 h-full flex flex-col justify-center items-center xs:gap-4">
-      <h1 className="text-3xl font-semibold">Sign In to Coo!</h1>
+      <h1 className="text-3xl font-semibold">Sign In to Kuckoo!</h1>
       <div className="xs:w-full xs:p-5 xs:gap-3 xs1:w-[30rem] xs1:p-10 xs1:gap-6 flex flex-col rounded-md bg-zinc-950 border border-zinc-800">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <InputField
@@ -74,7 +74,6 @@ const SignInPage: React.FC = () => {
             <GoogleLogin
               onSuccess={handleSignInWithGoogle}
               theme="filled_black"
-              useOneTap
             />
           ) : (
             <Skeleton className="w-60 h-10" />

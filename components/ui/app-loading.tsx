@@ -1,10 +1,10 @@
 import React from "react";
-import { BsTwitter } from "react-icons/bs";
+import { FaEarlybirds } from "react-icons/fa";
 
 const AppLoading: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-screen">
-      <BsTwitter className="text-8xl animate-bounce" />
+      <FaEarlybirds className="text-8xl animate-bounce" />
     </div>
   );
 };

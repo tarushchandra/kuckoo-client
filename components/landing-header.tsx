@@ -1,6 +1,6 @@
 import mergeClasses from "@/utils/mergeClasses";
 import Link from "next/link";
-import { BsTwitter } from "react-icons/bs";
+import { FaEarlybirds } from "react-icons/fa";
 
 interface LandingHeaderProps {
   className?: string;
@@ -12,7 +12,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ className }) => {
       <div className="lg:max-w-7xl mx-auto flex justify-between items-center top-0">
         <div className="text-[2.5rem] w-fit rounded-full cursor-pointer active:scale-[0.95] transition-all">
           <Link href="/">
-            <BsTwitter />
+            <FaEarlybirds />
           </Link>
         </div>
         <div className="flex gap-4 font-semibold">

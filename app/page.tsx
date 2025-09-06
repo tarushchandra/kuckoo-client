@@ -9,7 +9,7 @@ const RootPage: React.FC = () => {
         <h1 className="xs:text-[clamp(2rem,10vw,3rem)] xs1:text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-semibold">
           New to{" "}
           <span className="bg-primary-500 xs:px-1 xs:rounded-lg lg:px-4 lg:rounded-2xl">
-            Coo
+            Kuckoo
           </span>
           ?
         </h1>
