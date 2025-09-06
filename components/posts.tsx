@@ -5,14 +5,12 @@ import PostCardLoading from "./ui/post-card-loading";
 
 interface PostsProps {
   posts: any[] | undefined;
-  observe: (node: Element) => void;
-  isFetchingNextPage: boolean;
+  observe?: (node: Element) => void;
+  isFetchingNextPage?: boolean;
 }
 
 export default function Posts(props: PostsProps) {
   const { posts, isFetchingNextPage, observe } = props;
-
-  console.log("posts -", posts);
 
   if (!posts)
     return Array.from({ length: 4 }, (_, index) => (

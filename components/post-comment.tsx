@@ -27,12 +27,15 @@ export default function PostComment(props: PostCommentProps) {
   const { mode, onClose, post, postEngagement, onCommentMutation, comment } =
     props;
 
-  let repliedToComment;
-  if (mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT)
-    repliedToComment = useRepliedToComment(comment?.id!, post?.id!);
+  // let repliedToComment;
+  // if (mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT)
+  //   repliedToComment = useRepliedToComment(comment?.id!, post?.id!);
 
-  // console.log("comment -", comment);
-  // console.log("repliedToComment -", repliedToComment);
+  const shouldFetchRepliedComment = mode === COMMENT_MODE.EDIT_REPLY_ON_COMMENT;
+  const repliedToComment = useRepliedToComment(
+    shouldFetchRepliedComment ? comment?.id : undefined,
+    shouldFetchRepliedComment ? post?.id : undefined
+  );
 
   return (
     <>

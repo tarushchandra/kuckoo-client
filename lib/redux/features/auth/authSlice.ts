@@ -50,7 +50,7 @@ export const authSlice = createSlice({
       })
       .addCase(signIn.rejected, (state, action) => {
         state.isUserLoading = false;
-        state.error = action.error.message;
+        state.error = action.error.message ?? null;
       });
 
     // Sign Out Action
@@ -65,7 +65,7 @@ export const authSlice = createSlice({
       })
       .addCase(signOut.rejected, (state, action) => {
         state.isUserLoading = false;
-        state.error = action.payload;
+        state.error = (action.payload as string) ?? null;
       });
   },
 });

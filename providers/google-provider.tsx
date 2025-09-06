@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
+import { selectGoogleButton } from "@/lib/redux/features/auth/authSlice";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";
 
@@ -9,7 +10,7 @@ interface GoogleProviderProps {
 }
 
 export const GoogleProvider: React.FC<GoogleProviderProps> = ({ children }) => {
-  const { updateGoogleButtonAction } = useAuth();
+  const { updateGoogleButtonAction } = useAuth(selectGoogleButton);
 
   return (
     <GoogleOAuthProvider

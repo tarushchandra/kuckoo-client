@@ -1,6 +1,5 @@
 "use client";
 
-import { User } from "@/gql/graphql";
 import { useAuth } from "@/hooks/auth";
 import { useMutualFollowers } from "@/hooks/queries/user";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
@@ -14,10 +13,9 @@ interface MutualFollowersProps {
 
 export default function MutualFollowers({ myUsername }: MutualFollowersProps) {
   const { data: sessionUser } = useAuth(selectUser);
-  if (sessionUser?.username === myUsername) return;
-
   const mutualFollowers = useMutualFollowers(myUsername);
-  // const mutualFollowers = undefined;
+
+  if (sessionUser?.username === myUsername) return;
 
   if (!mutualFollowers) return <Skeleton className="w-72 h-5" />;
 

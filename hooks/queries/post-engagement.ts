@@ -51,11 +51,15 @@ export const useCommentReplies = (commentId: string) => {
   return data?.getCommentsOfComment;
 };
 
-export const useRepliedToComment = (commentId: string, postId: string) => {
+export const useRepliedToComment = (commentId?: string, postId?: string) => {
   const { data } = useQuery({
     queryKey: ["replied-to-comment", postId, commentId],
     queryFn: () =>
-      graphqlClient.request(getRepliedToCommentQuery, { postId, commentId }),
+      graphqlClient.request(getRepliedToCommentQuery, {
+        postId: postId!,
+        commentId: commentId!,
+      }),
+    enabled: Boolean(commentId && postId),
   });
   return data?.getComment?.repliedTo;
 };

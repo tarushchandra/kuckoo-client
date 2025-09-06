@@ -18,7 +18,7 @@ export interface IsignInAction {
 export const useAuth = <T extends AuthStateValues>(
   selector: (store: RootState) => T
 ) => {
-  const data = selector ? useAppSelector(selector) : null;
+  const data = useAppSelector(selector);
   const dispatch = useAppDispatch();
   const router = useRouter();
 

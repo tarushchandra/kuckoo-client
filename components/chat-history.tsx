@@ -66,7 +66,14 @@ function ChatHistory() {
           },
         })
       );
-  }, [chatHistory]);
+  }, [
+    dispatch,
+    chatHistory,
+    isIncomingMessageChatSelected,
+    selectedChat,
+    sessionUser?.id,
+    socket,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -80,7 +87,7 @@ function ChatHistory() {
         })
       );
     };
-  }, [selectedChat?.id]);
+  }, [dispatch, selectedChat]);
 
   return (
     <div className="h-full overflow-y-auto flex flex-col-reverse gap-2 p-4 ">

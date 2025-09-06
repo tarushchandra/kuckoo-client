@@ -41,7 +41,7 @@ export default function ChatCard(props: ChatCardProps) {
   const modifiedLatestMessage = useMemo(() => {
     const content = latestMessage?.content;
     return content!?.length > 23 ? content?.slice(0, 23) + "..." : content;
-  }, [chat.latestMessage?.content]);
+  }, [latestMessage?.content]);
 
   const modifiedCreatedAtDate = latestMessage
     ? getModifiedDateForChatCard(latestMessage?.createdAt!)

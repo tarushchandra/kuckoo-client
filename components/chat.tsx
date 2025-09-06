@@ -101,7 +101,7 @@ export default function Chat() {
 
   useEffect(() => {
     isChatInfoTabOpen && setIsChatInfoTabOpen(false);
-  }, [selectedChat!.id]);
+  }, [selectedChat?.id, isChatInfoTabOpen]);
 
   const handleSendMessage = async () => {
     const messagePayload = {

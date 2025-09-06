@@ -29,7 +29,7 @@ export default function MessagesPage() {
     return () => {
       dispatch(removeSelectedChat());
     };
-  }, []);
+  }, [dispatch]);
 
   console.log("chats -", chats);
 

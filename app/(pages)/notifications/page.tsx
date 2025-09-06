@@ -17,7 +17,7 @@ export default function NotificationsPage() {
       if (unseenNotificationsCount === 0) return;
       setNoticationsAsSeenMutation.mutate();
     };
-  }, [unseenNotifications?.length]);
+  }, [unseenNotifications?.length, setNoticationsAsSeenMutation]);
 
   return (
     <>

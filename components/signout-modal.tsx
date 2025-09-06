@@ -1,9 +1,10 @@
 "use client";
 import { useAuth } from "@/hooks/auth";
 import Modal from "./ui/modal";
+import { selectGoogleButton } from "@/lib/redux/features/auth/authSlice";
 
 export default function SignOutModal({ onClose }: { onClose: () => void }) {
-  const { signOutAction } = useAuth();
+  const { signOutAction } = useAuth(selectGoogleButton);
 
   return (
     <Modal wrapperId="signout-modal" onClose={onClose}>
