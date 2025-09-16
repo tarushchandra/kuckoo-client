@@ -2,24 +2,11 @@
 import UserCardLoading from "@/components/ui/user-card-loading";
 import UserCard from "@/components/user-card";
 import { useFollowings } from "@/hooks/queries/user";
-import { queryClient } from "@/lib/clients/react-query";
-import { useEffect } from "react";
 import { ProfilePageProps } from "../../page";
-import { useAuth } from "@/hooks/auth";
-import { selectUser } from "@/lib/redux/features/auth/authSlice";
 
 export default function MyFollowings({ params }: ProfilePageProps) {
   const { username } = params;
   const followings = useFollowings(username);
-  const { data: sessionUser } = useAuth(selectUser);
-
-  console.log("followings -", followings);
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: ["followings"] });
-    };
-  }, [username]);
 
   if (!followings)
     return (

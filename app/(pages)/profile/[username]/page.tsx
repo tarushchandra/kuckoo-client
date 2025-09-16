@@ -19,14 +19,10 @@ export interface ProfilePageProps {
 }
 
 export default async function UserProfilePage({ params }: ProfilePageProps) {
-  // noStore();
   const { username } = params;
   const user = await getUser(username);
-
   const dateJoined = dayjs(Number(user.createdAt));
   const formattedDate = dateJoined.format("MMMM D, YYYY");
-
-  console.log("user profile page rendered");
 
   return (
     <>

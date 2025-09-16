@@ -32,10 +32,6 @@ export default function CreateComment(props: CreateCommentProps) {
     placeholder,
   } = props;
 
-  // console.log("post -", post);
-  // console.log("comment -", comment);
-  // console.log("onClose -", onClose);
-
   const { data: sessionUser } = useAuth(selectUser);
   const [textContent, setTextContent] = useState(
     mode === COMMENT_MODE.EDIT_COMMENT_ON_POST ||

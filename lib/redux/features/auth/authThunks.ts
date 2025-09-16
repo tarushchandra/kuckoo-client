@@ -36,7 +36,6 @@ export const signOut = createAsyncThunk("auth/signOut", async () => {
     await deleteTokensFromCookies();
     await queryClient.invalidateQueries({ queryKey: ["session-user"] });
   } catch (err) {
-    console.log(err);
     throw err;
   }
 });

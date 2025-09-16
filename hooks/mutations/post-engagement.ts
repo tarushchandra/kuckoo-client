@@ -289,8 +289,6 @@ export const useDeleteComment = () => {
         commentId: variables.commentId,
       }),
     onSuccess: async (_, variables) => {
-      console.log("variables -", variables);
-
       await queryClient.setQueryData(
         ["post-engagement", variables.postId],
         (prev: any) => ({

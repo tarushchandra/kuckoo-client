@@ -1,10 +1,6 @@
-import { Chat, ChatHistory } from "@/gql/graphql";
-import { useAuth } from "@/hooks/auth";
-import { selectUser } from "@/lib/redux/features/auth/authSlice";
-import { useMemo } from "react";
+import { ChatHistory } from "@/gql/graphql";
 import ChatMessage from "./chat-message";
 import ChatActivity from "./chat-activity";
-import { useAppSelector } from "@/hooks/redux";
 
 interface ChatHistoryItemProps {
   chatHistoryItem: ChatHistory;
@@ -12,26 +8,12 @@ interface ChatHistoryItemProps {
 
 export default function ChatHistoryItem(props: ChatHistoryItemProps) {
   const { chatHistoryItem } = props;
-  const selectedChat = useAppSelector((store) => store.chat.selectedChat);
-  const { data: sessionUser } = useAuth(selectUser);
-
-  // const modifiedChatHistoryItem = useMemo(
-  //   () =>
-  //     [
-  //       ...chatHistoryItem?.messages?.seenMessages!,
-  //       ...chatHistoryItem?.messages?.sessionUserMessages!,
-  //       ...chatHistoryItem?.activities!,
-  //     ].sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt)),
-  //   [selectedChat!.id, chatHistoryItem]
-  // );
 
   const modifiedChatHistoryItem = [
     ...chatHistoryItem?.messages?.seenMessages!,
     ...chatHistoryItem?.messages?.sessionUserMessages!,
     ...chatHistoryItem?.activities!,
   ].sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt));
-
-  // console.log("modifiedChatHistoryItem -", modifiedChatHistoryItem);
 
   return (
     <div key={chatHistoryItem?.date} className="flex flex-col-reverse gap-3">

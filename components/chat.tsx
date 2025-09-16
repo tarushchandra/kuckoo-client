@@ -1,17 +1,8 @@
 "use client";
-import { ArrowLeft, Info, SendHorizontal } from "lucide-react";
+import { ArrowLeft, SendHorizontal } from "lucide-react";
 import Header from "./header";
 import Image from "next/image";
-import ChatMessages from "./chat-history";
-import { Chat as ChatType } from "@/gql/graphql";
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import mergeClasses from "@/utils/mergeClasses";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
@@ -19,50 +10,14 @@ import ChatInfo from "./chat-info";
 import { AiFillInfoCircle, AiOutlineInfoCircle } from "react-icons/ai";
 import ChatHistory from "./chat-history";
 import { useSocket } from "@/context/socket";
-import { useSelector } from "react-redux";
-import { queryClient } from "@/lib/clients/react-query";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   addMessage,
   removeSelectedChat,
 } from "@/lib/redux/features/chat/chatSlice";
 import { getModifiedLastSeenDateForChat } from "@/utils/date";
-import { useOnlineUser, useUserLastSeenAt } from "@/hooks/services/chat";
+import { useOnlineUser } from "@/hooks/services/chat";
 import { useThrottle } from "@/hooks/utils";
-
-// const useThrottle = (func: () => void, delay: number) => {
-//   let isTimeoutPresent = false;
-
-//   return () => {
-//     if (isTimeoutPresent) return;
-
-//     func();
-//     console.log("func called");
-
-//     setTimeout(() => {
-//       console.log("setTimeout cb called");
-
-//       isTimeoutPresent = false;
-//     }, delay);
-//     isTimeoutPresent = true;
-//   };
-// };
-
-// const useThrottle = () => {
-// return useCallback((func: () => void, delay: number) => {
-//   let isTimeoutPresent = false;
-
-//   return () => {
-//     if (isTimeoutPresent) return;
-
-//     func();
-//     setTimeout(() => {
-//       isTimeoutPresent = false;
-//     }, delay);
-//     isTimeoutPresent = true;
-//   };
-// }, []);
-// };
 
 export default function Chat() {
   const { data: sessionUser } = useAuth(selectUser);
@@ -73,8 +28,6 @@ export default function Chat() {
   );
   const dispatch = useAppDispatch();
   const { socket } = useSocket();
-
-  console.log("onlineUser -", onlineUser);
 
   const [message, setMessage] = useState("");
   const [isChatInfoTabOpen, setIsChatInfoTabOpen] = useState(false);

@@ -31,8 +31,6 @@ export default function MessagesPage() {
     };
   }, [dispatch]);
 
-  console.log("chats -", chats);
-
   return (
     <>
       <div

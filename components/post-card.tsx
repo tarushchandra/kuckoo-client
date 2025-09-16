@@ -1,33 +1,13 @@
 "use client";
 import { PostEngagement as PostEnagementType, User } from "@/gql/graphql";
 import dayjs from "dayjs";
-import { Heart, MessageCircle, Send } from "lucide-react";
 import Image from "next/image";
 import React, { forwardRef } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
-import PostEngagement from "./post-engagement";
 import PostEngagementForPostCard from "./post-engagement";
 
 dayjs.extend(relativeTime);
-
-const postButtons = [
-  {
-    id: 1,
-    Icon: Heart,
-    title: "Like",
-  },
-  {
-    id: 2,
-    Icon: MessageCircle,
-    title: "Comment",
-  },
-  {
-    id: 3,
-    Icon: Send,
-    title: "Share",
-  },
-];
 
 interface PostCardProps {
   post: {
@@ -57,8 +37,6 @@ const PostCard: React.FC<PostCardProps> = forwardRef((props, ref) => {
   const { firstName, lastName, username } = author;
   const formattedCreatedAt = dayjs(Number(createdAt)).fromNow();
   const formattedUpdatedAt = dayjs(Number(updatedAt)).fromNow();
-
-  // console.log("postId -", post.id);
 
   return (
     <>

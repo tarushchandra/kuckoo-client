@@ -3,7 +3,7 @@ import { selectUser } from "@/lib/redux/features/auth/authSlice";
 import mergeClasses from "@/utils/mergeClasses";
 import Image from "next/image";
 import dayjs from "dayjs";
-import { Chat, Message } from "@/gql/graphql";
+import { Message } from "@/gql/graphql";
 import { useState } from "react";
 import MessageSeenByModal from "./message-seen-by-modal";
 import { useAppSelector } from "@/hooks/redux";
@@ -11,8 +11,6 @@ import { useAppSelector } from "@/hooks/redux";
 export default function ChatMessage({ message }: { message: Message }) {
   const { data: sessionUser } = useAuth(selectUser);
   const selectedChat = useAppSelector((store) => store.chat.selectedChat);
-
-  // console.log("message -", message);
 
   const [isMessageSeenByModalOpen, setIsMessageSeenByModalOpen] =
     useState(false);
@@ -61,15 +59,6 @@ export default function ChatMessage({ message }: { message: Message }) {
             </>
             <h2>{message?.content}</h2>
           </div>
-
-          {/* <div className="flex gap-1 items-center text-xs font-medium text-zinc-500">
-            <h2>{time}</h2>
-          </div> */}
-
-          {/* <div className="flex gap-1 items-center text-xs font-medium text-zinc-500">
-            <h2>{time}</h2>
-            {message.seenBy?.length! > 0 && <h2>Seen</h2>}
-          </div> */}
 
           <div className="flex gap-1 items-center text-xs font-medium text-zinc-500">
             {(message.sender?.username !== sessionUser?.username ||

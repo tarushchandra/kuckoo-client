@@ -21,8 +21,6 @@ export default function MessageSeenByModal(props: MessageSeenByModalProps) {
   const [isChatCreatedLoading, setIsChatCreatedLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-  console.log("seen by - ", users);
-
   const handleSendMessage = async (targetUser: User) => {
     setIsChatCreatedLoading(true);
     const chat = await getChat(targetUser.id);
@@ -31,13 +29,6 @@ export default function MessageSeenByModal(props: MessageSeenByModalProps) {
     if (chat) {
       dispatch(selectChat({ ...chat, members: [targetUser] }));
     } else dispatch(selectChat({ id: null, members: [targetUser] }));
-
-    // if (chat)
-    //   setSelectedChat({
-    //     ...chat,
-    //     members: [targetUser],
-    //   } as any);
-    // else setSelectedChat({ id: null!, members: [targetUser] });
 
     onClose();
   };

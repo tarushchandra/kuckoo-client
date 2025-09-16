@@ -7,7 +7,6 @@ interface HomeLayoutProps {
 
 export default function HomeLayout(props: HomeLayoutProps) {
   const { children, postModal } = props;
-  // console.log(props);
 
   return (
     <>

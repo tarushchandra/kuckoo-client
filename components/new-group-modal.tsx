@@ -18,8 +18,6 @@ export default function NewGroupModal({ onClose }: { onClose: () => void }) {
   const { users, isUsersLoading } = useSearchUsers(getUsers, searchText);
   const createGroupMutation = useCreateGroup();
 
-  //   console.log("selectedUsers -", selectedUsers);
-
   const handleCreateGroup = async () => {
     try {
       await createGroupMutation.mutateAsync({

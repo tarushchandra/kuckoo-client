@@ -6,7 +6,6 @@ import Link from "next/link";
 
 export default function RecommendedUsers(props: any) {
   const users = useRecommendedUsers();
-  // console.log(users);
 
   return (
     <div className="bg-zinc-900 w-full rounded-2xl py-3 flex flex-col gap-3">

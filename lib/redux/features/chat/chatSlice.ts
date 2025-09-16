@@ -280,8 +280,6 @@ export const chatsSlice = createSlice({
       const { messagePayload, sessionUser, isMessagesPathSelected } =
         action.payload;
 
-      console.log("messagePayload -", messagePayload);
-
       const isMessageSentBySessionUser =
         messagePayload.message.sender.id === sessionUser.id;
 
@@ -458,7 +456,6 @@ export const chatsSlice = createSlice({
         (x: any) => x.id !== action.payload.id
       );
 
-      // console.log("mutated chat -", mutatedChat);
       state.totalChats = [targetChat!, ...remainingChats!];
     },
 

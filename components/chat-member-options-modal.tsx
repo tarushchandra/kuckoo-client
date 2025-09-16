@@ -21,8 +21,6 @@ export default function ChatMemberOptionsModal(
   const addAdminMutation = useAddGroupAdmin();
   const removeAdminMutation = useRemoveGroupAdmin();
 
-  console.log("chatMember -", chatMember);
-
   return (
     <Modal wrapperId="chat-member-options-modal" onClose={onClose}>
       <div className="flex flex-col w-72 text-center text-sm font-semibold">

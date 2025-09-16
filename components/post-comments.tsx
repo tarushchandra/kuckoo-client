@@ -9,9 +9,6 @@ import CommentCardLoading from "./ui/comment-card-loading";
 export default function PostComments({ post }: { post: Post }) {
   const postEngagement = usePostComments(post.id);
 
-  // console.log("postEngagement -", postEngagement);
-  // console.log("comments -", postEngagement?.comments);
-
   return (
     <div className="h-full w-full border-t border-zinc-800 overflow-y-auto">
       <CreateComment

@@ -22,8 +22,6 @@ interface PostEngagementForPostCardProps {
 export default function PostEngagementForPostCard(
   props: PostEngagementForPostCardProps
 ) {
-  // console.log("post engagement props -", props);
-
   const { post } = props;
   const postEngagement = post.postEngagement;
 
@@ -112,7 +110,6 @@ interface PostEngagementForModalProps {
 }
 
 export function PostEngagementForModal(props: PostEngagementForModalProps) {
-  // console.log("post engagement props -", props);
   const { post } = props;
   const postEngagement = usePostEngagement(post.id);
 
@@ -198,8 +195,6 @@ function PostEngagement(props: PostEngagementProps) {
       setIsCreateCommentModalOpen(false);
     },
   };
-
-  // console.log("postEngagement -", postEngagement);
 
   return (
     <>

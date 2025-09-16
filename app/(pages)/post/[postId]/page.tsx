@@ -25,8 +25,6 @@ export default async function PostPage(props: PostPageProps) {
   const { postId } = params;
 
   const post = await getPost(postId);
-  // console.log("post -", post);
-
   const { author, content, imageURL, createdAt, updatedAt } = post;
   const { firstName, lastName, username, profileImageURL } = author;
 
@@ -37,8 +35,6 @@ export default async function PostPage(props: PostPageProps) {
   const formattedUpdatedDate = postUpdatedAt.format("MMMM D, YYYY");
   const formattedUpdatedTime = postUpdatedAt.format("h:mm A");
   const formattedCreatedDateFromNow = postCreatedAt.fromNow();
-
-  // console.log("post page");
 
   return (
     <>

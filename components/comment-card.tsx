@@ -18,14 +18,6 @@ import CommentReplies from "./comment-replies";
 
 dayjs.extend(relativeTime);
 
-/* 
-  - jab reply successful ho jaye, tab automatically replies component showcase ho jaana 
-    chahiye
-  - jab reply successful ho jaye, toh query invalidate karne ke bajaye, uss particular
-    react variable ko access karo, and usme newly added comment (reply) ko append kardo.
-    (iss practice se mai lazy loading of replies ko implement kar sakta hu)
-*/
-
 interface CommentCardProps {
   comment: Comment;
   post: Post;
@@ -64,8 +56,6 @@ export default function CommentCard(props: CommentCardProps) {
   const likeCommentMutation = useLikeComment(updaterFns);
   const dislikeCommentMutation = useDislikeComment(updaterFns);
 
-  // console.log("comment -", comment);
-
   return (
     <>
       <div className="flex py-4 gap-2 items-start border-b border-zinc-800">
@@ -91,14 +81,6 @@ export default function CommentCard(props: CommentCardProps) {
                 <span>@{author?.username}</span>
                 <div className="bg-zinc-500 w-1 h-1 rounded-full" />
                 <span>{formattedCommentCreatedAt}</span>
-                {/* <>
-                  {comment.createdAt !== comment.updatedAt && (
-                    <>
-                      <div className="bg-zinc-500 w-1 h-1 rounded-full" />
-                      <h2>edited</h2>
-                    </>
-                  )}
-                </> */}
               </div>
             </div>
             <>

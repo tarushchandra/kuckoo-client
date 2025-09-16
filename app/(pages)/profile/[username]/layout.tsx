@@ -7,7 +7,6 @@ interface ProfileLayoutProps {
 
 export default function ProfileLayout(props: ProfileLayoutProps) {
   const { children, postModal } = props;
-  // console.log("props in profile page -", props);
 
   return (
     <>

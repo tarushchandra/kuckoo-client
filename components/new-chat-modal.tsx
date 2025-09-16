@@ -1,13 +1,11 @@
-import UserCard from "./user-card";
 import UserCardLoading from "./ui/user-card-loading";
 import Modal from "./ui/modal";
 import { X } from "lucide-react";
-import { useAllUsers } from "@/hooks/queries/user";
 import Link from "next/link";
 import Image from "next/image";
 import { getChat } from "@/services/chat";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Chat as ChatType, User } from "@/gql/graphql";
+import { useState } from "react";
+import { User } from "@/gql/graphql";
 import { getUsers } from "@/services/user";
 import { useSearchUsers } from "@/hooks/services/user";
 import { useAppDispatch } from "@/hooks/redux";
@@ -23,9 +21,6 @@ export default function NewChatModal(props: NewChatModal) {
   const { users, isUsersLoading } = useSearchUsers(getUsers, searchText);
   const [isChatCreatedLoading, setIsChatCreatedLoading] = useState(false);
   const dispatch = useAppDispatch();
-
-  // console.log("searchText -", searchText);
-  // console.log("users -", users);
 
   const handleSendMessage = async (targetUser: User) => {
     setIsChatCreatedLoading(true);
