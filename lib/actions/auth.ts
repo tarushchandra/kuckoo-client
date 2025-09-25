@@ -1,7 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/middlewares/auth";
-import { deleteTokens } from "@/services/auth";
+import { deleteAuthCookies } from "@/services/auth";
 
 export async function getTokensFromCookies() {
   return {
@@ -11,6 +11,6 @@ export async function getTokensFromCookies() {
 }
 
 export async function deleteTokensAndRedirectToSignInPage() {
-  await deleteTokens();
+  await deleteAuthCookies();
   window.location.href = "/sign-in";
 }

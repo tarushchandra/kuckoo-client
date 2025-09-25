@@ -1,8 +1,8 @@
 import { graphql } from "@/gql";
 
-export const getTokensQuery = graphql(/* GraphQL */ `
-  query GetTokensQuery($googleToken: String, $user: SignInFormInput) {
-    getTokens(googleToken: $googleToken, user: $user)
+export const setAuthCookiesQuery = graphql(/* GraphQL */ `
+  query SetAuthCookiesQuery($googleToken: String, $user: SignInFormInput) {
+    setAuthCookies(googleToken: $googleToken, user: $user)
   }
 `);
 
@@ -12,8 +12,8 @@ export const verifyRefreshTokenQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export const deleteTokensQuery = graphql(/* GraphQL */ `
-  query DeleteTokensQuery {
-    deleteTokens
+export const deleteAuthCookiesQuery = graphql(/* GraphQL */ `
+  query DeleteAuthCookiesQuery {
+    deleteAuthCookies
   }
 `);
