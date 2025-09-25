@@ -3,15 +3,7 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/auth";
 import { selectUser } from "@/lib/redux/features/auth/authSlice";
-import {
-  Bell,
-  Bookmark,
-  Home,
-  ImagePlus,
-  Mail,
-  Search,
-  User,
-} from "lucide-react";
+import { ImagePlus } from "lucide-react";
 import Link from "next/link";
 import PostPostModal, { MODE } from "./create-post-modal";
 import SignOutModal from "./signout-modal";
@@ -22,6 +14,20 @@ import { IoMdMail } from "react-icons/io";
 import mergeClasses from "@/utils/mergeClasses";
 import { useUnseenChatsCount } from "@/hooks/services/chat";
 import { FaEarlybirds } from "react-icons/fa";
+import {
+  IoHome,
+  IoHomeOutline,
+  IoSearch,
+  IoSearchOutline,
+  IoMail,
+  IoMailOutline,
+  IoNotifications,
+  IoNotificationsOutline,
+  IoBookmark,
+  IoBookmarkOutline,
+  IoPerson,
+  IoPersonOutline,
+} from "react-icons/io5";
 
 interface SideBarMenuI {
   icon: React.ReactNode;
@@ -41,43 +47,43 @@ export default function SideBar({ className }: { className: string }) {
         id: 1,
         text: "Home",
         path: "home",
-        icon: <Home />,
-        selectedIcon: <Home strokeWidth={3} absoluteStrokeWidth={false} />,
+        icon: <IoHomeOutline size={25} />,
+        selectedIcon: <IoHome size={25} />,
       },
       {
         id: 2,
         text: "Search",
         path: "search",
-        icon: <Search />,
-        selectedIcon: <Search strokeWidth={3} absoluteStrokeWidth={false} />,
+        icon: <IoSearchOutline size={25} />,
+        selectedIcon: <IoSearch size={25} />,
       },
       {
         id: 3,
         text: "Messages",
         path: "messages",
-        icon: <Mail />,
-        selectedIcon: <IoMdMail className="text-[1.5rem]" />,
+        icon: <IoMailOutline size={25} />,
+        selectedIcon: <IoMail size={25} />,
       },
       {
         id: 4,
         text: "Notifications",
         path: "notifications",
-        icon: <Bell />,
-        selectedIcon: <Bell className="fill-white" />,
+        icon: <IoNotificationsOutline size={25} />,
+        selectedIcon: <IoNotifications size={25} />,
       },
       {
         id: 5,
         text: "Bookmarks",
         path: "bookmarks",
-        icon: <Bookmark />,
-        selectedIcon: <Bookmark className="fill-white" />,
+        icon: <IoBookmarkOutline size={25} />,
+        selectedIcon: <IoBookmark size={25} />,
       },
       {
         id: 6,
         text: "Profile",
         path: `profile/${sessionUser?.username}`,
-        icon: <User />,
-        selectedIcon: <User className="fill-white" />,
+        icon: <IoPersonOutline size={25} />,
+        selectedIcon: <IoPerson size={25} />,
       },
     ];
   }, [sessionUser?.username]);
