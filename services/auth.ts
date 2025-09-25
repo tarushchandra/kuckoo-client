@@ -1,4 +1,5 @@
 import {
+  deleteTokensQuery,
   getTokensQuery,
   verifyRefreshTokenQuery,
 } from "@/graphql/queries/auth";
@@ -27,6 +28,16 @@ export const verifyRefreshToken = async () => {
       verifyRefreshTokenQuery
     );
     return { isRefreshTokenValid: verifyRefreshToken };
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const deleteTokens = async () => {
+  try {
+    const { deleteTokens } = await graphqlClient.request(deleteTokensQuery);
+    if (!deleteTokens)
+      throw new Error("Tokens are not deleted from the server");
   } catch (err) {
     throw err;
   }

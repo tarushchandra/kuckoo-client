@@ -1,7 +1,6 @@
 import { GraphQLClient, RequestDocument, Variables } from "graphql-request";
-import { verifyRefreshToken } from "@/services/auth";
+import { deleteTokens, verifyRefreshToken } from "@/services/auth";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { deleteTokensFromCookies } from "../actions/user";
 
 // To check whether the page is server side or client side rendered.
 // We should only send our token from client to server (Client Side Rendering)
@@ -83,7 +82,7 @@ class CustomGraphQLClient {
 
   private async handleInvalidRefreshToken(): Promise<void> {
     try {
-      await deleteTokensFromCookies();
+      await deleteTokens();
       window.location.href = "/sign-in";
     } catch (err) {
       throw new Error("Failed to delete tokens from cookies");

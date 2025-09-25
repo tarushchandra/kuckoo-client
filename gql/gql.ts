@@ -41,6 +41,7 @@ const documents = {
     "\n  mutation RemoveFollower($userId: ID!) {\n    removeFollower(userId: $userId)\n  }\n": types.RemoveFollowerDocument,
     "\n  query GetTokensQuery($googleToken: String, $user: SignInFormInput) {\n    getTokens(googleToken: $googleToken, user: $user)\n  }\n": types.GetTokensQueryDocument,
     "\n  query VerifyRefreshTokenQuery {\n    verifyRefreshToken\n  }\n": types.VerifyRefreshTokenQueryDocument,
+    "\n  query DeleteTokensQuery {\n    deleteTokens\n  }\n": types.DeleteTokensQueryDocument,
     "\n  query GetChatsQuery {\n    getChats {\n      id\n      name\n      isGroupChat\n      totalMembersCount\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n        profileImageURL\n      }\n      members {\n        id\n        firstName\n        lastName\n        username\n        profileImageURL\n        lastSeenAt\n      }\n      latestMessage {\n        content\n        sender {\n          firstName\n          username\n          profileImageURL\n        }\n        createdAt\n      }\n      unseenMessagesCount\n    }\n  }\n": types.GetChatsQueryDocument,
     "\n  query GetChatQuery($targetUserId: String!) {\n    getChat(targetUserId: $targetUserId) {\n      id\n      createdAt\n      creator {\n        firstName\n        lastName\n        username\n      }\n      unseenMessagesCount\n    }\n  }\n": types.GetChatQueryDocument,
     "\n  query getChatHistoryQuery($chatId: String!) {\n    getChatHistory(chatId: $chatId) {\n      date\n      messages {\n        unseenMessages {\n          id\n          content\n          sender {\n            id\n            username\n            profileImageURL\n          }\n          createdAt\n        }\n        seenMessages {\n          id\n          content\n          sender {\n            id\n            username\n            profileImageURL\n          }\n          createdAt\n        }\n        sessionUserMessages {\n          id\n          content\n          sender {\n            id\n            username\n            profileImageURL\n          }\n          createdAt\n          seenBy {\n            id\n          }\n        }\n      }\n      activities {\n        id\n        type\n        metaData {\n          chatName\n        }\n        user {\n          firstName\n          lastName\n          username\n        }\n        targetUser {\n          firstName\n          lastName\n          username\n        }\n        createdAt\n      }\n    }\n  }\n": types.GetChatHistoryQueryDocument,
@@ -201,6 +202,10 @@ export function graphql(source: "\n  query GetTokensQuery($googleToken: String, 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query VerifyRefreshTokenQuery {\n    verifyRefreshToken\n  }\n"): (typeof documents)["\n  query VerifyRefreshTokenQuery {\n    verifyRefreshToken\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query DeleteTokensQuery {\n    deleteTokens\n  }\n"): (typeof documents)["\n  query DeleteTokensQuery {\n    deleteTokens\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

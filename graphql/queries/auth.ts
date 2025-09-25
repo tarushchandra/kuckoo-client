@@ -11,3 +11,9 @@ export const verifyRefreshTokenQuery = graphql(/* GraphQL */ `
     verifyRefreshToken
   }
 `);
+
+export const deleteTokensQuery = graphql(/* GraphQL */ `
+  query DeleteTokensQuery {
+    deleteTokens
+  }
+`);

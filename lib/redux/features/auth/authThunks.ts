@@ -4,11 +4,8 @@ import { IsignInAction } from "@/hooks/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import { getSessionUser } from "@/services/user";
-import {
-  deleteTokensFromCookies,
-  deleteTokensAndRedirectToSignInPage,
-} from "@/lib/actions/user";
-import { getTokens } from "@/services/auth";
+import { deleteTokensAndRedirectToSignInPage } from "@/lib/actions/auth";
+import { deleteTokens, getTokens } from "@/services/auth";
 
 export const signIn = createAsyncThunk(
   "auth/signIn",
@@ -33,7 +30,7 @@ export const signIn = createAsyncThunk(
 
 export const signOut = createAsyncThunk("auth/signOut", async () => {
   try {
-    await deleteTokensFromCookies();
+    await deleteTokens();
     await queryClient.invalidateQueries({ queryKey: ["session-user"] });
   } catch (err) {
     throw err;
